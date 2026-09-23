@@ -1,0 +1,10 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+  NEXT_BUILD_DIR = ".next"
+
+# Netlify automatically applies its OpenNext adapter for Next.js.
+# No SPA fallback redirect: preserve Next.js routes and claim query parameters.
