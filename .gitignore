@@ -1,0 +1,14 @@
+# Dependencies and local build/runtime output
+node_modules/
+.next/
+.next-*/
+.netlify/
+out/
+*.tsbuildinfo
+deno.lock
+
+# Local environment files and logs
+.env*
+!.env.example
+*.log
+.DS_Store

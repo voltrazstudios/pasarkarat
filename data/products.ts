@@ -1,5 +1,15 @@
 export const categories = ['Vintage', 'Antiques', 'Traditional Crafts', 'Electronics', 'Traditional Games', 'Collectibles', 'Clothing', 'Home & Decor'] as const;
 export type Category = typeof categories[number];
+export const categoryImages: Record<Category, string> = {
+  'Vintage': '/images/categories/vintage.png',
+  'Antiques': '/images/categories/antiques.png',
+  'Traditional Crafts': '/images/categories/traditional-crafts.png',
+  'Electronics': '/images/categories/electronics.png',
+  'Traditional Games': '/images/categories/traditional-games.png',
+  'Collectibles': '/images/categories/collectibles.png',
+  'Clothing': '/images/categories/clothing.png',
+  'Home & Decor': '/images/categories/home-decor.png',
+};
 export type Product = { id: string; slug: string; name: string; price: number; image: string; category: Category; seller: string; description: string; externalUrl: string; featured: boolean };
 // Example listings only. Replace descriptions, prices, sellers and URLs with verified listings before launch.
 export const products: Product[] = [

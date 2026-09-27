@@ -1,0 +1,22 @@
+.overlay {
+  display: none;
+  pointer-events: none;
+}
+
+@media (min-width: 1800px) {
+  .overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    user-select: none;
+  }
+
+  .overlay img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+  }
+}
