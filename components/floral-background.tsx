@@ -42,7 +42,7 @@ export function FloralBackground() {
       key={index}
       className={index % 2 ? styles.right : styles.left}
       style={{ top, visibility: positions.length ? 'visible' : 'hidden' }}
-      src={`/images/backgrounds/floral-${index % 2 ? 'bottom-right' : 'top-left'}.png`}
+      src={`/images/backgrounds/floral-${index % 2 ? 'bottom-right' : 'top-left'}.webp`}
       alt="" draggable={false}
     />)}
   </div>;
