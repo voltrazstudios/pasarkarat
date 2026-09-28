@@ -30,6 +30,10 @@ export function HeritageGallery(){
     name="Undiscovered heritage object"
     sizes="(max-width: 900px) 50vw, 33vw"
   />
+  <div className="heritage-card-body">
+    <h3>Undiscovered</h3>
+    <p>Find this heritage object inside the Virtual Experience.</p>
+  </div>
 </>}</article>;})}</div></section>;
 }
 export function HeritageStory({id}:{id:string}){const {ids,ready}=useDiscoveries();const item=heritageObjects.find(o=>o.id===id)!;return <main id="main" className="container heritage-detail"><Link href="/experience#heritage-gallery" className="text-link back">← Your Heritage Gallery</Link>{!ready?<p role="status">Loading discovery…</p>:!ids.includes(id)?<div className="empty-state"><h1>Undiscovered</h1><p>Find this heritage object inside the Virtual Experience.</p><Link className="button" href="/experience#heritage-gallery">Explore the Virtual Experience</Link></div>:<div className="heritage-story-layout"><ProductImage src={item.image} name={item.name}/><div><p className="eyebrow">✓ Discovered</p><h1>{item.name}</h1><p className="heritage-summary">{item.shortDescription}</p><p>{item.story}</p></div></div>}</main>;}
