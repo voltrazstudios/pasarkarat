@@ -31,6 +31,9 @@ export function HeritageGallery(){
     sizes="(max-width: 900px) 50vw, 33vw"
   />
   <div className="heritage-card-body">
+    <span className="heritage-status heritage-status-placeholder">
+      Undiscovered
+    </span>
     <h3>Undiscovered</h3>
     <p>Find this heritage object inside the Virtual Experience.</p>
   </div>
