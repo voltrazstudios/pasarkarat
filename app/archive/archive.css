@@ -6,3 +6,12 @@
 /* Reuse Collection heading styles without its full-page minimum height. */
 .archive-page.archive-browser{padding-top:0}
 .archive-heading{min-height:0}
+
+/* Community Memories count on Archive cards */
+.archive-card-engagement{display:flex;align-items:center;justify-content:flex-end;gap:7px;flex-wrap:wrap}
+.archive-memory-card-count{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:40px;padding:7px 11px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--muted);font:inherit;font-size:14px;line-height:1;white-space:nowrap}
+
+@media(max-width:600px){.archive-card-engagement{gap:6px}.archive-memory-card-count{font-size:13px;padding-inline:9px}}
+
+/* V5 passive memory count */
+.archive-memory-card-count{pointer-events:none;cursor:default;user-select:none}

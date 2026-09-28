@@ -159,3 +159,12 @@ body .footer-bottom { display: block; padding-block: 22px; }
 .legal-page article ul { list-style: disc; padding-left: 24px; }
 .legal-page article a { color: var(--orange); text-decoration: underline; overflow-wrap: anywhere; }
 @media(max-width: 1100px) { body .footer-top { grid-template-columns: 1fr; gap: 28px; } }
+
+/* V5 language toggle */
+.language-toggle{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:44px;height:44px;padding:0;border:1px solid var(--line);border-radius:8px;background:var(--surface);font-size:24px;line-height:1;cursor:pointer}
+.language-toggle:hover{border-color:var(--orange);transform:translateY(-1px)}
+.language-toggle:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
+@media(max-width:900px){.language-toggle{width:46px;height:46px;font-size:23px}.header-inner{gap:8px}.header .brand-logo{width:min(220px,calc(100vw - 165px))}}
+@media(max-width:600px){.header .brand-logo{width:min(190px,calc(100vw - 155px))}}
+/* V6 flag SVG */
+.language-toggle .language-flag{display:block;width:28px;height:20px;border-radius:2px;box-shadow:0 0 0 1px #17333a22;overflow:hidden}

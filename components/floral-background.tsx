@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import styles from './floral-background.module.css';
 
@@ -38,8 +39,10 @@ export function FloralBackground() {
   }, [pathname]);
 
   return <div ref={layer} className={styles.layer} aria-hidden="true">
-    {(positions.length ? positions : [0]).map((top, index) => <img
+    {(positions.length ? positions : [0]).map((top, index) => <Image
       key={index}
+      width={825} height={825} quality={100}
+      sizes="(max-width: 600px) 85vw, (max-width: 1000px) 65vw, (max-width: 1547px) 650px, (max-width: 3095px) 42vw, 1300px"
       className={index % 2 ? styles.right : styles.left}
       style={{ top, visibility: positions.length ? 'visible' : 'hidden' }}
       src={`/images/backgrounds/floral-${index % 2 ? 'bottom-right' : 'top-left'}.webp`}

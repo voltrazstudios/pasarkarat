@@ -1,0 +1,54 @@
+/* Living Archive — Community Memories
+   Uses the same warm heritage palette and form treatment as About > Get in Touch. */
+.archive-memories{margin-top:52px;padding:32px 36px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.archive-memories-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:28px}
+.archive-memories-heading h2{margin-top:8px;font-size:31px}
+.archive-memories-heading>div>p:last-child{margin-top:10px;max-width:650px;color:var(--muted);line-height:1.7}
+.archive-memory-count{display:inline-flex;align-items:center;gap:8px;flex-shrink:0;padding:9px 13px;border:1px solid var(--line);border-radius:999px;background:var(--page);color:var(--muted);font-size:13px;font-weight:600}
+.archive-memories-layout{display:grid;grid-template-columns:minmax(280px,.8fr) minmax(0,1.2fr);gap:36px;align-items:start}
+
+/* Form intentionally mirrors .contact-form instead of using a white card. */
+.archive-memory-form{display:grid;gap:16px;min-width:0;width:100%;padding:0;border:0;background:transparent}
+.archive-memory-form h3{font-size:22px}
+.archive-memory-prompt{margin-top:-10px;color:var(--muted);font-size:14px}
+.archive-memory-form label{display:grid;gap:6px;margin:0;color:var(--navy);font-size:13px;font-weight:600}
+.archive-memory-form label>span{color:var(--muted);font-weight:400}
+.archive-memory-form input,.archive-memory-form textarea{display:block;width:100%;min-width:0;margin:0;padding:11px 13px;border:1px solid var(--line);border-radius:6px;background:var(--page);color:var(--navy);font:inherit;font-size:16px;font-weight:400;outline:none}
+.archive-memory-form input:focus-visible,.archive-memory-form textarea:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
+.archive-memory-form textarea{resize:vertical;min-height:130px;line-height:1.6}
+.archive-memory-form-bottom{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:-4px}
+.archive-memory-form-bottom>span{color:var(--muted);font-size:12px}
+.archive-memory-form .button{justify-self:start;gap:0;padding:13px 22px}
+.archive-memory-form .button:disabled{opacity:.65;cursor:wait;transform:none}
+.archive-memory-note{margin-top:-2px;color:var(--muted);font-size:12px;line-height:1.55}
+.archive-memory-success,.archive-memory-error{margin-top:-4px;padding:10px 12px;border:1px solid var(--line);border-radius:6px;font-size:13px}
+.archive-memory-success{background:var(--page);color:#315d39}
+.archive-memory-error{background:var(--page);color:#963d22}
+
+/* Memory feed also stays inside the beige palette — no pure white surfaces. */
+.archive-memory-feed{display:flex;flex-direction:column;gap:13px}
+.archive-memory-card{padding:20px 21px;border:1px solid var(--line);border-radius:8px;background:var(--page)}
+.archive-memory-card-top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:9px}
+.archive-memory-card-top strong{font-size:14px}
+.archive-memory-card-top time{flex-shrink:0;color:var(--muted);font-size:12px}
+.archive-memory-card p{color:var(--muted);font-size:15px;line-height:1.75;white-space:pre-wrap;overflow-wrap:anywhere}
+.archive-memory-empty{min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:28px;border:1px dashed var(--line);border-radius:8px;background:var(--page);text-align:center;color:var(--muted)}
+.archive-memory-empty strong{color:var(--navy);font-size:17px}
+.archive-memory-empty span{max-width:420px;font-size:14px;line-height:1.6}
+
+/* Compact count used beside Likes on Archive cards. */
+.archive-card-engagement{display:flex;align-items:center;justify-content:flex-end;gap:7px;flex-wrap:wrap}
+.archive-memory-card-count{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:40px;padding:7px 11px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--muted);font:inherit;font-size:14px;line-height:1;white-space:nowrap}
+.archive-memory-card-count:hover{border-color:var(--orange);color:var(--orange)}
+
+@media(max-width:800px){.archive-memories{padding:25px}.archive-memories-layout{grid-template-columns:1fr}.archive-memories-heading{align-items:flex-start;flex-direction:column}.archive-memory-count{align-self:flex-start}}
+@media(max-width:600px){.archive-memories{margin-top:38px;padding:22px 18px}.archive-memories-heading h2{font-size:27px}.archive-memory-form-bottom{align-items:flex-start;flex-direction:column}.archive-memory-form .button{width:auto}.archive-memory-card{padding:18px}.archive-memory-card-top{align-items:flex-start;flex-direction:column;gap:3px}.archive-card-engagement{gap:6px}.archive-memory-card-count{font-size:13px;padding-inline:9px}}
+
+/* V5: disclaimer sits beside the memory count; safety guidance stays with the form prompt. */
+.archive-memory-heading-meta{display:flex;align-items:center;justify-content:flex-end;gap:14px;max-width:560px;margin-left:auto}
+.archive-memory-heading-meta .archive-memory-note{margin:0;max-width:360px;text-align:right}
+.archive-memory-safety{margin-top:-10px;color:var(--muted);font-size:12px;line-height:1.55}
+.archive-memory-card-count{pointer-events:none;cursor:default;user-select:none}
+.archive-memory-card-count:hover{border-color:var(--line);color:var(--muted)}
+@media(max-width:900px){.archive-memory-heading-meta{width:100%;max-width:none;margin-left:0;justify-content:space-between}.archive-memory-heading-meta .archive-memory-note{text-align:left}}
+@media(max-width:600px){.archive-memory-heading-meta{align-items:flex-start;flex-direction:column}.archive-memory-count{align-self:flex-start}}

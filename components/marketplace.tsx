@@ -1,72 +1,19 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
+import imageAssets from '@/data/image-assets.json';
 import { CommunityCTA } from './community-cta';
 import { SaveButton } from './saved-items';
 import { useState } from 'react';
 import { ArrowUpRight, ArrowRight, Search, Store, Layers, Image as ImageIcon, X } from 'lucide-react';
 import { categories, categoryImages, products, priceLabel, type Product } from '@/data/products';
 export { Header } from './header';
-export function ProductImage({
-  src,
-  name,
-  category,
-  hero = false,
-}: {
-  src: string;
-  name: string;
-  category?: string;
-  hero?: boolean;
-}) {
-  const [failed, setFailed] = useState(false);
-  const [loaded, setLoaded] = useState(false);
-
-  return (
-    <div className={`image-placeholder ${hero ? 'hero-placeholder' : ''}`}>
-      <div className="placeholder-grid" />
-
-      {!failed && src && (
-        <Image
-          src={src}
-          alt={name}
-          fill
-          sizes={
-            hero
-              ? '(max-width: 900px) 100vw, 50vw'
-              : '(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 25vw'
-          }
-          priority={hero}
-          quality={80}
-          style={{ opacity: loaded ? 1 : 0 }}
-          onLoad={() => setLoaded(true)}
-          onError={() => setFailed(true)}
-        />
-      )}
-
-      <div className="placeholder-label">
-        <ImageIcon size={hero ? 38 : 27} strokeWidth={1} />
-        <span>
-          {hero
-            ? 'A space for stories & discoveries'
-            : 'Image coming soon'}
-        </span>
-
-        {hero && (
-          <small>Your Pasar Karat collection, pictured here.</small>
-        )}
-      </div>
-
-      {category && (
-        <span className="image-category">{category}</span>
-      )}
-    </div>
-  );
-}
-export function ProductCard({product:p}:{product:Product}){return <article className="product-card"><Link href={`/items/${p.slug}`} className="product-image-link" aria-label={`View ${p.name}`}><ProductImage src={p.image} name={p.name} category={p.category}/></Link><div className="product-content"><p className="seller"><Store size={13}/>{p.seller}</p><h3><Link href={`/items/${p.slug}`}>{p.name}</Link></h3><div className="product-bottom"><strong>{priceLabel(p.price)}</strong><Link href={`/items/${p.slug}`} className="view-item">View Item <ArrowUpRight size={15}/></Link></div><SaveButton id={p.id} name={p.name}/></div></article>;}
-export function CategoryLinks(){return <section className="container category-section" id="categories"><div className="section-heading"><div><p className="eyebrow">FOLLOW YOUR CURIOSITY</p><h2>Find your kind of treasure</h2></div><Link href="/items" className="text-link">Browse all items <ArrowRight size={17}/></Link></div><div className="categories">{categories.map((category)=>{return <Link href={`/items?category=${encodeURIComponent(category)}`} key={category} className="category"><span className="category-art"><img src={categoryImages[category]} alt="" width={64} height={64}/></span>{category}</Link>;})}</div></section>;}
-export function Home(){return <main id="main"><section className="hero container"><div className="hero-copy"><p className="eyebrow"><span className="small-line"/> THE SPIRIT OF PASAR KARAT, ONLINE</p><h1>Discover Unique Finds<br/>from <em>Pasar Karat</em></h1><p>Explore vintage items, antiques, traditional crafts and collectibles from independent sellers.</p><Link href="/items" className="button">Explore Collection <ArrowUpRight size={19}/></Link><div className="hero-foot"><span>Vintage charm</span><i/> <span>Local heritage</span><i/><span>Everyday discoveries</span></div></div><div className="hero-visual"><ProductImage src="/images/hero/market.webp" name="Pasar Karat market" hero/><div className="hero-tag"><span className="tag-icon"><Layers size={24}/></span><span>A new chapter for old treasures<small>Find something with a story.</small></span></div></div></section><CategoryLinks/><section className="container collection"><div className="section-heading"><div><p className="eyebrow">WORTH A CLOSER LOOK</p><h2>Featured finds</h2></div><Link href="/items" className="text-link">Explore the collection <ArrowRight size={17}/></Link></div><p className="demo-note">Preview collection · Example products and prices. Seller links are placeholders.</p><div className="product-grid">{products.filter(p=>p.featured).map(p=><ProductCard key={p.id} product={p}/>)}</div></section><section className="container story"><div><p className="eyebrow">MORE THAN SOMETHING OLD</p><h2>A market full of character.<br/>A connection to our heritage.</h2></div><div><p>From a radio that brings back memories to a craft that carries tradition, Pasar Karat is a place for curious discoveries. We bring that spirit online, helping you find vintage, traditional and collectible items from independent sellers.</p><Link href="/about" className="text-link">Get to know Pasar Karat <ArrowRight size={17}/></Link></div></section><section className="container collection"><div className="section-heading"><div><p className="eyebrow">KEEP EXPLORING</p><h2>More to discover</h2></div><Link href="/items" className="text-link">View all items <ArrowRight size={17}/></Link></div><div className="product-grid">{products.filter(p=>!p.featured).slice(0,4).map(p=><ProductCard key={p.id} product={p}/>)}</div></section></main>;}
+export function ProductImage({src,name,category,hero=false,sizes="(max-width: 900px) 100vw, 750px"}:{src:string;name:string;category?:string;hero?:boolean;sizes?:string}){const [failed,setFailed]=useState(false);const [loaded,setLoaded]=useState(false);return <div className={`image-placeholder ${hero?'hero-placeholder':''}`}><div className="placeholder-grid"/>{!failed&&src&&(!src.startsWith('/')||imageAssets.includes(src))&&<Image src={src} alt={name} fill sizes={hero?"(max-width: 600px) 100vw, 50vw":sizes} priority={hero} style={{opacity:loaded?1:0}} onLoad={()=>setLoaded(true)} ref={node=>{if(node?.complete && node.naturalWidth>0)setLoaded(true);}} onError={()=>setFailed(true)}/>}<div className="placeholder-label"><ImageIcon size={hero?38:27} strokeWidth={1}/><span>{hero?'A space for stories & discoveries':'Image coming soon'}</span>{hero&&<small>Your Pasar Karat collection, pictured here.</small>}</div>{category&&<span className="image-category">{category}</span>}</div>;}
+export function ProductCard({product:p}:{product:Product}){return <article className="product-card"><Link href={`/items/${p.slug}`} className="product-image-link" aria-label={`View ${p.name}`}><ProductImage src={p.image} name={p.name} category={p.category} sizes="(max-width: 379px) 100vw, (max-width: 900px) 50vw, (max-width: 1100px) 33vw, 25vw"/></Link><div className="product-content"><p className="seller"><Store size={13}/>{p.seller}</p><h3><Link href={`/items/${p.slug}`}>{p.name}</Link></h3><div className="product-bottom"><strong>{priceLabel(p.price)}</strong><Link href={`/items/${p.slug}`} className="view-item">View Item <ArrowUpRight size={15}/></Link></div><SaveButton id={p.id} name={p.name}/></div></article>;}
+export function CategoryLinks(){return <section className="container category-section" id="categories"><div className="section-heading"><div><p className="eyebrow">FOLLOW YOUR CURIOSITY</p><h2>Find your kind of treasure</h2></div><Link href="/items" className="text-link">Browse all items <ArrowRight size={17}/></Link></div><div className="categories">{categories.map((category)=>{return <Link href={`/items?category=${encodeURIComponent(category)}`} key={category} className="category"><span className="category-art"><Image src={categoryImages[category]} alt="" width={64} height={64} sizes="64px"/></span>{category}</Link>;})}</div></section>;}
+export function Home(){return <main id="main"><section className="hero container"><div className="hero-copy"><p className="eyebrow"><span className="small-line"/> THE SPIRIT OF PASAR KARAT, ONLINE</p><h1>Discover Unique Finds<br/>from <em>Pasar Karat</em></h1><p>Explore vintage items, antiques, traditional crafts and collectibles from independent sellers.</p><Link href="/items" className="button">Explore Collection <ArrowUpRight size={19}/></Link><div className="hero-foot"><span>Vintage charm</span><i/> <span>Local heritage</span><i/><span>Everyday discoveries</span></div></div><div className="hero-visual"><ProductImage src="/images/hero/market.png" name="Pasar Karat market" hero/><div className="hero-tag"><span className="tag-icon"><Layers size={24}/></span><span>A new chapter for old treasures<small>Find something with a story.</small></span></div></div></section><CategoryLinks/><section className="container collection"><div className="section-heading"><div><p className="eyebrow">WORTH A CLOSER LOOK</p><h2>Featured finds</h2></div><Link href="/items" className="text-link">Explore the collection <ArrowRight size={17}/></Link></div><p className="demo-note">Preview collection · Example products and prices. Seller links are placeholders.</p><div className="product-grid">{products.filter(p=>p.featured).map(p=><ProductCard key={p.id} product={p}/>)}</div></section><section className="container story"><div><p className="eyebrow">MORE THAN SOMETHING OLD</p><h2>A market full of character.<br/>A connection to our heritage.</h2></div><div><p>From a radio that brings back memories to a craft that carries tradition, Pasar Karat is a place for curious discoveries. We bring that spirit online, helping you find vintage, traditional and collectible items from independent sellers.</p><Link href="/about" className="text-link">Get to know Pasar Karat <ArrowRight size={17}/></Link></div></section><section className="container collection"><div className="section-heading"><div><p className="eyebrow">KEEP EXPLORING</p><h2>More to discover</h2></div><Link href="/items" className="text-link">View all items <ArrowRight size={17}/></Link></div><div className="product-grid">{products.filter(p=>!p.featured).slice(0,4).map(p=><ProductCard key={p.id} product={p}/>)}</div></section></main>;}
 export function Catalogue({initialQuery='',initialCategory=''}:{initialQuery?:string;initialCategory?:string}){const [query,setQuery]=useState(initialQuery);const [category,setCategory]=useState(initialCategory);const filtered=products.filter(p=>(!category||p.category===category)&&`${p.name} ${p.category} ${p.description} ${p.seller}`.toLowerCase().includes(query.toLowerCase().trim()));return <main id="main" className="container catalogue"><p className="eyebrow">THE DIGITAL PASAR KARAT</p><h1>Explore the collection</h1><p className="intro">A little nostalgia. A touch of tradition. Something that speaks to you.</p><div className="catalogue-controls"><label className="filter-search"><Search size={19}/><input value={query} onChange={e=>setQuery(e.target.value)} aria-label="Search collection" placeholder="Find your next discovery..."/>{query&&<button onClick={()=>setQuery('')} aria-label="Clear search"><X size={18}/></button>}</label></div><div className="filter-pills"><button className={!category?'selected':''} onClick={()=>setCategory('')}>All items</button>{categories.map(c=><button key={c} className={category===c?'selected':''} onClick={()=>setCategory(c)}>{c}</button>)}</div><div className="results-meta"><span role="status">{filtered.length} {filtered.length===1?'item':'items'}{category?` in ${category}`:''}</span><span>Example listings · MYR</span></div>{filtered.length?<div className="product-grid">{filtered.map(p=><ProductCard key={p.id} product={p}/>)}</div>:<div className="empty-state"><Search size={32}/><h2>No treasures found just yet</h2><p>Try another search or explore a different category.</p><button className="button" onClick={()=>{setQuery('');setCategory('');}}>Reset filters <ArrowRight size={18}/></button></div>}<CommunityCTA/></main>;}
-export function Footer(){return <footer><div className="container footer-top"><div className="footer-brand"><Link href="/" className="brand"><img className="brand-logo" src="/pasar-karat-logo.png" width={1200} height={300} alt="Pasar Karat"/></Link><p>Some external links may be affiliate links. Pasar Karat Digital Marketplace may receive a commission from qualifying purchases.</p></div><div className="footer-links"><h2>Product</h2><nav aria-label="Footer product navigation"><Link href="/about">About the Marketplace</Link><Link href="/items">Explore Collection</Link><Link href="/experience">Virtual Experience</Link></nav></div><div className="footer-links"><h2>Legal</h2><nav aria-label="Footer legal navigation"><Link href="/privacy">Privacy Policy</Link><Link href="/terms">Terms of Service</Link></nav></div></div><div className="container footer-bottom"><p>© 2026 Voltraz Studios. All rights reserved.</p></div></footer>;}
+export function Footer(){return <footer><div className="container footer-top"><div className="footer-brand"><Link href="/" className="brand"><Image className="brand-logo" src="/pasar-karat-logo.png" width={1200} height={300} sizes="240px" alt="Pasar Karat"/></Link><p>Some external links may be affiliate links. Pasar Karat Digital Marketplace may receive a commission from qualifying purchases.</p></div><div className="footer-links"><h2>Product</h2><nav aria-label="Footer product navigation"><Link href="/about">About the Marketplace</Link><Link href="/items">Explore Collection</Link><Link href="/experience">Virtual Experience</Link></nav></div><div className="footer-links"><h2>Legal</h2><nav aria-label="Footer legal navigation"><Link href="/privacy">Privacy Policy</Link><Link href="/terms">Terms of Service</Link></nav></div></div><div className="container footer-bottom"><p>© 2026 Voltraz Studios. All rights reserved.</p></div></footer>;}
 
 
 
