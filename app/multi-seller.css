@@ -323,6 +323,11 @@
   margin-top: 7px;
 }
 
+/* Keep Platform label close to its buttons */
+.platform-filter-group .filter-pills {
+  margin-top: 7px;
+}
+
 @media (max-width: 600px) {
   .product-card-actions {
     align-items: center;
