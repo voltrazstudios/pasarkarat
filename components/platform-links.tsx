@@ -40,7 +40,7 @@ export function PlatformSummary({links}:{links:ProductLink[]}){
 export function PlatformIndicators({links}:{links:ProductLink[]}){
   const platforms=[...new Set(links.map(link=>link.platform))];
   return <div className="platform-indicators" aria-label="Available marketplaces">
-    {platforms.map(platform=><span key={platform} className="platform-indicator" title={platform} aria-label={platform}><PlatformLogo platform={platform}/></span>)}
+    {platforms.map(platform=><span key={platform} className={`platform-indicator platform-${platform.toLowerCase()}`} title={platform} aria-label={platform}><PlatformLogo platform={platform} size={32}/></span>)}
   </div>;
 }
 

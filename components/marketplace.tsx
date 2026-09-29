@@ -9,7 +9,7 @@ import { CompareSellerPrices, PlatformIndicators, PlatformSummary, ProductName }
 import { useState } from 'react';
 import { useLanguage } from './language-provider';
 import { ArrowUpRight, ArrowRight, Search, Layers, Image as ImageIcon, X } from 'lucide-react';
-import { categories, categoryImages, products, type Product } from '@/data/products';
+import { categories, categoryImages, products, type Platform, type Product } from '@/data/products';
 
 export { Header } from './header';
 
@@ -142,7 +142,9 @@ export function Catalogue({initialQuery='',initialCategory=''}:{initialQuery?:st
   const {language}=useLanguage();
   const [query,setQuery]=useState(initialQuery);
   const [category,setCategory]=useState(initialCategory);
-  const filtered=products.filter(p=>(!category||p.category===category)&&`${p.name} ${p.category} ${p.description} ${p.links.map(link=>link.platform).join(' ')}`.toLowerCase().includes(query.toLowerCase().trim()));
+  const [platform,setPlatform]=useState<Platform | ''>('');
+  const platformFilters: Platform[]=['Shopee','Facebook','Carousell'];
+  const filtered=products.filter(p=>(!category||p.category===category)&&(!platform||p.links.some(link=>link.platform===platform))&&`${p.name} ${p.category} ${p.description} ${p.links.map(link=>link.platform).join(' ')}`.toLowerCase().includes(query.toLowerCase().trim()));
 
   return <main id="main" className="container catalogue">
     <p className="eyebrow">THE DIGITAL PASAR KARAT</p>
@@ -155,14 +157,24 @@ export function Catalogue({initialQuery='',initialCategory=''}:{initialQuery?:st
         {query&&<button onClick={()=>setQuery('')} aria-label="Clear search"><X size={18}/></button>}
       </label>
     </div>
-    <div className="filter-pills">
-      <button className={!category?'selected':''} onClick={()=>setCategory('')}>All items</button>
-      {categories.map(c=><button key={c} className={category===c?'selected':''} onClick={()=>setCategory(c)}>{c}</button>)}
+    <div className="filter-group">
+      <p className="filter-label">{language==='ms'?'Kategori':'Category'}</p>
+      <div className="filter-pills">
+        <button className={!category?'selected':''} onClick={()=>setCategory('')}>{language==='ms'?'Semua item':'All items'}</button>
+        {categories.map(c=><button key={c} className={category===c?'selected':''} onClick={()=>setCategory(c)}>{c}</button>)}
+      </div>
+    </div>
+    <div className="filter-group platform-filter-group">
+      <p className="filter-label">Platform</p>
+      <div className="filter-pills platform-filter-pills">
+        <button className={!platform?'selected':''} onClick={()=>setPlatform('')}>{language==='ms'?'Semua platform':'All platforms'}</button>
+        {platformFilters.map(p=><button key={p} className={`${platform===p?'selected ':''}platform-filter-${p.toLowerCase()}`} onClick={()=>setPlatform(p)}>{p}</button>)}
+      </div>
     </div>
     <div className="results-meta"><span role="status">{filtered.length} {filtered.length===1?'item':'items'}{category?` in ${category}`:''}</span><span>{language==='ms'?'Senarai penjual luar':'External seller listings'}</span></div>
     {filtered.length?
       <div className="product-grid">{filtered.map(p=><ProductCard key={p.id} product={p}/>)}</div>:
-      <div className="empty-state"><Search size={32}/><h2>No treasures found just yet</h2><p>Try another search or explore a different category.</p><button className="button" onClick={()=>{setQuery('');setCategory('');}}>Reset filters <ArrowRight size={18}/></button></div>
+      <div className="empty-state"><Search size={32}/><h2>No treasures found just yet</h2><p>Try another search or explore a different category.</p><button className="button" onClick={()=>{setQuery('');setCategory('');setPlatform('');}}>Reset filters <ArrowRight size={18}/></button></div>
     }
     <CommunityCTA/>
   </main>;
