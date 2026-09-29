@@ -5,9 +5,10 @@ import Image from 'next/image';
 import imageAssets from '@/data/image-assets.json';
 import { CommunityCTA } from './community-cta';
 import { SaveButton } from './saved-items';
-import { PlatformIconLinks, PlatformSummary } from './platform-links';
+import { CompareSellerPrices, PlatformIndicators, PlatformSummary, ProductName } from './platform-links';
 import { useState } from 'react';
-import { ArrowUpRight, ArrowRight, Search, Store, Layers, Image as ImageIcon, X } from 'lucide-react';
+import { useLanguage } from './language-provider';
+import { ArrowUpRight, ArrowRight, Search, Layers, Image as ImageIcon, X } from 'lucide-react';
 import { categories, categoryImages, products, type Product } from '@/data/products';
 
 export { Header } from './header';
@@ -53,29 +54,27 @@ export function ProductImage({
 }
 
 export function ProductCard({product:p}:{product:Product}){
+  const {language}=useLanguage();
+  const displayName=language==='ms'?p.nameMs:p.name;
   return <article className="product-card">
-    <Link href={`/items/${p.slug}`} className="product-image-link" aria-label={`View ${p.name}`}>
+    <Link href={`/items/${p.slug}`} className="product-image-link" aria-label={`View ${displayName}`}>
       <ProductImage
         src={p.image}
-        name={p.name}
+        name={displayName}
         category={p.category}
         sizes="(max-width: 379px) 100vw, (max-width: 900px) 50vw, (max-width: 1100px) 33vw, 25vw"
       />
     </Link>
     <div className="product-content">
-      <p className="seller">
-        <Store size={13}/>
-        <span>Available on</span>
-        <PlatformSummary links={p.links}/>
-      </p>
-      <h3><Link href={`/items/${p.slug}`}>{p.name}</Link></h3>
+      <p className="seller"><PlatformSummary links={p.links}/></p>
+      <h3><Link href={`/items/${p.slug}`}><ProductName product={p}/></Link></h3>
       <div className="product-bottom">
-        <strong className="compare-sellers">Compare seller prices</strong>
+        <CompareSellerPrices/>
         <Link href={`/items/${p.slug}`} className="view-item">View Item <ArrowUpRight size={15}/></Link>
       </div>
       <div className="product-card-actions">
-        <SaveButton id={p.id} name={p.name}/>
-        <PlatformIconLinks links={p.links}/>
+        <SaveButton id={p.id} name={displayName}/>
+        <PlatformIndicators links={p.links}/>
       </div>
     </div>
   </article>;
@@ -97,6 +96,7 @@ export function CategoryLinks(){
 }
 
 export function Home(){
+  const {language}=useLanguage();
   return <main id="main">
     <section className="hero container">
       <div className="hero-copy">
@@ -119,7 +119,7 @@ export function Home(){
         <div><p className="eyebrow">WORTH A CLOSER LOOK</p><h2>Featured finds</h2></div>
         <Link href="/items" className="text-link">Explore the collection <ArrowRight size={17}/></Link>
       </div>
-      <p className="demo-note">External seller links · Prices and availability may change.</p>
+      <p className="demo-note">{language==='ms'?'Pautan penjual luar · Harga dan ketersediaan mungkin berubah.':'External seller links · Prices and availability may change.'}</p>
       <div className="product-grid">{products.filter(p=>p.featured).map(p=><ProductCard key={p.id} product={p}/>)}</div>
     </section>
 
@@ -139,6 +139,7 @@ export function Home(){
 }
 
 export function Catalogue({initialQuery='',initialCategory=''}:{initialQuery?:string;initialCategory?:string}){
+  const {language}=useLanguage();
   const [query,setQuery]=useState(initialQuery);
   const [category,setCategory]=useState(initialCategory);
   const filtered=products.filter(p=>(!category||p.category===category)&&`${p.name} ${p.category} ${p.description} ${p.links.map(link=>link.platform).join(' ')}`.toLowerCase().includes(query.toLowerCase().trim()));
@@ -158,7 +159,7 @@ export function Catalogue({initialQuery='',initialCategory=''}:{initialQuery?:st
       <button className={!category?'selected':''} onClick={()=>setCategory('')}>All items</button>
       {categories.map(c=><button key={c} className={category===c?'selected':''} onClick={()=>setCategory(c)}>{c}</button>)}
     </div>
-    <div className="results-meta"><span role="status">{filtered.length} {filtered.length===1?'item':'items'}{category?` in ${category}`:''}</span><span>External seller listings</span></div>
+    <div className="results-meta"><span role="status">{filtered.length} {filtered.length===1?'item':'items'}{category?` in ${category}`:''}</span><span>{language==='ms'?'Senarai penjual luar':'External seller listings'}</span></div>
     {filtered.length?
       <div className="product-grid">{filtered.map(p=><ProductCard key={p.id} product={p}/>)}</div>:
       <div className="empty-state"><Search size={32}/><h2>No treasures found just yet</h2><p>Try another search or explore a different category.</p><button className="button" onClick={()=>{setQuery('');setCategory('');}}>Reset filters <ArrowRight size={18}/></button></div>
