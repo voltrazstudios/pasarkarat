@@ -107,7 +107,7 @@ export function Home(){
         <div className="hero-foot"><span>Vintage charm</span><i/><span>Local heritage</span><i/><span>Everyday discoveries</span></div>
       </div>
       <div className="hero-visual">
-        <ProductImage src="/images/hero/market.png" name="Pasar Karat market" hero/>
+        <ProductImage src="/images/hero/market.webp" name="Pasar Karat market" hero/>
         <div className="hero-tag"><span className="tag-icon"><Layers size={24}/></span><span>A new chapter for old treasures<small>Find something with a story.</small></span></div>
       </div>
     </section>
