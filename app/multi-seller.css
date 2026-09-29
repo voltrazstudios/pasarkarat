@@ -308,6 +308,19 @@
 /* ========================================
    MOBILE
    ======================================== */
+/* ========================================
+   COLLECTION FILTER SPACING
+   ======================================== */
+
+/* Give Category some breathing room below the search box */
+.catalogue-controls + .filter-group {
+  margin-top: 14px;
+}
+
+/* Keep Category label close to its buttons */
+.catalogue-controls + .filter-group .filter-pills {
+  margin-top: 7px;
+}
 
 @media (max-width: 600px) {
   .product-card-actions {
