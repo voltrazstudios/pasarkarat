@@ -39,9 +39,19 @@ export function PlatformSummary({links}:{links:ProductLink[]}){
 
 export function PlatformIndicators({links}:{links:ProductLink[]}){
   const platforms=[...new Set(links.map(link=>link.platform))];
-  return <div className="platform-indicators" aria-label="Available marketplaces">
-    {platforms.map(platform=><span key={platform} className={`platform-indicator platform-${platform.toLowerCase()}`} title={platform} aria-label={platform}><PlatformLogo platform={platform} size={32}/></span>)}
-  </div>;
+
+  return (
+    <div className="platform-indicators" aria-hidden="true">
+      {platforms.map(platform => (
+        <span
+          key={platform}
+          className={`platform-indicator platform-${platform.toLowerCase()}`}
+        >
+          <PlatformLogo platform={platform} size={32}/>
+        </span>
+      ))}
+    </div>
+  );
 }
 
 export function CompareSellerPrices({detail=false}:{detail?:boolean}){
