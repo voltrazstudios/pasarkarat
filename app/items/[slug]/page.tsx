@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { Store, ArrowLeft } from 'lucide-react';
 import { products } from '@/data/products';
 import { ProductCard, ProductImage } from '@/components/marketplace';
-import { PlatformSummary, SellerButtons } from '@/components/platform-links';
+import { AvailablePlatformsLabel, CompareSellerPrices, PlatformSummary, ProductDescription, ProductName, PurchaseNote, SellerButtons } from '@/components/platform-links';
 
 export function generateStaticParams(){
   return products.map(p=>({slug:p.slug}));
@@ -32,19 +32,19 @@ export default async function Page({params}:{params:Promise<{slug:string}>}){
       <ProductImage key={p.image} src={p.image} name={p.name}/>
       <div className="item-info">
         <Link className="eyebrow" href={`/items?category=${encodeURIComponent(p.category)}`}>{p.category}</Link>
-        <h1>{p.name}</h1>
-        <strong className="detail-price">Compare seller prices</strong>
-        <p className="description">{p.description}</p>
+        <h1><ProductName product={p}/></h1>
+        <CompareSellerPrices detail/>
+        <p className="description"><ProductDescription product={p}/></p>
         <div className="seller-box">
           <Store size={24}/>
           <div>
-            <small>AVAILABLE PLATFORMS</small>
+            <AvailablePlatformsLabel/>
             <PlatformSummary links={p.links}/>
           </div>
         </div>
         <SellerButtons links={p.links}/>
         <SaveButton id={p.id} name={p.name}/>
-        <p className="purchase-note">Prices, availability and purchases are handled by the external seller or marketplace.</p>
+        <p className="purchase-note"><PurchaseNote/></p>
       </div>
     </div>
 
