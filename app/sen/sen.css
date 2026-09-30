@@ -44,14 +44,15 @@
   text-align: center;
 }
 
+/* Keep the same image area size, but remove the dark beige box. */
 .sen-product-image {
   position: relative;
   overflow: hidden;
   width: 100%;
   aspect-ratio: 1 / 1;
-  border: 1px solid var(--line);
+  border: 0;
   border-radius: 11px;
-  background: var(--cream);
+  background: transparent;
 }
 
 .sen-product-image img {
@@ -180,17 +181,18 @@
   margin-top: 8px;
 }
 
-/* 3 cards on top, 2 centered below */
+/* 3 screenshot-style cards on top, 2 centered underneath */
 .sen-steps {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 14px;
-  margin-top: 26px;
+  gap: 22px;
+  margin-top: 27px;
 }
 
 .sen-steps article {
   grid-column: span 2;
-  padding: 22px 18px;
+  margin: 0;
+  overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 10px;
   background: var(--surface);
@@ -204,23 +206,43 @@
   grid-column: 4 / span 2;
 }
 
-.sen-steps span {
+.sen-step-image {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--cream);
+}
+
+.sen-step-image img {
+  object-fit: cover;
+}
+
+.sen-step-copy {
+  display: flex;
+  gap: 13px;
+  align-items: start;
+  padding: 22px 18px;
+}
+
+.sen-step-copy > span {
+  flex-shrink: 0;
+  padding-top: 2px;
   color: var(--orange);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: .08em;
+  font-size: 11px;
 }
 
-.sen-steps h3 {
-  margin-top: 10px;
-  font-size: 21px;
+.sen-step-copy h3 {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
 }
 
-.sen-steps p {
-  margin-top: 10px;
+.sen-step-copy p {
+  margin-top: 5px;
   color: var(--muted);
-  font-size: 14px;
-  line-height: 1.7;
+  font-size: 13px;
+  line-height: 1.6;
 }
 
 .sen-identity {
@@ -244,18 +266,6 @@
   line-height: 1.8;
 }
 
-.sen-note {
-  padding-top: 26px;
-  padding-bottom: 18px;
-}
-
-.sen-note p {
-  max-width: 820px;
-  color: var(--muted);
-  font-size: 12px;
-  line-height: 1.7;
-}
-
 @media (max-width: 1000px) {
   .sen-steps {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -269,7 +279,7 @@
 
   .sen-steps article:last-child {
     grid-column: 1 / -1;
-    width: calc(50% - 7px);
+    width: calc(50% - 11px);
     justify-self: center;
   }
 }
@@ -303,6 +313,7 @@
 
   .sen-steps {
     grid-template-columns: 1fr;
+    gap: 18px;
   }
 
   .sen-steps article,
