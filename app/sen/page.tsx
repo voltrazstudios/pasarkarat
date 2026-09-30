@@ -21,12 +21,16 @@ export default function SenPage() {
       </section>
 
       <section className="container sen-story">
-        <p className="eyebrow">KEEP IT. GIFT IT. PASS IT ON.</p>
-        <h2>A gift that remembers where it&apos;s been.</h2>
-        <p>
-          SEN is a reusable physical token made to be gifted, kept and passed on.
-          Scan it, prepare your gift, hand it to someone, and become part of its journey.
-        </p>
+        <div>
+          <p className="eyebrow">KEEP IT. GIFT IT. PASS IT ON.</p>
+          <h2>A gift that remembers where it&apos;s been.</h2>
+        </div>
+        <div>
+          <p>
+            SEN is a reusable physical token made to be gifted, kept and passed on.
+            Scan it, prepare your gift, hand it to someone, and become part of its journey.
+          </p>
+        </div>
       </section>
 
       <section className="container sen-how">
@@ -36,11 +40,49 @@ export default function SenPage() {
         </div>
 
         <div className="sen-steps">
-          <article><span>01</span><h3>Scan</h3><p>Scan the permanent QR on your SEN.</p></article>
-          <article><span>02</span><h3>Activate</h3><p>Become the current holder of that SEN.</p></article>
-          <article><span>03</span><h3>Prepare</h3><p>Add your message and prepare it as a gift.</p></article>
-          <article><span>04</span><h3>Give</h3><p>Pass the physical SEN to someone you care about.</p></article>
-          <article><span>05</span><h3>Continue</h3><p>The next holder becomes another chapter in its journey.</p></article>
+          <article>
+            <span>01</span>
+            <h3>Scan</h3>
+            <p>Scan the permanent QR on your SEN.</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>Activate</h3>
+            <p>Become the current holder of that SEN.</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>Prepare</h3>
+            <p>Add your message and prepare it as a gift.</p>
+          </article>
+          <article>
+            <span>04</span>
+            <h3>Give</h3>
+            <p>Pass the physical SEN to someone you care about.</p>
+          </article>
+          <article>
+            <span>05</span>
+            <h3>Continue</h3>
+            <p>The next holder becomes another chapter in its journey.</p>
+          </article>
+        </div>
+
+        <div className="sen-phone-showcase">
+          <div className="sen-phone-copy">
+            <p className="eyebrow">THE SEN JOURNEY</p>
+            <h2>See the story grow.</h2>
+            <p>
+              Scan a SEN to view its identity, current holder and the journey it has built
+              as it moves from one person to the next.
+            </p>
+          </div>
+
+          <div className="sen-phone-image">
+            <img
+              src="/images/sen/sen-phone.webp"
+              alt="SEN mobile journey interface"
+            />
+          </div>
         </div>
       </section>
 
