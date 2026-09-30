@@ -61,7 +61,9 @@ export function SenShowcase() {
         </div>
 
         <strong className="sen-price">{current.price}</strong>
-        <button className="sen-buy-button" type="button" disabled>Buy Now</button>
+        <button className="sen-buy-button" type="button" aria-label={`Buy ${current.label}`}>
+          Buy Now
+        </button>
       </article>
 
       <article className="sen-product">
@@ -81,8 +83,11 @@ export function SenShowcase() {
         </div>
 
         <div className="sen-pack-space" aria-hidden="true" />
+
         <strong className="sen-price">RM —</strong>
-        <button className="sen-buy-button" type="button" disabled>Buy Now</button>
+        <button className="sen-buy-button" type="button" aria-label="Buy SEN 6 Pack">
+          Buy Now
+        </button>
       </article>
     </div>
   );
