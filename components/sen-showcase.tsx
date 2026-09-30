@@ -27,11 +27,6 @@ export function SenShowcase() {
   return (
     <div className="sen-product-grid">
       <article className="sen-product">
-        <div className="sen-product-title">
-          <h2>SEN</h2>
-          <span>{current.label}</span>
-        </div>
-
         <div className="sen-product-image">
           <Image
             key={current.image}
@@ -60,18 +55,16 @@ export function SenShowcase() {
           ))}
         </div>
 
-        <strong className="sen-price">{current.price}</strong>
-        <button className="sen-buy-button" type="button" aria-label={`Buy ${current.label}`}>
-          Buy Now
-        </button>
+        <div className="sen-purchase">
+          <h2>SEN</h2>
+          <strong className="sen-price">{current.price}</strong>
+          <button className="sen-buy-button" type="button" aria-label="Buy SEN">
+            Buy Now
+          </button>
+        </div>
       </article>
 
       <article className="sen-product">
-        <div className="sen-product-title">
-          <h2>SEN 6 Pack</h2>
-          <span>All six editions</span>
-        </div>
-
         <div className="sen-product-image">
           <Image
             src="/images/sen/sen-6-pack.webp"
@@ -84,10 +77,13 @@ export function SenShowcase() {
 
         <div className="sen-pack-space" aria-hidden="true" />
 
-        <strong className="sen-price">RM —</strong>
-        <button className="sen-buy-button" type="button" aria-label="Buy SEN 6 Pack">
-          Buy Now
-        </button>
+        <div className="sen-purchase">
+          <h2>SEN 6 Pack</h2>
+          <strong className="sen-price">RM —</strong>
+          <button className="sen-buy-button" type="button" aria-label="Buy SEN 6 Pack">
+            Buy Now
+          </button>
+        </div>
       </article>
     </div>
   );
