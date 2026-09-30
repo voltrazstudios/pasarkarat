@@ -7,7 +7,16 @@ import { LanguageFlag } from './language-flag';
 import { useEffect, useRef, useState } from 'react';
 import { Menu, X } from 'lucide-react';
 
-const links=[['Home','/'],['Collection','/items'],['Archive','/archive'],['Virtual Experience','/experience'],['About','/about'],['Saved','/saved']];
+const links=[
+  ['Home','/'],
+  ['Collection','/items'],
+  ['Archive','/archive'],
+  ['Virtual Experience','/experience'],
+  ['SEN','/sen'],
+  ['About','/about'],
+  ['Saved','/saved']
+];
+
 export function Header(){
   const {ids}=useSavedItems();
   const {language,toggleLanguage}=useLanguage();
