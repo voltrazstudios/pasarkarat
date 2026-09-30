@@ -66,24 +66,6 @@ export default function SenPage() {
             <p>The next holder becomes another chapter in its journey.</p>
           </article>
         </div>
-
-        <div className="sen-phone-showcase">
-          <div className="sen-phone-copy">
-            <p className="eyebrow">THE SEN JOURNEY</p>
-            <h2>See the story grow.</h2>
-            <p>
-              Scan a SEN to view its identity, current holder and the journey it has built
-              as it moves from one person to the next.
-            </p>
-          </div>
-
-          <div className="sen-phone-image">
-            <img
-              src="/images/sen/sen-phone.webp"
-              alt="SEN mobile journey interface"
-            />
-          </div>
-        </div>
       </section>
 
       <section className="container sen-identity">

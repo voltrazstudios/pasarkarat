@@ -35,28 +35,13 @@
 .sen-product {
   display: flex;
   flex-direction: column;
+  align-items: center;
   padding: 24px;
   border: 1px solid var(--line);
   border-radius: 14px;
   background: var(--surface);
   min-width: 0;
-}
-
-.sen-product-title {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 18px;
-}
-
-.sen-product-title h2 {
-  font-size: 28px;
-}
-
-.sen-product-title span {
-  color: var(--muted);
-  font-size: 13px;
+  text-align: center;
 }
 
 .sen-product-image {
@@ -69,7 +54,6 @@
   background: var(--cream);
 }
 
-/* Keep the same large image box, but make the SEN artwork itself smaller. */
 .sen-product-image img {
   object-fit: contain;
   padding: clamp(55px, 7vw, 100px);
@@ -130,15 +114,26 @@
   min-height: 70px;
 }
 
+.sen-purchase {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.sen-purchase h2 {
+  margin-top: 4px;
+  font-size: 28px;
+}
+
 .sen-price {
   display: block;
-  margin-top: 4px;
+  margin-top: 8px;
   font-family: var(--font-body), sans-serif;
   font-size: 26px;
   line-height: 1.2;
 }
 
-/* Same orange treatment as the site's other primary buttons. */
 .sen-buy-button {
   width: fit-content;
   min-width: 128px;
@@ -156,10 +151,6 @@
   transform: translateY(-1px);
 }
 
-/*
-  Full-width story treatment like the existing Pasar Karat story section.
-  The border lines now run across the whole container.
-*/
 .sen-story {
   margin-top: 70px;
   padding-block: 38px;
@@ -189,18 +180,28 @@
   margin-top: 8px;
 }
 
+/* 3 cards on top, 2 centered below */
 .sen-steps {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 14px;
   margin-top: 26px;
 }
 
 .sen-steps article {
+  grid-column: span 2;
   padding: 22px 18px;
   border: 1px solid var(--line);
   border-radius: 10px;
   background: var(--surface);
+}
+
+.sen-steps article:nth-child(4) {
+  grid-column: 2 / span 2;
+}
+
+.sen-steps article:nth-child(5) {
+  grid-column: 4 / span 2;
 }
 
 .sen-steps span {
@@ -222,46 +223,6 @@
   line-height: 1.7;
 }
 
-/* Portrait phone/interface image area. */
-.sen-phone-showcase {
-  display: grid;
-  grid-template-columns: 1fr minmax(240px, 420px);
-  gap: 64px;
-  align-items: center;
-  margin-top: 64px;
-  padding: 34px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--surface);
-}
-
-.sen-phone-copy h2 {
-  margin-top: 8px;
-  font-size: clamp(28px, 3.5vw, 40px);
-}
-
-.sen-phone-copy > p:last-child {
-  max-width: 620px;
-  margin-top: 16px;
-  color: var(--muted);
-  line-height: 1.8;
-}
-
-.sen-phone-image {
-  display: flex;
-  justify-content: center;
-}
-
-.sen-phone-image img {
-  display: block;
-  width: min(100%, 330px);
-  height: auto;
-  max-height: 620px;
-  object-fit: contain;
-  border-radius: 18px;
-}
-
-/* Same surface colour and border treatment as the HOW SEN WORKS cards. */
 .sen-identity {
   display: grid;
   grid-template-columns: .9fr 1.1fr;
@@ -297,11 +258,19 @@
 
 @media (max-width: 1000px) {
   .sen-steps {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .sen-phone-showcase {
-    gap: 34px;
+  .sen-steps article,
+  .sen-steps article:nth-child(4),
+  .sen-steps article:nth-child(5) {
+    grid-column: auto;
+  }
+
+  .sen-steps article:last-child {
+    grid-column: 1 / -1;
+    width: calc(50% - 7px);
+    justify-self: center;
   }
 }
 
@@ -336,14 +305,10 @@
     grid-template-columns: 1fr;
   }
 
-  .sen-phone-showcase {
-    grid-template-columns: 1fr;
-    gap: 28px;
-    padding: 24px 20px;
-  }
-
-  .sen-phone-image img {
-    width: min(100%, 290px);
+  .sen-steps article,
+  .sen-steps article:last-child {
+    grid-column: auto;
+    width: 100%;
   }
 
   .sen-identity {
