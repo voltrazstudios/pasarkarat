@@ -871,4 +871,23 @@
     font-size:13px;
     text-align:center
   }
+
+  body .experience-cta {
+  background: var(--surface);
+  color: var(--navy);
+  border: 1px solid var(--line);
+}
+
+body .experience-cta .eyebrow {
+  color: var(--orange);
+}
+
+body .experience-cta .experience-cta-copy {
+  color: var(--muted);
+}
+
+body .experience-cta .experience-cta-action > span {
+  color: var(--muted);
+}
+
 }
