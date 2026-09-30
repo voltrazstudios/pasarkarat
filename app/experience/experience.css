@@ -867,27 +867,35 @@
     font-size:14px
   }
 
-  .experience-cta-action>span{
+   .experience-cta-action>span{
     font-size:13px;
     text-align:center
   }
+}
 
-  body .experience-cta {
-  background: var(--surface);
-  color: var(--navy);
-  border: 1px solid var(--line);
+/* ========================================
+   VIRTUAL EXPERIENCE LIGHT CTA FIX
+   ======================================== */
+
+body .experience-cta {
+  background: var(--surface) !important;
+  background-color: var(--surface) !important;
+  color: var(--navy) !important;
+  border: 1px solid var(--line) !important;
 }
 
 body .experience-cta .eyebrow {
-  color: var(--orange);
+  color: var(--orange) !important;
+}
+
+body .experience-cta h2 {
+  color: var(--navy) !important;
 }
 
 body .experience-cta .experience-cta-copy {
-  color: var(--muted);
+  color: var(--muted) !important;
 }
 
 body .experience-cta .experience-cta-action > span {
-  color: var(--muted);
-}
-
+  color: var(--muted) !important;
 }
