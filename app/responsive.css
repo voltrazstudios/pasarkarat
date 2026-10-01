@@ -171,3 +171,29 @@ footer{background:#f2eee5;color:var(--navy)}
     top:calc(8px + env(safe-area-inset-top))
   }
 }
+
+
+/* Mobile single-column products and compact header controls. */
+@media(max-width:600px){
+  .product-grid{
+    grid-template-columns:minmax(0,1fr);
+    gap:16px
+  }
+
+  .header-inner{
+    justify-content:flex-start;
+    gap:6px
+  }
+
+  .header .brand{
+    margin-right:0
+  }
+
+  .language-toggle{
+    margin-left:auto
+  }
+
+  .mobile-menu-toggle{
+    margin-left:0
+  }
+}
