@@ -159,3 +159,15 @@ footer{background:#f2eee5;color:var(--navy)}
     transition-duration:.001ms!important
   }
 }
+
+
+/* Mobile skip-link visibility above the fixed header. */
+@media(max-width:900px){
+  .skip-link{
+    z-index:1200
+  }
+
+  .skip-link:focus{
+    top:calc(8px + env(safe-area-inset-top))
+  }
+}
