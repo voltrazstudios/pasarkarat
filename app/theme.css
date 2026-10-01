@@ -168,3 +168,22 @@ body .footer-bottom { display: block; padding-block: 22px; }
 @media(max-width:600px){.header .brand-logo{width:min(190px,calc(100vw - 155px))}}
 /* V6 flag SVG */
 .language-toggle .language-flag{display:block;width:28px;height:20px;border-radius:2px;box-shadow:0 0 0 1px #17333a22;overflow:hidden}
+
+/* Mobile footer two-column override. */
+@media(max-width:600px){
+  body .footer-top{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    align-items:start;
+    gap:28px 24px;
+    padding-block:30px 26px
+  }
+
+  body .footer-top .footer-brand{
+    grid-column:1 / -1
+  }
+
+  body .footer-top .footer-links{
+    min-width:0
+  }
+}
