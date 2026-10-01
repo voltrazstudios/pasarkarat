@@ -197,3 +197,58 @@ footer{background:#f2eee5;color:var(--navy)}
     margin-left:0
   }
 }
+
+
+/* Compact two-column mobile footer. */
+@media(max-width:600px){
+  body .footer-top{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    align-items:start;
+    gap:28px 24px;
+    padding-block:30px 26px
+  }
+
+  .footer-brand{
+    grid-column:1 / -1
+  }
+
+  .footer-brand .brand-logo{
+    width:180px
+  }
+
+  .footer-brand>p{
+    max-width:340px;
+    margin-top:14px;
+    font-size:13px;
+    line-height:1.65
+  }
+
+  .footer-links h2{
+    margin-bottom:10px;
+    font-size:18px
+  }
+
+  body .footer-top nav{
+    display:flex;
+    flex-direction:column;
+    gap:6px
+  }
+
+  body .footer-top nav a{
+    min-height:0;
+    padding-block:4px;
+    font-size:13px;
+    line-height:1.45
+  }
+
+  body .footer-bottom{
+    padding-block:20px calc(20px + env(safe-area-inset-bottom));
+    text-align:center
+  }
+
+  body .footer-bottom p{
+    margin-inline:auto;
+    font-size:12px
+  }
+}
