@@ -60,6 +60,11 @@
   padding: clamp(55px, 7vw, 100px);
 }
 
+/* Smaller single SEN, same image-area position. */
+.sen-product-image.sen-single-image img {
+  padding: clamp(85px, 9vw, 135px);
+}
+
 .sen-changing-image {
   animation: senFade .28s ease;
 }
@@ -135,19 +140,48 @@
   line-height: 1.2;
 }
 
-.sen-buy-button {
-  width: fit-content;
-  min-width: 128px;
+.sen-purchase-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
   margin-top: 14px;
+  padding-bottom: 18px;
+}
+
+.sen-learn-button,
+.sen-buy-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 128px;
+  min-height: 44px;
   padding: 12px 22px;
-  border: 0;
   border-radius: 7px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.sen-learn-button {
+  border: 1px solid var(--orange);
+  background: transparent;
+  color: var(--orange);
+}
+
+.sen-learn-button:hover {
+  background: #fbefe8;
+  transform: translateY(-1px);
+}
+
+.sen-buy-button {
+  border: 1px solid var(--orange);
   background: var(--orange);
   color: var(--surface);
-  font-weight: 700;
 }
 
 .sen-buy-button:hover {
+  border-color: var(--accent-hover);
   background: var(--accent-hover);
   transform: translateY(-1px);
 }
@@ -299,6 +333,14 @@
 
   .sen-product-image img {
     padding: 42px;
+  }
+
+  .sen-product-image.sen-single-image img {
+    padding: 68px;
+  }
+
+  .sen-purchase-actions {
+    flex-wrap: wrap;
   }
 
   .sen-pack-space {
