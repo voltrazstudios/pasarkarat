@@ -376,3 +376,31 @@
     animation: none;
   }
 }
+
+
+/* Mobile SEN interaction polish. */
+@media(max-width:600px){
+  .sen-colour-picker{
+    width:100%;
+    flex-wrap:wrap;
+    gap:6px
+  }
+
+  .sen-colour-picker button{
+    width:44px;
+    height:44px
+  }
+
+  .sen-purchase-actions{
+    flex-wrap:nowrap;
+    gap:8px
+  }
+
+  .sen-learn-button,
+  .sen-buy-button{
+    flex:1 1 0;
+    min-width:0;
+    min-height:44px;
+    padding-inline:14px
+  }
+}
