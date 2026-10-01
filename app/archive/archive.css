@@ -19,3 +19,11 @@
 
 /* V5 passive memory count */
 .archive-memory-card-count{pointer-events:none;cursor:default;user-select:none}
+
+
+/* Mobile archive touch targets. */
+@media(max-width:600px){
+  .archive-like{
+    min-height:44px
+  }
+}
