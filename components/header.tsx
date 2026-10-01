@@ -86,7 +86,7 @@ export function Header(){
       document.removeEventListener('keydown',onKey);
       document.removeEventListener('pointerdown',onPointer);
       query.removeEventListener('change',onResize);
-      if(open&&query.matches)document.body.style.overflow=previousOverflow;
+      if(open)document.body.style.overflow=previousOverflow;
     };
   },[open]);
 
