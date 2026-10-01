@@ -40,25 +40,23 @@ export function SenShowcase() {
             priority
             sizes="(max-width: 900px) 100vw, 50vw"
           />
-
-          <div className="sen-colour-picker" role="group" aria-label="Choose SEN colour">
-            {senOptions.map((option, index) => (
-              <button
-                key={option.id}
-                type="button"
-                className={selected === index ? 'selected' : undefined}
-                onClick={() => setSelected(index)}
-                aria-label={`Show ${option.label}`}
-                aria-pressed={selected === index}
-                title={option.label}
-              >
-                <span style={{ backgroundColor: option.swatch }} />
-              </button>
-            ))}
-          </div>
         </div>
 
-        <div className="sen-pack-space" aria-hidden="true" />
+        <div className="sen-colour-picker" role="group" aria-label="Choose SEN colour">
+          {senOptions.map((option, index) => (
+            <button
+              key={option.id}
+              type="button"
+              className={selected === index ? 'selected' : undefined}
+              onClick={() => setSelected(index)}
+              aria-label={`Show ${option.label}`}
+              aria-pressed={selected === index}
+              title={option.label}
+            >
+              <span style={{ backgroundColor: option.swatch }} />
+            </button>
+          ))}
+        </div>
 
         <div className="sen-purchase">
           <h2>SEN</h2>
