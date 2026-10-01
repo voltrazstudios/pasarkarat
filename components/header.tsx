@@ -22,19 +22,91 @@ export function Header(){
   const {language,toggleLanguage}=useLanguage();
   const [open,setOpen]=useState(false);
   const toggle=useRef<HTMLButtonElement>(null);
+  const languageButton=useRef<HTMLButtonElement>(null);
+  const navigation=useRef<HTMLElement>(null);
   const header=useRef<HTMLElement>(null);
+
   useEffect(()=>{
-    const onKey=(e:KeyboardEvent)=>{if(e.key==='Escape'&&open){setOpen(false);toggle.current?.focus();}};
-    const onPointer=(e:PointerEvent)=>{if(open&&!header.current?.contains(e.target as Node))setOpen(false);};
     const query=window.matchMedia('(max-width: 900px)');
-    const onResize=()=>{if(!query.matches)setOpen(false);};
-    document.addEventListener('keydown',onKey);document.addEventListener('pointerdown',onPointer);query.addEventListener('change',onResize);
-    return ()=>{document.removeEventListener('keydown',onKey);document.removeEventListener('pointerdown',onPointer);query.removeEventListener('change',onResize);};
+    let focusFrame=0;
+    let previousOverflow='';
+
+    const closeMenu=(restoreFocus=false)=>{
+      setOpen(false);
+      if(restoreFocus) requestAnimationFrame(()=>toggle.current?.focus());
+    };
+
+    const onKey=(e:KeyboardEvent)=>{
+      if(e.key==='Escape'&&open){
+        e.preventDefault();
+        closeMenu(true);
+        return;
+      }
+
+      if(e.key==='Tab'&&open){
+        const menuLinks=Array.from(navigation.current?.querySelectorAll<HTMLElement>('a[href]')??[]);
+        const focusables=[toggle.current,...menuLinks,languageButton.current].filter((item):item is HTMLElement=>Boolean(item));
+        if(!focusables.length)return;
+
+        const first=focusables[0];
+        const last=focusables[focusables.length-1];
+
+        if(e.shiftKey&&document.activeElement===first){
+          e.preventDefault();
+          last.focus();
+        }else if(!e.shiftKey&&document.activeElement===last){
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
+    const onPointer=(e:PointerEvent)=>{
+      if(open&&!header.current?.contains(e.target as Node))closeMenu();
+    };
+
+    const onResize=()=>{
+      if(!query.matches)closeMenu();
+    };
+
+    if(open&&query.matches){
+      previousOverflow=document.body.style.overflow;
+      document.body.style.overflow='hidden';
+      focusFrame=requestAnimationFrame(()=>{
+        navigation.current?.querySelector<HTMLElement>('a[href]')?.focus();
+      });
+    }
+
+    document.addEventListener('keydown',onKey);
+    document.addEventListener('pointerdown',onPointer);
+    query.addEventListener('change',onResize);
+
+    return ()=>{
+      cancelAnimationFrame(focusFrame);
+      document.removeEventListener('keydown',onKey);
+      document.removeEventListener('pointerdown',onPointer);
+      query.removeEventListener('change',onResize);
+      if(open&&query.matches)document.body.style.overflow=previousOverflow;
+    };
   },[open]);
-  return <><div className="topline">Old treasures. New discoveries. <span>A little piece of Malaysia, wherever you are.</span></div><header className="header" ref={header} onBlur={e=>{if(!e.currentTarget.contains(e.relatedTarget as Node))setOpen(false);}}><div className="container header-inner"><Link href="/" className="brand" aria-label="Pasar Karat home" onClick={()=>setOpen(false)}><Image sizes="(max-width: 600px) 200px, (max-width: 900px) 220px, 240px" className="brand-logo" src="/pasar-karat-logo.png" width={1200} height={300} alt="Pasar Karat"/></Link><button ref={toggle} type="button" className="mobile-menu-toggle" aria-label={open?'Close navigation menu':'Open navigation menu'} aria-expanded={open} aria-controls="main-navigation" onClick={()=>setOpen(!open)}>{open?<X size={24}/>:<Menu size={24}/>}</button><nav id="main-navigation" aria-label="Main navigation" data-open={open}>{links.map(([label,href])=><Link key={href} href={href} onClick={()=>{setOpen(false);if(open)toggle.current?.focus();}}>{label}{href==="/saved"&&<span className="saved-count">{ids.length}</span>}</Link>)}</nav><button type="button" className="language-toggle" onClick={toggleLanguage} aria-label={language==="en"?"Switch to Bahasa Melayu":"Switch to English"} title={language==="en"?"Bahasa Melayu":"English"}><LanguageFlag country={language==="en"?"my":"gb"}/></button></div></header></>;
+
+  return <>
+    <div className="topline">Old treasures. New discoveries. <span>A little piece of Malaysia, wherever you are.</span></div>
+    <header className="header" ref={header} onBlur={e=>{if(open&&!e.currentTarget.contains(e.relatedTarget as Node))setOpen(false);}}>
+      <div className="container header-inner">
+        <Link href="/" className="brand" aria-label="Pasar Karat home" onClick={()=>setOpen(false)}>
+          <Image sizes="(max-width: 600px) 200px, (max-width: 900px) 220px, 240px" className="brand-logo" src="/pasar-karat-logo.png" width={1200} height={300} alt="Pasar Karat"/>
+        </Link>
+        <button ref={toggle} type="button" className="mobile-menu-toggle" aria-label={open?'Close navigation menu':'Open navigation menu'} aria-expanded={open} aria-controls="main-navigation" onClick={()=>setOpen(!open)}>
+          {open?<X size={24}/>:<Menu size={24}/>}
+        </button>
+        <nav ref={navigation} id="main-navigation" aria-label="Main navigation" data-open={open}>
+          {links.map(([label,href])=><Link key={href} href={href} onClick={()=>setOpen(false)}>{label}{href==="/saved"&&<span className="saved-count">{ids.length}</span>}</Link>)}
+        </nav>
+        <button ref={languageButton} type="button" className="language-toggle" onClick={toggleLanguage} aria-label={language==="en"?"Switch to Bahasa Melayu":"Switch to English"} title={language==="en"?"Bahasa Melayu":"English"}>
+          <LanguageFlag country={language==="en"?"my":"gb"}/>
+        </button>
+      </div>
+    </header>
+  </>;
 }
-
-
-
-
-
