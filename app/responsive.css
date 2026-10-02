@@ -415,36 +415,3 @@ footer{background:#f2eee5;color:var(--navy)}
     margin:18px 22px 26px
   }
 }
-
-
-/* Mobile product price/action row matches the compact desktop layout. */
-@media(max-width:600px){
-  .collection .product-bottom,
-  .catalogue .product-bottom{
-    display:flex;
-    flex-direction:row;
-    flex-wrap:nowrap;
-    align-items:center;
-    justify-content:space-between;
-    gap:6px
-  }
-
-  .collection .compare-sellers,
-  .catalogue .compare-sellers{
-    flex:1 1 auto;
-    min-width:0;
-    font-size:12px;
-    white-space:nowrap
-  }
-
-  .collection .view-item,
-  .catalogue .view-item{
-    flex:0 0 auto;
-    width:auto;
-    min-height:34px;
-    padding:0;
-    justify-content:flex-end;
-    font-size:10px;
-    white-space:nowrap
-  }
-}
