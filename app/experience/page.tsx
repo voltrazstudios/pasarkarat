@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import { HeritageGallery } from '@/components/heritage-gallery';
 import '../heritage/heritage.css';
 import type { Metadata } from 'next';
-import { ArrowUpRight, ArrowDown, Store, Sparkles, Compass } from 'lucide-react';
+import { ArrowUpRight, Store, Sparkles, Compass } from 'lucide-react';
 import { ProductImage } from '@/components/marketplace';
 import { ExperienceVideo } from '@/components/experience-video';
 import { experience } from '@/data/experience';
@@ -16,8 +16,8 @@ const features=[
 ];
 export default function ExperiencePage(){return <main id="main" className="experience-page">
   <section className="container experience-hero">
-    <div className="experience-hero-copy"><p className="eyebrow"><span className="small-line"/> IMMERSIVE DIGITAL HERITAGE</p><h1>Step Into<br/><em>Pasar Karat</em></h1><p className="experience-lead">Explore a digitally recreated Malaysian Pasar Karat and discover its heritage, objects and atmosphere through an interactive 3D experience.</p><a className="button" href={experience.url} target="_blank" rel="noopener noreferrer">Experience on itch.io <ArrowUpRight size={19}/></a><a className="text-link experience-discover" href="#discover-experience">Discover the Experience <ArrowDown size={17}/></a></div>
-    <div className="experience-hero-media"><ExperienceVideo key={experience.video} src={experience.video} poster={experience.poster}/><div className="experience-media-caption"><span>THE MARKET BEYOND THE SCREEN</span><span>Explore. Interact. Discover.</span></div></div>
+    <div className="experience-hero-copy"><p className="eyebrow"><span className="small-line"/> IMMERSIVE DIGITAL HERITAGE</p><h1>Step Into<br/><em>Pasar Karat</em></h1><p className="experience-lead">Explore a digitally recreated Malaysian Pasar Karat and discover its heritage, objects and atmosphere through an interactive 3D experience.</p><a className="button experience-desktop-cta" href={experience.url} target="_blank" rel="noopener noreferrer">Experience on itch.io <ArrowUpRight size={19}/></a></div>
+    <div className="experience-hero-media"><ExperienceVideo key={experience.video} src={experience.video} poster={experience.poster}/><div className="experience-media-caption"><span>THE MARKET BEYOND THE SCREEN</span><span>Explore. Interact. Discover.</span></div><a className="button experience-mobile-cta" href={experience.url} target="_blank" rel="noopener noreferrer">Experience on itch.io <ArrowUpRight size={19}/></a></div>
   </section>
   <section className="container experience-intro" id="discover-experience"><div className="experience-intro-heading"><p className="eyebrow">A FAMILIAR PLACE. A NEW PERSPECTIVE.</p><h2>Explore Malaysia&apos;s<br/>Market Heritage in 3D</h2></div><p>Wander through a digital Pasar Karat, interact with heritage objects and experience the atmosphere of Malaysia&apos;s iconic flea-market culture in a virtual environment.</p></section>
   <section className="container experience-features" aria-label="Experience features">{features.map(({icon:Icon,title,text},i)=><article className="experience-feature" key={title}><div className="experience-feature-top"><span className="experience-feature-icon"><Icon size={25} strokeWidth={1.5}/></span><span className="experience-number">0{i+1}</span></div><h3>{title}</h3><p>{text}</p></article>)}</section>
