@@ -348,15 +348,15 @@
   .sen-product {
     flex: 0 0 100%;
     scroll-snap-align: start;
-    padding: 18px;
+    padding: 24px;
   }
 
   .sen-product-image img {
-    padding: 42px;
+    padding: 55px;
   }
 
   .sen-product-image.sen-single-image img {
-    padding: 68px;
+    padding: 85px;
   }
 
   .sen-carousel-button {
@@ -427,33 +427,53 @@
 }
 
 
-/* Mobile SEN interaction polish. */
+/* Mobile SEN keeps the same visual scale as the desktop product card. */
 @media(max-width:600px){
   .sen-colour-picker{
-    width:100%;
-    flex-wrap:wrap;
-    gap:6px
+    width:auto;
+    flex-wrap:nowrap;
+    gap:11px;
+    min-height:58px;
+    margin-top:12px
   }
 
   .sen-colour-picker button{
-    width:44px;
-    height:44px
+    width:42px;
+    height:42px
+  }
+
+  .sen-colour-picker button span{
+    width:27px;
+    height:27px
   }
 
   .sen-pack-space{
-    min-height:58px
+    min-height:70px
+  }
+
+  .sen-purchase h2{
+    font-size:28px
+  }
+
+  .sen-price{
+    margin-top:8px;
+    font-size:26px
   }
 
   .sen-purchase-actions{
+    width:auto;
     flex-wrap:nowrap;
-    gap:8px
+    gap:12px;
+    margin-top:14px;
+    padding-bottom:30px
   }
 
   .sen-learn-button,
   .sen-buy-button{
-    flex:1 1 0;
-    min-width:0;
+    flex:0 0 auto;
+    min-width:128px;
     min-height:44px;
-    padding-inline:14px
+    padding:12px 22px;
+    font-size:inherit
   }
 }
