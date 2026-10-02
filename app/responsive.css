@@ -355,3 +355,19 @@ footer{background:#f2eee5;color:var(--navy)}
     font-size:12px
   }
 }
+
+
+/* Mobile hero keeps the desktop image proportions and two-line title. */
+@media(max-width:600px){
+  .hero h1{
+    font-size:clamp(26px,7.4vw,32px);
+    letter-spacing:-.8px;
+    white-space:nowrap
+  }
+
+  .hero-placeholder{
+    height:auto;
+    min-height:0;
+    aspect-ratio:1.65 / 1
+  }
+}
