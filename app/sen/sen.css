@@ -26,10 +26,18 @@
   font-size: 17px;
 }
 
+.sen-product-carousel {
+  position: relative;
+}
+
 .sen-product-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 24px;
+}
+
+.sen-carousel-button {
+  display: none;
 }
 
 .sen-product {
@@ -324,20 +332,60 @@
   }
 
   .sen-product-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .sen-product-grid::-webkit-scrollbar {
+    display: none;
   }
 
   .sen-product {
-    padding: 10px;
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    padding: 18px;
   }
 
   .sen-product-image img {
-    padding: 20px;
+    padding: 42px;
   }
 
   .sen-product-image.sen-single-image img {
-    padding: 32px;
+    padding: 68px;
+  }
+
+  .sen-carousel-button {
+    position: absolute;
+    z-index: 5;
+    top: 42%;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: var(--surface);
+    color: var(--navy);
+    box-shadow: 0 4px 14px #17333a1f;
+  }
+
+  .sen-carousel-prev {
+    left: 8px;
+  }
+
+  .sen-carousel-next {
+    right: 8px;
+  }
+
+  .sen-carousel-button:disabled {
+    opacity: 0;
+    pointer-events: none;
   }
 
   .sen-purchase-actions {
@@ -383,49 +431,29 @@
 @media(max-width:600px){
   .sen-colour-picker{
     width:100%;
-    min-height:68px;
-    margin-top:6px;
     flex-wrap:wrap;
-    gap:2px 4px
+    gap:6px
   }
 
   .sen-colour-picker button{
-    width:30px;
-    height:30px
-  }
-
-  .sen-colour-picker button span{
-    width:20px;
-    height:20px
+    width:44px;
+    height:44px
   }
 
   .sen-pack-space{
-    min-height:74px
-  }
-
-  .sen-purchase h2{
-    font-size:19px;
-    line-height:1.2
-  }
-
-  .sen-price{
-    margin-top:6px;
-    font-size:18px
+    min-height:58px
   }
 
   .sen-purchase-actions{
     flex-wrap:nowrap;
-    gap:5px;
-    margin-top:11px;
-    padding-bottom:12px
+    gap:8px
   }
 
   .sen-learn-button,
   .sen-buy-button{
     flex:1 1 0;
     min-width:0;
-    min-height:38px;
-    padding:8px 5px;
-    font-size:11px
+    min-height:44px;
+    padding-inline:14px
   }
 }
