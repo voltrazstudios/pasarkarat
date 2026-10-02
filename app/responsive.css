@@ -521,3 +521,35 @@ footer{background:#f2eee5;color:var(--navy)}
     margin-top:14px
   }
 }
+
+
+/* Compact mobile hero story tag. */
+@media(max-width:600px){
+  .hero-tag{
+    left:12px;
+    right:auto;
+    bottom:12px;
+    width:auto;
+    max-width:72%;
+    gap:7px;
+    padding:7px 9px;
+    border-radius:6px;
+    font-size:9px;
+    line-height:1.25
+  }
+
+  .hero-tag .tag-icon{
+    flex:0 0 auto
+  }
+
+  .hero-tag .tag-icon svg{
+    width:16px;
+    height:16px
+  }
+
+  .hero-tag small{
+    margin-top:2px;
+    font-size:9px;
+    line-height:1.25
+  }
+}
