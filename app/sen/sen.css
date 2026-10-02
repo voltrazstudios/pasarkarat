@@ -324,19 +324,20 @@
   }
 
   .sen-product-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
   }
 
   .sen-product {
-    padding: 18px;
+    padding: 10px;
   }
 
   .sen-product-image img {
-    padding: 42px;
+    padding: 20px;
   }
 
   .sen-product-image.sen-single-image img {
-    padding: 68px;
+    padding: 32px;
   }
 
   .sen-purchase-actions {
@@ -382,25 +383,49 @@
 @media(max-width:600px){
   .sen-colour-picker{
     width:100%;
+    min-height:68px;
+    margin-top:6px;
     flex-wrap:wrap;
-    gap:6px
+    gap:2px 4px
   }
 
   .sen-colour-picker button{
-    width:44px;
-    height:44px
+    width:30px;
+    height:30px
+  }
+
+  .sen-colour-picker button span{
+    width:20px;
+    height:20px
+  }
+
+  .sen-pack-space{
+    min-height:74px
+  }
+
+  .sen-purchase h2{
+    font-size:19px;
+    line-height:1.2
+  }
+
+  .sen-price{
+    margin-top:6px;
+    font-size:18px
   }
 
   .sen-purchase-actions{
     flex-wrap:nowrap;
-    gap:8px
+    gap:5px;
+    margin-top:11px;
+    padding-bottom:12px
   }
 
   .sen-learn-button,
   .sen-buy-button{
     flex:1 1 0;
     min-width:0;
-    min-height:44px;
-    padding-inline:14px
+    min-height:38px;
+    padding:8px 5px;
+    font-size:11px
   }
 }
