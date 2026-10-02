@@ -187,3 +187,33 @@ body .footer-bottom { display: block; padding-block: 22px; }
     min-width:0
   }
 }
+
+
+/* Mobile category cards keep the same wide proportions as desktop cards. */
+@media(max-width:600px){
+  body .category-section .categories{
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:8px
+  }
+
+  body .category-section .category{
+    min-height:0;
+    aspect-ratio:1.16 / 1;
+    padding:6px 4px;
+    gap:5px;
+    font-size:10px;
+    line-height:1.15
+  }
+
+  body .category-section .category .category-art{
+    width:32px;
+    height:30px
+  }
+
+  body .category-section .category-art img{
+    width:30px;
+    height:30px;
+    max-width:30px;
+    max-height:30px
+  }
+}
