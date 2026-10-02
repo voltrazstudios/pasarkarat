@@ -206,6 +206,9 @@ footer{background:#f2eee5;color:var(--navy)}
   }
 
   main:not(.saved-page) .product-bottom{
+    flex-direction:row;
+    align-items:center;
+    justify-content:space-between;
     margin-top:10px;
     padding-top:0;
     gap:5px
@@ -218,10 +221,12 @@ footer{background:#f2eee5;color:var(--navy)}
 
   main:not(.saved-page) .view-item{
     width:auto;
-    min-height:44px;
-    justify-content:flex-start;
+    min-height:34px;
+    padding-inline:0;
+    justify-content:flex-end;
     background:transparent;
-    font-size:12px
+    font-size:10px;
+    white-space:nowrap
   }
 
   main:not(.saved-page) .product-card-actions{
@@ -357,17 +362,56 @@ footer{background:#f2eee5;color:var(--navy)}
 }
 
 
-/* Mobile hero keeps the desktop image proportions and two-line title. */
+/* Mobile hero: title first, image second, supporting copy and CTA below. */
 @media(max-width:600px){
+  .hero{
+    display:flex;
+    flex-direction:column
+  }
+
+  .hero-copy{
+    display:contents
+  }
+
+  .hero-copy .eyebrow{
+    order:1;
+    margin:26px 22px 0
+  }
+
   .hero h1{
+    order:2;
+    margin:18px 22px;
     font-size:clamp(26px,7.4vw,32px);
     letter-spacing:-.8px;
     white-space:nowrap
+  }
+
+  .hero-visual{
+    order:3;
+    padding:0 16px
   }
 
   .hero-placeholder{
     height:auto;
     min-height:0;
     aspect-ratio:1.65 / 1
+  }
+
+  .hero-copy>p:not(.eyebrow){
+    order:4;
+    max-width:none;
+    margin:20px 22px 0
+  }
+
+  .hero .button{
+    order:5;
+    width:auto;
+    align-self:stretch;
+    margin:18px 22px 0
+  }
+
+  .hero-foot{
+    order:6;
+    margin:18px 22px 26px
   }
 }
