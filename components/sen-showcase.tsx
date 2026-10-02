@@ -1,7 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 type SenOption = {
   id: string;
@@ -25,10 +26,45 @@ const sixPackLearnMoreUrl = '#';
 
 export function SenShowcase() {
   const [selected, setSelected] = useState(0);
+  const [productSlide, setProductSlide] = useState(0);
+  const productGridRef = useRef<HTMLDivElement>(null);
   const current = senOptions[selected];
 
+  const showProduct = (index: number) => {
+    setProductSlide(index);
+    const grid = productGridRef.current;
+    if (grid) grid.scrollTo({ left: grid.clientWidth * index, behavior: 'smooth' });
+  };
+
   return (
-    <div className="sen-product-grid">
+    <div className="sen-product-carousel">
+      <button
+        type="button"
+        className="sen-carousel-button sen-carousel-prev"
+        onClick={() => showProduct(0)}
+        disabled={productSlide === 0}
+        aria-label="Show SEN"
+      >
+        <ChevronLeft size={22} />
+      </button>
+      <button
+        type="button"
+        className="sen-carousel-button sen-carousel-next"
+        onClick={() => showProduct(1)}
+        disabled={productSlide === 1}
+        aria-label="Show SEN 6 Pack"
+      >
+        <ChevronRight size={22} />
+      </button>
+
+      <div
+        className="sen-product-grid"
+        ref={productGridRef}
+        onScroll={event => {
+          const grid = event.currentTarget;
+          setProductSlide(Math.round(grid.scrollLeft / grid.clientWidth));
+        }}
+      >
       <article className="sen-product">
         <div className="sen-product-image sen-single-image">
           <Image
@@ -96,6 +132,7 @@ export function SenShowcase() {
           </div>
         </div>
       </article>
+      </div>
     </div>
   );
 }
