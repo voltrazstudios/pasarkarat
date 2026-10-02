@@ -71,3 +71,39 @@
     line-height:1.65
   }
 }
+
+
+/* Compact mobile Archive text and engagement controls. */
+@media(max-width:600px){
+  .archive-card-body p{
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:2;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    font-size:13px;
+    line-height:1.55;
+    min-height:calc(2 * 1.55em);
+    max-height:calc(2 * 1.55em)
+  }
+
+  .archive-card-engagement{
+    flex-wrap:nowrap;
+    gap:4px
+  }
+
+  .archive-like,
+  .archive-memory-card-count{
+    min-height:34px;
+    height:34px;
+    padding:5px 7px;
+    border-radius:6px;
+    font-size:11px
+  }
+
+  .archive-like svg,
+  .archive-memory-card-count svg{
+    width:16px;
+    height:16px
+  }
+}
