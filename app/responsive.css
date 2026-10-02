@@ -247,6 +247,37 @@ footer{background:#f2eee5;color:var(--navy)}
     height:24px
   }
 
+  /* Keep Collection card actions on one compact row. */
+  .catalogue .product-card-actions{
+    flex-wrap:nowrap;
+    justify-content:space-between;
+    gap:4px
+  }
+
+  .catalogue .product-card .save-button{
+    flex:0 0 auto;
+    min-height:34px;
+    padding:5px 7px;
+    font-size:11px
+  }
+
+  .catalogue .platform-indicators{
+    flex-wrap:nowrap;
+    gap:4px
+  }
+
+  .catalogue .platform-indicator{
+    width:26px;
+    height:26px;
+    min-height:26px;
+    padding:3px
+  }
+
+  .catalogue .platform-indicator .platform-logo-image{
+    width:20px;
+    height:20px
+  }
+
   .header-inner{
     justify-content:flex-start;
     gap:6px
