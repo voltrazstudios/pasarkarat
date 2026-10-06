@@ -64,3 +64,27 @@ export async function approveProduct(f:FormData){
 export async function rejectProduct(f:FormData){
   return moderateProduct('reject',f);
 }
+
+
+export async function deletePublishedProduct(f:FormData){
+  const client=await requireAdmin();
+  const id=String(f.get('id')||'');
+  if(!/^[a-f0-9-]{36}$/i.test(id))redirect(destination('error','Invalid product.'));
+
+  const deleted=await client.rpc('marketplace_admin_delete_product',{p_id:id});
+  if(deleted.error)redirect(destination('error','Unable to delete this product.'));
+
+  const result=deleted.data as {public_image_path?:string|null;pending_image_path?:string|null}|null;
+  if(result?.public_image_path){
+    await client.storage.from('product-images').remove([result.public_image_path]);
+  }
+  if(result?.pending_image_path){
+    await client.storage.from('product-submission-images').remove([result.pending_image_path]);
+  }
+
+  revalidatePath('/admin');
+  revalidatePath('/items');
+  revalidatePath('/saved');
+  revalidatePath('/my-submissions');
+  redirect(destination('updated','deleted'));
+}

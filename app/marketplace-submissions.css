@@ -21,3 +21,33 @@
 /* Center the submission area while keeping the form readable on desktop and mobile. */
 .submission-page .submission-heading{width:min(100%,860px);margin-left:auto;margin-right:auto}
 .submission-form{width:min(100%,860px);margin-left:auto;margin-right:auto}
+
+
+/* Admin management for published community products. */
+.admin-product-section{margin-top:34px}
+.admin-product-section+.admin-product-section{margin-top:48px;padding-top:36px;border-top:1px solid var(--line)}
+.admin-section-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:18px}
+.admin-section-heading h2{margin:4px 0 0;font-size:28px}
+.admin-section-heading>span{color:var(--muted);font-weight:700}
+.published-product-list{display:grid;gap:12px}
+.published-product-row{display:grid;grid-template-columns:110px minmax(0,1fr) auto;align-items:center;gap:18px;padding:14px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.published-product-image{width:110px;height:90px;overflow:hidden;border-radius:8px;background:#ece9e1;display:grid;place-items:center;color:var(--muted);font-size:12px}
+.published-product-image img{width:100%;height:100%;object-fit:cover}
+.published-product-copy h3{margin:5px 0;font-size:20px}
+.published-product-copy p{margin:0 0 5px;color:var(--muted)}
+.delete-product-trigger,.delete-product-confirm{min-width:120px}
+.delete-product-trigger{border-color:#d8a89b!important;color:#8b2f1e!important}
+.delete-product-confirm{background:#8b2f1e}
+.delete-confirm{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap;max-width:360px}
+.delete-confirm>span{width:100%;color:#8b2f1e;font-size:13px;font-weight:700;text-align:right}
+.delete-confirm form{margin:0}
+.admin-delete-note{margin-top:14px;color:var(--muted);font-size:13px}
+@media(max-width:700px){
+  .admin-section-heading{align-items:flex-start;flex-direction:column}
+  .published-product-row{grid-template-columns:82px minmax(0,1fr)}
+  .published-product-image{width:82px;height:82px}
+  .published-product-row>.delete-product-trigger,
+  .published-product-row>.delete-confirm{grid-column:1 / -1;width:100%;max-width:none}
+  .delete-confirm{justify-content:flex-start}
+  .delete-confirm>span{text-align:left}
+}
