@@ -4,6 +4,8 @@ import { notFound } from 'next/navigation';
 import { Store, ArrowLeft } from 'lucide-react';
 import { collectionProducts, getProductBySlug } from '@/lib/products';
 import { ProductCard, ProductImage } from '@/components/marketplace';
+import { SellerProfileCard } from '@/components/seller-profile-card';
+import { sellerSummary } from '@/lib/sellers';
 import { AvailablePlatformsLabel, CompareSellerPrices, PlatformSummary, ProductDescription, ProductName, PurchaseNote, SellerButtons } from '@/components/platform-links';
 
 export const dynamic='force-dynamic';
@@ -12,8 +14,9 @@ export async function generateMetadata({params}:{params:Promise<{slug:string}>})
 }
 export default async function Page({params}:{params:Promise<{slug:string}>}){
   const {slug}=await params;
-  const [p,allProducts]=await Promise.all([getProductBySlug(slug),collectionProducts()]);
+  const p=await getProductBySlug(slug);
   if(!p)notFound();
+  const [allProducts,seller]=await Promise.all([collectionProducts(),p.sellerId?sellerSummary(p.sellerId):Promise.resolve(null)]);
   const related=[...allProducts.filter(x=>x.id!==p.id&&x.category===p.category),...allProducts.filter(x=>x.id!==p.id&&x.category!==p.category)].slice(0,4);
   return <main id="main" className="container item-page">
     <Link href="/items" className="text-link back"><ArrowLeft size={16}/> Back to collection</Link>
@@ -25,6 +28,7 @@ export default async function Page({params}:{params:Promise<{slug:string}>}){
       <div className="seller-box"><Store size={24}/><div><AvailablePlatformsLabel/><PlatformSummary links={p.links}/></div></div>
       <SellerButtons links={p.links}/><SaveButton id={p.id} name={p.name}/><p className="purchase-note"><PurchaseNote/></p>
     </div></div>
+    {seller?<SellerProfileCard seller={seller}/>:null}
     <section className="collection"><div className="section-heading"><div><p className="eyebrow">CONTINUE YOUR DISCOVERY</p><h2>You might also like</h2></div></div><div className="product-grid">{related.map(product=><ProductCard key={product.id} product={product}/>)}</div></section>
   </main>;
 }

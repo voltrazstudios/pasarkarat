@@ -14,7 +14,7 @@ export const categoryImages: Record<Category, string> = {
 export const platforms = ['Shopee','Carousell','Facebook','TikTok Shop','Mudah.my','Own website'] as const;
 export type Platform = typeof platforms[number];
 export type ProductLink = { platform: Platform; url: string };
-export type Product = { id: string; slug: string; name: string; nameMs: string; image: string; category: Category; description: string; descriptionMs: string; links: ProductLink[]; featured: boolean; price?: number; currency?: 'MYR'; submitted?: boolean };
+export type Product = { id: string; slug: string; name: string; nameMs: string; image: string; category: Category; description: string; descriptionMs: string; links: ProductLink[]; featured: boolean; price?: number; currency?: 'MYR'; submitted?: boolean; sellerId?: string };
 
 // External marketplace links supplied for the collection. Prices can differ by seller, so the site does not show one fixed product price.
 export const products: Product[] = [
