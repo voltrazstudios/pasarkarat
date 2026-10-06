@@ -31,19 +31,27 @@ export function ProductImage({
 
   return <div className={`image-placeholder ${hero?'hero-placeholder':''}`}>
     <div className="placeholder-grid"/>
-    {!failed&&src&&(!src.startsWith('/')||imageAssets.includes(src))&&
-      <Image
-        src={src}
-        alt={name}
-        fill
-        sizes={hero?"(max-width: 600px) 100vw, 50vw":sizes}
-        priority={hero}
-        style={{opacity:loaded?1:0}}
-        onLoad={()=>setLoaded(true)}
-        ref={node=>{if(node?.complete && node.naturalWidth>0)setLoaded(true);}}
-        onError={()=>setFailed(true)}
-      />
-    }
+    {!failed&&src&&(!src.startsWith('/')||imageAssets.includes(src))&&(
+      src.startsWith('/')?
+        <Image
+          src={src}
+          alt={name}
+          fill
+          sizes={hero?"(max-width: 600px) 100vw, 50vw":sizes}
+          priority={hero}
+          style={{opacity:loaded?1:0}}
+          onLoad={()=>setLoaded(true)}
+          ref={node=>{if(node?.complete && node.naturalWidth>0)setLoaded(true);}}
+          onError={()=>setFailed(true)}
+        />:
+        <img
+          src={src}
+          alt={name}
+          onLoad={()=>setLoaded(true)}
+          onError={()=>setFailed(true)}
+          style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',opacity:loaded?1:0}}
+        />
+    )}
     <div className="placeholder-label">
       <ImageIcon size={hero?38:27} strokeWidth={1}/>
       <span>{hero?'A space for stories & discoveries':'Image coming soon'}</span>
@@ -69,7 +77,7 @@ export function ProductCard({product:p}:{product:Product}){
       <p className="seller"><PlatformSummary links={p.links}/></p>
       <h3><Link href={`/items/${p.slug}`}><ProductName product={p}/></Link></h3>
       <div className="product-bottom">
-        <CompareSellerPrices/>
+        {p.price!=null?<strong className="compare-sellers">{new Intl.NumberFormat('en-MY',{style:'currency',currency:p.currency??'MYR'}).format(p.price)}</strong>:<CompareSellerPrices/>}
         <Link href={`/items/${p.slug}`} className="view-item">View Item <ArrowUpRight size={15}/></Link>
       </div>
       <div className="product-card-actions">
@@ -138,18 +146,21 @@ export function Home(){
   </main>;
 }
 
-export function Catalogue({initialQuery='',initialCategory=''}:{initialQuery?:string;initialCategory?:string}){
+export function Catalogue({initialQuery='',initialCategory='',items=products}:{initialQuery?:string;initialCategory?:string;items?:Product[]}){
   const {language}=useLanguage();
   const [query,setQuery]=useState(initialQuery);
   const [category,setCategory]=useState(initialCategory);
   const [platform,setPlatform]=useState<Platform | ''>('');
   const platformFilters: Platform[]=['Shopee','Facebook','Carousell'];
-  const filtered=products.filter(p=>(!category||p.category===category)&&(!platform||p.links.some(link=>link.platform===platform))&&`${p.name} ${p.category} ${p.description} ${p.links.map(link=>link.platform).join(' ')}`.toLowerCase().includes(query.toLowerCase().trim()));
+  const filtered=items.filter(p=>(!category||p.category===category)&&(!platform||p.links.some(link=>link.platform===platform))&&`${p.name} ${p.category} ${p.description} ${p.links.map(link=>link.platform).join(' ')}`.toLowerCase().includes(query.toLowerCase().trim()));
 
   return <main id="main" className="container catalogue">
     <p className="eyebrow">THE DIGITAL PASAR KARAT</p>
     <h1>Explore the collection</h1>
-    <p className="intro">A little nostalgia. A touch of tradition. Something that speaks to you.</p>
+    <div className="catalogue-title-row">
+      <p className="intro">A little nostalgia. A touch of tradition. Something that speaks to you.</p>
+      <Link href="/submit-product" className="button submission-cta">Submit a product <ArrowUpRight size={17}/></Link>
+    </div>
     <div className="catalogue-controls">
       <label className="filter-search">
         <Search size={19}/>

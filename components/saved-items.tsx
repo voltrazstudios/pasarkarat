@@ -1,11 +1,10 @@
 'use client';
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
-import { products } from '@/data/products';
 
 const storageKey='pasar-karat-saved-items';
-const validIds=new Set(products.map(p=>p.id));
+const validId=/^(?:[0-9]{1,8}|[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})$/i;
 function readIds(raw:string|null):string[]{
-  try { const value:unknown=JSON.parse(raw??'[]'); return Array.isArray(value)?[...new Set(value.filter((id):id is string=>typeof id==='string'&&validIds.has(id)))]:[]; }
+  try { const value:unknown=JSON.parse(raw??'[]'); return Array.isArray(value)?[...new Set(value.filter((id):id is string=>typeof id==='string'&&validId.test(id)))]:[]; }
   catch { return []; }
 }
 const SavedContext=createContext<{ids:string[];ready:boolean;notice:string;toggle:(id:string)=>void}|null>(null);
@@ -20,7 +19,7 @@ export function SavedItemsProvider({children}:{children:ReactNode}){
     window.addEventListener('storage',sync);return()=>window.removeEventListener('storage',sync);
   },[]);
   function toggle(id:string){
-    if(!ready||!validIds.has(id))return;
+    if(!ready||!validId.test(id))return;
     let current=ids;
     try{if(!notice)current=readIds(localStorage.getItem(storageKey));}catch{/* Use this visit's state when storage cannot be read. */}
     const next=current.includes(id)?current.filter(x=>x!==id):[...current,id];

@@ -1,3 +1,5 @@
 import { SavedCollection } from '@/components/saved-collection';
+import { collectionProducts } from '@/lib/products';
 export const metadata={title:'Saved Items'};
-export default function Page(){return <SavedCollection/>;}
+export const dynamic='force-dynamic';
+export default async function Page(){return <SavedCollection items={await collectionProducts()}/>;}

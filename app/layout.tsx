@@ -8,6 +8,7 @@ import './globals.css';
 import './responsive.css';
 import './theme.css';
 import './multi-seller.css';
+import './marketplace-submissions.css';
 
 const headingFont = Lora({ subsets: ['latin'], display: 'swap', variable: '--font-heading' });
 const bodyFont = Source_Sans_3({ subsets: ['latin'], display: 'swap', variable: '--font-body' });

@@ -13,7 +13,7 @@ export const categoryImages: Record<Category, string> = {
 
 export type Platform = 'Shopee' | 'Carousell' | 'Facebook';
 export type ProductLink = { platform: Platform; url: string };
-export type Product = { id: string; slug: string; name: string; nameMs: string; image: string; category: Category; description: string; descriptionMs: string; links: ProductLink[]; featured: boolean };
+export type Product = { id: string; slug: string; name: string; nameMs: string; image: string; category: Category; description: string; descriptionMs: string; links: ProductLink[]; featured: boolean; price?: number; currency?: 'MYR'; submitted?: boolean };
 
 // External marketplace links supplied for the collection. Prices can differ by seller, so the site does not show one fixed product price.
 export const products: Product[] = [
