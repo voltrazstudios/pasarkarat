@@ -81,8 +81,8 @@ begin
   insert into public.marketplace_profiles(id) values(actor) on conflict(id) do nothing;
 
   if p_slug is null or char_length(p_slug) not between 3 and 100 or p_slug !~ '^[a-z0-9]+(?:-[a-z0-9]+)*$' then raise exception 'Invalid slug'; end if;
-  if p_name is null or char_length(pg_catalog.trim(p_name)) not between 2 and 100 then raise exception 'Invalid product name'; end if;
-  if p_description is null or char_length(pg_catalog.trim(p_description)) not between 10 and 2000 then raise exception 'Invalid description'; end if;
+  if p_name is null or char_length(pg_catalog.btrim(p_name)) not between 2 and 100 then raise exception 'Invalid product name'; end if;
+  if p_description is null or char_length(pg_catalog.btrim(p_description)) not between 10 and 2000 then raise exception 'Invalid description'; end if;
   if position('<' in p_name)>0 or position('>' in p_name)>0 or position('<' in p_description)>0 or position('>' in p_description)>0
     or p_name ~* 'javascript\s*:' or p_description ~* 'javascript\s*:' then raise exception 'Unsafe text'; end if;
   if p_price is null or p_price<=0 or p_price>9999999999.99 then raise exception 'Invalid price'; end if;
@@ -91,7 +91,7 @@ begin
   if p_links is null or jsonb_typeof(p_links)<>'array' or jsonb_array_length(p_links) not between 1 and 3 then raise exception 'Choose one to three platforms'; end if;
 
   insert into public.marketplace_products(slug,submitted_by,name,description,price,category,pending_image_path)
-  values(p_slug,actor,pg_catalog.trim(p_name),pg_catalog.trim(p_description),p_price,p_category,p_image_path)
+  values(p_slug,actor,pg_catalog.btrim(p_name),pg_catalog.btrim(p_description),p_price,p_category,p_image_path)
   returning id into product_id;
 
   for item in select value from jsonb_array_elements(p_links) loop
@@ -148,8 +148,8 @@ begin
   end if;
 
   if p_decision='rejected' then
-    if p_reason is null or char_length(pg_catalog.trim(p_reason)) not between 1 and 500 then raise exception 'Rejection reason is required'; end if;
-    update public.marketplace_products set status='rejected',public_image_path=null,rejection_reason=pg_catalog.trim(p_reason),
+    if p_reason is null or char_length(pg_catalog.btrim(p_reason)) not between 1 and 500 then raise exception 'Rejection reason is required'; end if;
+    update public.marketplace_products set status='rejected',public_image_path=null,rejection_reason=pg_catalog.btrim(p_reason),
       reviewed_at=now(),reviewed_by=actor,approved_at=null,updated_at=now() where id=p_id;
     return true;
   end if;
