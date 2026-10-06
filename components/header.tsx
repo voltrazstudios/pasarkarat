@@ -17,7 +17,7 @@ const links=[
   ['Saved','/saved']
 ];
 
-export function Header(){
+export function Header({isAdmin=false}:{isAdmin?:boolean}){
   const {ids}=useSavedItems();
   const {language,toggleLanguage}=useLanguage();
   const [open,setOpen]=useState(false);
@@ -102,6 +102,7 @@ export function Header(){
         </button>
         <nav ref={navigation} id="main-navigation" aria-label="Main navigation" data-open={open}>
           {links.map(([label,href])=><Link key={href} href={href} onClick={()=>setOpen(false)}>{label}{href==="/saved"&&<span className="saved-count">{ids.length}</span>}</Link>)}
+          {isAdmin?<Link className="site-admin-link" href="/admin" onClick={()=>setOpen(false)}>Admin</Link>:null}
         </nav>
         <button ref={languageButton} type="button" className="language-toggle" onClick={toggleLanguage} aria-label={language==="en"?"Switch to Bahasa Melayu":"Switch to English"} title={language==="en"?"Bahasa Melayu":"English"}>
           <LanguageFlag country={language==="en"?"my":"gb"}/>
