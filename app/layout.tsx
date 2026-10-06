@@ -3,6 +3,7 @@ import { Lora, Source_Sans_3 } from 'next/font/google';
 import { MalaysiaSideOverlay } from '@/components/malaysia-side-overlay';
 import { SavedItemsProvider } from '@/components/saved-items';
 import { LanguageProvider } from '@/components/language-provider';
+import { adminClient } from '@/lib/admin';
 import type { Metadata } from 'next';
 import './globals.css';
 import './responsive.css';
@@ -21,7 +22,8 @@ export const metadata: Metadata = {
   icons:{icon:'/favicon.svg'}
 };
 
-export default function RootLayout({children}:{children:React.ReactNode}) {
+export default async function RootLayout({children}:{children:React.ReactNode}) {
+  const isAdmin=Boolean(await adminClient());
   return <html lang="en" className={`${headingFont.variable} ${bodyFont.variable}`}>
     <body style={{ isolation: 'isolate', position: 'relative' }}>
       <FloralBackground/>
@@ -29,7 +31,7 @@ export default function RootLayout({children}:{children:React.ReactNode}) {
       <a className="skip-link" href="#main">Skip to content</a>
       <LanguageProvider>
         <SavedItemsProvider>
-          <Header/>
+          <Header isAdmin={isAdmin}/>
           {children}
           <Footer/>
         </SavedItemsProvider>
