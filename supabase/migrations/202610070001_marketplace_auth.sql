@@ -38,7 +38,7 @@ returns trigger language plpgsql security definer set search_path=''
 as $$
 declare requested_name text;
 begin
-  requested_name := pg_catalog.trim(coalesce(new.raw_user_meta_data->>'display_name',''));
+  requested_name := pg_catalog.btrim(coalesce(new.raw_user_meta_data->>'display_name',''));
   if char_length(requested_name) not between 2 and 60 then requested_name := 'Marketplace Member'; end if;
   insert into public.marketplace_profiles(id,display_name) values(new.id,requested_name) on conflict(id) do nothing;
   return new;
@@ -51,8 +51,8 @@ for each row execute function public.handle_marketplace_user();
 
 insert into public.marketplace_profiles(id,display_name)
 select u.id,
-  case when char_length(pg_catalog.trim(coalesce(u.raw_user_meta_data->>'display_name',''))) between 2 and 60
-    then pg_catalog.trim(u.raw_user_meta_data->>'display_name')
+  case when char_length(pg_catalog.btrim(coalesce(u.raw_user_meta_data->>'display_name',''))) between 2 and 60
+    then pg_catalog.btrim(u.raw_user_meta_data->>'display_name')
     else 'Marketplace Member'
   end
 from auth.users u
