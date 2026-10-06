@@ -7,14 +7,12 @@ import { requireAdmin } from '@/lib/admin';
 
 function destination(kind:'updated'|'error',message:string){return `/admin?${kind}=${encodeURIComponent(message)}`;}
 
-export async function moderateProduct(f:FormData){
+async function moderateProduct(decision:'approve'|'reject',f:FormData){
   const client=await requireAdmin();
   const id=String(f.get('id')||'');
-  const decision=String(f.get('decision')||'');
   const reason=String(f.get('reason')||'').trim().slice(0,500);
 
   if(!/^[a-f0-9-]{36}$/i.test(id))redirect(destination('error','Invalid product.'));
-  if(decision!=='approve'&&decision!=='reject')redirect(destination('error','Invalid moderation action.'));
   if(decision==='reject'&&!reason)redirect(destination('error','Add a rejection reason before rejecting.'));
 
   const {data:{user}}=await client.auth.getUser();
@@ -56,4 +54,13 @@ export async function moderateProduct(f:FormData){
   await client.storage.from('product-submission-images').remove([lookup.data.pending_image_path]);
   revalidatePath('/admin');revalidatePath('/items');revalidatePath('/saved');revalidatePath('/my-submissions');
   redirect(destination('updated','approved'));
+}
+
+
+export async function approveProduct(f:FormData){
+  return moderateProduct('approve',f);
+}
+
+export async function rejectProduct(f:FormData){
+  return moderateProduct('reject',f);
 }
