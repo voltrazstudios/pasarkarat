@@ -2,14 +2,13 @@
 
 import sharp from 'sharp';
 import { redirect } from 'next/navigation';
-import { categories, type Platform } from '@/data/products';
+import { categories, platforms, type Platform } from '@/data/products';
 import { cleanPlainText, containsBlockedContent, containsUnsafeMarkup } from '@/lib/moderation';
 import { slugifyProductName, validatePlatformUrl } from '@/lib/product-validation';
 import { configured, db } from '@/lib/supabase';
 
 export type SubmissionResult={error?:string};
 const text=(f:FormData,key:string)=>String(f.get(key)||'');
-const platforms:Platform[]=['Shopee','Carousell','Facebook'];
 const MAX_IMAGE_BYTES=5*1024*1024;
 function isPlatform(value:string):value is Platform{return platforms.includes(value as Platform);}
 
@@ -34,7 +33,7 @@ export async function submitProduct(_:SubmissionResult,f:FormData):Promise<Submi
   if(!Number.isFinite(price)||price<=0||price>9999999999.99)return {error:'Enter a valid product price.'};
 
   const selected=[...new Set(f.getAll('platform').map(String).filter(isPlatform))];
-  if(selected.length<1||selected.length>3)return {error:'Choose at least one selling platform.'};
+  if(selected.length<1||selected.length>platforms.length)return {error:'Choose at least one selling platform.'};
   const links=[];
   for(const selectedPlatform of selected){
     const seller=validatePlatformUrl(selectedPlatform,text(f,`seller_${selectedPlatform}`));

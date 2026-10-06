@@ -16,3 +16,8 @@
 /* Admin navigation matches the SEN admin treatment and only renders for admins. */
 .header nav .site-admin-link{color:#7f1d1d;font-weight:800}
 .header nav .site-admin-link:hover{color:#5f1414}
+
+
+/* Center the submission area while keeping the form readable on desktop and mobile. */
+.submission-page .submission-heading{width:min(100%,860px);margin-left:auto;margin-right:auto}
+.submission-form{width:min(100%,860px);margin-left:auto;margin-right:auto}

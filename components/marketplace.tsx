@@ -5,11 +5,11 @@ import Image from 'next/image';
 import imageAssets from '@/data/image-assets.json';
 import { CommunityCTA } from './community-cta';
 import { SaveButton } from './saved-items';
-import { CompareSellerPrices, PlatformIndicators, PlatformSummary, ProductName } from './platform-links';
+import { CompareSellerPrices, PlatformIndicators, PlatformSummary, ProductName, platformClass } from './platform-links';
 import { useState } from 'react';
 import { useLanguage } from './language-provider';
 import { ArrowUpRight, ArrowRight, Search, Layers, Image as ImageIcon, X } from 'lucide-react';
-import { categories, categoryImages, products, type Platform, type Product } from '@/data/products';
+import { categories, categoryImages, platforms, products, type Platform, type Product } from '@/data/products';
 
 export { Header } from './header';
 
@@ -151,7 +151,7 @@ export function Catalogue({initialQuery='',initialCategory='',items=products}:{i
   const [query,setQuery]=useState(initialQuery);
   const [category,setCategory]=useState(initialCategory);
   const [platform,setPlatform]=useState<Platform | ''>('');
-  const platformFilters: Platform[]=['Shopee','Facebook','Carousell'];
+  const platformFilters: Platform[]=[...platforms];
   const filtered=items.filter(p=>(!category||p.category===category)&&(!platform||p.links.some(link=>link.platform===platform))&&`${p.name} ${p.category} ${p.description} ${p.links.map(link=>link.platform).join(' ')}`.toLowerCase().includes(query.toLowerCase().trim()));
 
   return <main id="main" className="container catalogue">
@@ -179,7 +179,7 @@ export function Catalogue({initialQuery='',initialCategory='',items=products}:{i
       <p className="filter-label">Platform</p>
       <div className="filter-pills platform-filter-pills">
         <button className={!platform?'selected':''} onClick={()=>setPlatform('')}>{language==='ms'?'Semua platform':'All platforms'}</button>
-        {platformFilters.map(p=><button key={p} className={`${platform===p?'selected ':''}platform-filter-${p.toLowerCase()}`} onClick={()=>setPlatform(p)}>{p}</button>)}
+        {platformFilters.map(p=><button key={p} className={`${platform===p?'selected ':''}platform-filter-${platformClass(p)}`} onClick={()=>setPlatform(p)}>{p}</button>)}
       </div>
     </div>
     <div className="results-meta"><span role="status">{filtered.length} {filtered.length===1?'item':'items'}{category?` in ${category}`:''}</span><span>{language==='ms'?'Senarai penjual luar':'External seller listings'}</span></div>

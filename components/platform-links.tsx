@@ -10,9 +10,12 @@ const platformLabel: Record<Platform, string> = {
   Shopee: 'Shopee',
   Carousell: 'Carousell',
   Facebook: 'Facebook',
+  'TikTok Shop': 'TikTok Shop',
+  'Mudah.my': 'Mudah.my',
+  'Own website': 'Own website',
 };
 
-const platformLogo: Record<Platform, string> = {
+const platformLogo: Partial<Record<Platform, string>> = {
   Shopee: '/images/platforms/shopee.png',
   Carousell: '/images/platforms/carousell.png',
   Facebook: '/images/platforms/facebook.png',
@@ -22,36 +25,34 @@ const fallbackMark: Record<Platform, string> = {
   Shopee: 'S',
   Carousell: 'C',
   Facebook: 'f',
+  'TikTok Shop': 'T',
+  'Mudah.my': 'M',
+  'Own website': '↗',
 };
+
+export function platformClass(platform:Platform){
+  return platform.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+}
 
 export function PlatformLogo({platform,size=24}:{platform:Platform;size?:number}){
   const [failed,setFailed]=useState(false);
-  if(failed){
-    return <span className={`platform-logo-fallback platform-${platform.toLowerCase()}`} style={{width:size,height:size}} aria-hidden="true">{fallbackMark[platform]}</span>;
+  const logo=platformLogo[platform];
+  if(failed||!logo){
+    return <span className={`platform-logo-fallback platform-${platformClass(platform)}`} style={{width:size,height:size}} aria-hidden="true">{fallbackMark[platform]}</span>;
   }
-  return <Image className="platform-logo-image" src={platformLogo[platform]} alt="" width={size} height={size} sizes={`${size}px`} onError={()=>setFailed(true)}/>;
+  return <Image className="platform-logo-image" src={logo} alt="" width={size} height={size} sizes={`${size}px`} onError={()=>setFailed(true)}/>;
 }
 
 export function PlatformSummary({links}:{links:ProductLink[]}){
-  const platforms=[...new Set(links.map(link=>link.platform))];
-  return <span className="platform-summary-list">{platforms.map((platform,index)=><span key={platform}>{index>0&&<span className="platform-separator"> · </span>}{platformLabel[platform]}</span>)}</span>;
+  const values=[...new Set(links.map(link=>link.platform))];
+  return <span className="platform-summary-list">{values.map((platform,index)=><span key={platform}>{index>0&&<span className="platform-separator"> · </span>}{platformLabel[platform]}</span>)}</span>;
 }
 
 export function PlatformIndicators({links}:{links:ProductLink[]}){
-  const platforms=[...new Set(links.map(link=>link.platform))];
-
-  return (
-    <div className="platform-indicators" aria-hidden="true">
-      {platforms.map(platform => (
-        <span
-          key={platform}
-          className={`platform-indicator platform-${platform.toLowerCase()}`}
-        >
-          <PlatformLogo platform={platform} size={32}/>
-        </span>
-      ))}
-    </div>
-  );
+  const values=[...new Set(links.map(link=>link.platform))];
+  return <div className="platform-indicators" aria-hidden="true">
+    {values.map(platform=><span key={platform} className={`platform-indicator platform-${platformClass(platform)}`}><PlatformLogo platform={platform} size={32}/></span>)}
+  </div>;
 }
 
 export function CompareSellerPrices({detail=false}:{detail?:boolean}){
@@ -88,7 +89,7 @@ export function SellerButtons({links}:{links:ProductLink[]}){
       seen[link.platform]=(seen[link.platform]??0)+1;
       const suffix=(totals[link.platform]??0)>1?` ${seen[link.platform]}`:'';
       const label=language==='ms'?`Lihat di ${link.platform}${suffix}`:`View on ${link.platform}${suffix}`;
-      return <a key={`${link.platform}-${index}`} className={`seller-platform-button platform-${link.platform.toLowerCase()}`} href={link.url} target="_blank" rel="noopener noreferrer sponsored"><span><PlatformLogo platform={link.platform}/>{label}</span><ArrowUpRight size={19}/></a>;
+      return <a key={`${link.platform}-${index}`} className={`seller-platform-button platform-${platformClass(link.platform)}`} href={link.url} target="_blank" rel="noopener noreferrer sponsored"><span><PlatformLogo platform={link.platform}/>{label}</span><ArrowUpRight size={19}/></a>;
     })}
   </div>;
 }

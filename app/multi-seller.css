@@ -355,3 +355,18 @@
     margin-top: 12px;
   }
 }
+
+
+/* Additional community selling destinations. */
+.platform-indicator.platform-tiktok-shop,
+.seller-platform-button.platform-tiktok-shop{background:#111;border-color:#111}
+.platform-indicator.platform-mudah-my,
+.seller-platform-button.platform-mudah-my{background:#198754;border-color:#198754}
+.platform-indicator.platform-own-website,
+.seller-platform-button.platform-own-website{background:#233746;border-color:#233746}
+.platform-logo-fallback.platform-tiktok-shop,
+.platform-logo-fallback.platform-mudah-my,
+.platform-logo-fallback.platform-own-website{background:transparent;color:#fff}
+.platform-filter-pills .platform-filter-tiktok-shop.selected{background:#111;border-color:#111;color:#fff}
+.platform-filter-pills .platform-filter-mudah-my.selected{background:#198754;border-color:#198754;color:#fff}
+.platform-filter-pills .platform-filter-own-website.selected{background:#233746;border-color:#233746;color:#fff}

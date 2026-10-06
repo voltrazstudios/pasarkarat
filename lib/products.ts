@@ -1,10 +1,10 @@
-import { products as staticProducts, type Category, type Platform, type Product } from '@/data/products';
+import { platforms, products as staticProducts, type Category, type Platform, type Product } from '@/data/products';
 import { configured, db } from './supabase';
 
 type DbLink={platform:string;seller_url:string;affiliate_url:string|null};
 type DbProduct={id:string;slug:string;name:string;description:string;price:number|string;currency:string;category:string;public_image_path:string|null;marketplace_product_links:DbLink[]|null};
 
-function isPlatform(value:string):value is Platform{return value==='Shopee'||value==='Carousell'||value==='Facebook';}
+function isPlatform(value:string):value is Platform{return platforms.includes(value as Platform);}
 function isCategory(value:string):value is Category{return ['Vintage','Antiques','Traditional Crafts','Electronics','Traditional Games','Collectibles','Clothing','Home & Decor'].includes(value);}
 
 async function approvedDatabaseProducts():Promise<Product[]>{
