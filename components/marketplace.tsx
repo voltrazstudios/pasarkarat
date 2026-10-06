@@ -159,7 +159,7 @@ export function Catalogue({initialQuery='',initialCategory='',items=products}:{i
     <h1>Explore the collection</h1>
     <div className="catalogue-title-row">
       <p className="intro">A little nostalgia. A touch of tradition. Something that speaks to you.</p>
-      <Link href="/submit-product" className="button submission-cta">Submit a product <ArrowUpRight size={17}/></Link>
+      <Link href="/submit-product" prefetch={false} className="button submission-cta">Submit a product <ArrowUpRight size={17}/></Link>
     </div>
     <div className="catalogue-controls">
       <label className="filter-search">

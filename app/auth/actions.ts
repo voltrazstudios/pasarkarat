@@ -1,6 +1,7 @@
 'use server';
 
 import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 import { configured, db } from '@/lib/supabase';
 import { cleanPlainText, containsBlockedContent, containsUnsafeMarkup } from '@/lib/moderation';
 
@@ -70,6 +71,11 @@ export async function updatePassword(_:AuthResult,f:FormData):Promise<AuthResult
 }
 
 export async function signOut(){
-  if(configured()){const client=await db();await client.auth.signOut();}
+  if(configured()){
+    const client=await db();
+    await client.auth.signOut();
+  }
+  // Clear any prefetched/cached authenticated route tree before redirecting.
+  revalidatePath('/','layout');
   redirect('/');
 }

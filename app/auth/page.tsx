@@ -1,4 +1,5 @@
 import { SignInForm } from './auth-forms';
+export const dynamic='force-dynamic';
 export const metadata={title:'Sign In'};
 export default async function AuthPage({searchParams}:{searchParams:Promise<{next?:string;error?:string;password?:string}>}){
   const p=await searchParams;

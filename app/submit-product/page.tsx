@@ -11,7 +11,7 @@ export default async function SubmitProductPage(){
   const {data:{user}}=await client.auth.getUser();
   if(!user)redirect('/auth?next=/submit-product');
   return <main id="main" className="container submission-page">
-    <div className="submission-heading"><div><p className="eyebrow">COMMUNITY COLLECTION</p><h1>Submit a product</h1><p className="intro">Share a find from your shop or collection. We&apos;ll review it before it appears publicly.</p></div><Link className="text-link" href="/my-submissions">My submissions</Link></div>
+    <div className="submission-heading"><div><p className="eyebrow">COMMUNITY COLLECTION</p><h1>Submit a product</h1><p className="intro">Share a find from your shop or collection. We&apos;ll review it before it appears publicly.</p></div><Link className="text-link" href="/my-submissions" prefetch={false}>My submissions</Link></div>
     <ProductSubmissionForm/>
   </main>;
 }
