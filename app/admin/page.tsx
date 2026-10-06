@@ -1,5 +1,5 @@
 import { requireAdmin } from '@/lib/admin';
-import { moderateProduct } from './actions';
+import { approveProduct, rejectProduct } from './actions';
 type AdminRow={id:string;name:string;description:string;price:number|string;category:string;pending_image_path:string;submitted_at:string;submitter:{id:string;email:string|null;display_name:string|null};links:{platform:string;seller_url:string;affiliate_url:string|null}[]};
 
 export default async function AdminPage({searchParams}:{searchParams:Promise<{updated?:string;error?:string}>}){
@@ -25,7 +25,7 @@ export default async function AdminPage({searchParams}:{searchParams:Promise<{up
         <p className="moderation-description">{row.description}</p>
         <div className="submitter-box"><strong>Submitter</strong><span>{row.submitter.display_name||'Marketplace member'}</span><span>{row.submitter.email||row.submitter.id}</span></div>
         <div className="admin-links"><strong>Seller links</strong>{row.links.map(link=><div key={link.platform}><span>{link.platform}</span><a href={link.seller_url} target="_blank" rel="noopener noreferrer nofollow">{link.seller_url}</a>{link.affiliate_url&&<a href={link.affiliate_url} target="_blank" rel="noopener noreferrer sponsored">Affiliate: {link.affiliate_url}</a>}</div>)}</div>
-        <form action={moderateProduct} className="moderation-actions"><input type="hidden" name="id" value={row.id}/><label>Rejection reason<textarea name="reason" maxLength={500} rows={3} placeholder="Required only when rejecting"/></label><div><button className="button approve-button" name="decision" value="approve">Approve</button><button className="button secondary reject-button" name="decision" value="reject">Reject</button></div></form>
+        <form className="moderation-actions"><input type="hidden" name="id" value={row.id}/><label>Rejection reason<textarea name="reason" maxLength={500} rows={3} placeholder="Required only when rejecting"/></label><div><button className="button approve-button" formAction={approveProduct}>Approve</button><button className="button secondary reject-button" formAction={rejectProduct}>Reject</button></div></form>
       </div>
     </article>)}</div>:<div className="empty-state"><h2>Nothing waiting for review</h2><p>New product submissions will appear here.</p></div>}
   </main>;
