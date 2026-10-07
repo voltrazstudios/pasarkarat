@@ -709,3 +709,112 @@
 .seller-marketplace-pill.platform-ebay{background:#3665f3;border-color:#3665f3}
 .seller-marketplace-pill.platform-etsy{background:#f1641e;border-color:#f1641e}
 .seller-marketplace-pill.platform-own-website{background:#233746;border-color:#233746}
+
+/* Final marketplace brand backgrounds for uploaded PNG logos. */
+.platform-indicator.platform-mudah-my,
+.platform-all-icon.platform-mudah-my,
+.seller-marketplace-pill.platform-mudah-my{
+  background:#fff;
+  border-color:var(--line);
+  color:var(--navy)
+}
+
+.seller-platform-button.platform-mudah-my{
+  background:#fff;
+  border:1px solid var(--line);
+  color:var(--navy)
+}
+
+.platform-indicator.platform-lazada,
+.platform-all-icon.platform-lazada,
+.seller-platform-button.platform-lazada,
+.seller-marketplace-pill.platform-lazada{
+  background:#0f146d;
+  border-color:#0f146d;
+  color:#fff
+}
+
+.platform-indicator.platform-etsy,
+.platform-all-icon.platform-etsy,
+.seller-platform-button.platform-etsy,
+.seller-marketplace-pill.platform-etsy{
+  background:#f1641e;
+  border-color:#f1641e;
+  color:#fff
+}
+
+.platform-indicator.platform-ebay,
+.platform-all-icon.platform-ebay,
+.seller-marketplace-pill.platform-ebay{
+  background:#fff;
+  border-color:var(--line);
+  color:var(--navy)
+}
+
+.seller-platform-button.platform-ebay{
+  background:#fff;
+  border:1px solid var(--line);
+  color:var(--navy)
+}
+
+.platform-indicator.platform-lelong-my,
+.platform-all-icon.platform-lelong-my,
+.seller-marketplace-pill.platform-lelong-my{
+  background:#fff;
+  border-color:var(--line);
+  color:var(--navy)
+}
+
+.seller-platform-button.platform-lelong-my{
+  background:#fff;
+  border:1px solid var(--line);
+  color:var(--navy)
+}
+
+.platform-indicator.platform-own-website,
+.platform-all-icon.platform-own-website,
+.seller-platform-button.platform-own-website,
+.seller-marketplace-pill.platform-own-website{
+  background:#3f4348;
+  border-color:#3f4348;
+  color:#fff
+}
+
+.platform-all-icon.platform-mudah-my,
+.platform-all-icon.platform-ebay,
+.platform-all-icon.platform-lelong-my{
+  border:1px solid var(--line)
+}
+
+.platform-logo-fallback.platform-mudah-my,
+.platform-logo-fallback.platform-ebay,
+.platform-logo-fallback.platform-lelong-my{
+  color:var(--navy)!important
+}
+
+.platform-filter-pills .platform-filter-mudah-my.selected,
+.platform-filter-pills .platform-filter-ebay.selected,
+.platform-filter-pills .platform-filter-lelong-my.selected{
+  background:#fff;
+  border-color:#aeb7b5;
+  color:var(--navy)
+}
+
+.platform-filter-pills .platform-filter-lazada.selected{
+  background:#0f146d;
+  border-color:#0f146d;
+  color:#fff
+}
+
+.platform-filter-pills .platform-filter-etsy.selected{
+  background:#f1641e;
+  border-color:#f1641e;
+  color:#fff
+}
+
+.platform-filter-pills .platform-filter-own-website.selected{
+  background:#3f4348;
+  border-color:#3f4348;
+  color:#fff
+}
+
