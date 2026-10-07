@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useMemo, useState, type MouseEvent } from 'react';
 import { SellerProfileCard } from '@/components/seller-profile-card';
 import type { Product } from '@/data/products';
@@ -54,7 +55,10 @@ export function SellerStorefrontShell({
     window.history.pushState(null,'',href);
   }
 
-  const followAction=seller.isOwner?null:
+  const storeAction=seller.isOwner?<>
+    <Link href={`/seller/${seller.id}?customize=1#customize-store`} className="seller-store-link">Customize Store</Link>
+    <Link href="/my-submissions" prefetch className="seller-store-link">My Submission</Link>
+  </>:
     <form action={setSellerFollow}>
       <input type="hidden" name="seller_id" value={seller.id}/>
       <input type="hidden" name="follow" value={seller.isFollowing?'false':'true'}/>
@@ -63,7 +67,7 @@ export function SellerStorefrontShell({
 
   return <>
     <section className="seller-store-panel">
-      <SellerProfileCard seller={seller} actions={followAction}/>
+      <SellerProfileCard seller={seller} actions={storeAction}/>
 
       <nav className="seller-store-nav" aria-label="Store sections" data-preview={customizing?'true':'false'}>
         {customizing?<>

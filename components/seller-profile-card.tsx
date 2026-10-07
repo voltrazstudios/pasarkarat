@@ -19,12 +19,7 @@ export function SellerProfileCard({seller,actions}:{seller:SellerSummary;actions
         <Link href={`/seller/${seller.id}`}>{seller.storeName}</Link>
         <small className="seller-profile-description">{seller.description||'Pasar Karat seller'}</small>
         <div className="seller-profile-actions">{actions??(
-          seller.isOwner
-            ? <>
-                <Link href={`/seller/${seller.id}?customize=1#customize-store`} className="seller-store-link">Customize Store</Link>
-                <Link href="/my-submissions" prefetch={false} className="seller-store-link">My Submission</Link>
-              </>
-            : <Link href={`/seller/${seller.id}`} className="seller-store-link">View Store</Link>
+          <Link href={`/seller/${seller.id}`} className="seller-store-link">View Store</Link>
         )}</div>
       </div>
       <div className="seller-stats-inline">
