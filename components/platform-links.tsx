@@ -12,6 +12,13 @@ const platformLogo: Partial<Record<Platform, string>> = {
   Shopee: '/images/platforms/shopee.png',
   Carousell: '/images/platforms/carousell.png',
   Facebook: '/images/platforms/facebook.png',
+  'TikTok Shop': '/images/platforms/tiktok-shop.png',
+  'Mudah.my': '/images/platforms/mudah-my.png',
+  Lazada: '/images/platforms/lazada.png',
+  'Lelong.my': '/images/platforms/lelong-my.png',
+  eBay: '/images/platforms/ebay.png',
+  Etsy: '/images/platforms/etsy.png',
+  'Own website': '/images/platforms/seller-website.png',
 };
 
 const fallbackMark: Record<Platform, string> = {
