@@ -84,8 +84,8 @@ export function verifyBillplzSignature(entries:Iterable<[string,string]>,signatu
 
   const source=[...entries]
     .filter(([name])=>name.toLowerCase()!=='x_signature')
-    .sort(([a],[b])=>a.toLowerCase().localeCompare(b.toLowerCase()))
     .map(([name,value])=>`${name}${value}`)
+    .sort((a,b)=>a.toLowerCase().localeCompare(b.toLowerCase()))
     .join('|');
 
   const expected=createHmac('sha256',key).update(source).digest('hex');
