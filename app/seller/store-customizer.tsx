@@ -15,6 +15,10 @@ type EditableSubcategory={key:string;type:'subcategory';title:string;productIds:
 type EditableImage={key:string;type:'image';imagePath:string;preview:string};
 type EditableBlock=EditableSubcategory|EditableImage;
 type EditableSection={key:string;name:string;blocks:EditableBlock[]};
+type StorePayloadBlock=
+  | {type:'subcategory';title:string}
+  | {type:'products';productIds:string[]}
+  | {type:'image';imagePath:string};
 
 function newKey(prefix:string){
   return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
@@ -203,7 +207,7 @@ export function StoreCustomizer({
 
   const sectionsPayload=sections.map(section=>({
     name:section.name,
-    blocks:section.blocks.flatMap(block=>{
+    blocks:section.blocks.flatMap<StorePayloadBlock>(block=>{
       if(block.type==='subcategory'){
         return [
           {type:'subcategory',title:block.title},
