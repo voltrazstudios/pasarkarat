@@ -227,7 +227,7 @@
 .store-section-image-preview>div{display:flex;align-items:center;gap:8px}
 .store-section-image-button{width:max-content;min-height:38px;padding:8px 12px;cursor:pointer}
 .store-section-image-editor small{color:var(--muted)}
-.store-customizer-footer{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.store-customizer-footer{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:8px}
 .store-customizer-footer>span{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:13px}
 .seller-store-content-heading{margin-bottom:20px}
 .seller-custom-section-content{display:grid;gap:24px}
@@ -1358,7 +1358,14 @@ body .save-button[aria-pressed=true]:hover{
   font-family:var(--store-font-family);
   background:var(--store-page);
   box-shadow:0 0 0 100vmax var(--store-page);
-  clip-path:inset(0 -100vmax)
+  clip-path:inset(0 -100vmax);
+  padding-bottom:48px
+}
+body:has(.seller-page.seller-store-themed) .header{
+  margin-bottom:0
+}
+body:has(.seller-page.seller-store-themed) footer{
+  margin-top:0
 }
 .seller-page.seller-store-themed h1,
 .seller-page.seller-store-themed h2,
@@ -1387,6 +1394,18 @@ body .save-button[aria-pressed=true]:hover{
 .seller-page.seller-store-themed .store-sort-bar,
 .seller-page.seller-store-themed .store-sort-bar>button{
   border-color:var(--store-card-border)!important
+}
+.seller-page.seller-store-themed .seller-store-banner,
+.seller-page.seller-store-themed .seller-profile-actions .seller-store-link{
+  border-color:var(--store-card-border)!important
+}
+.seller-page.seller-store-themed .seller-profile-actions .seller-store-link{
+  background:var(--store-card)!important;
+  color:var(--store-card-text)!important
+}
+.seller-page.seller-store-themed .seller-profile-actions .seller-store-link:hover{
+  border-color:var(--store-card-border)!important;
+  color:var(--store-card-text)!important
 }
 .seller-page.seller-store-themed .seller-profile-name>a,
 .seller-page.seller-store-themed .seller-profile-title-row>a,
@@ -1559,15 +1578,14 @@ body .save-button[aria-pressed=true]:hover{
 .store-pro-title svg{
   color:#9a661f
 }
-.store-pro-heading-actions{
+.store-pro-reset-row{
   display:flex;
-  align-items:center;
-  gap:10px;
-  flex:0 0 auto
+  justify-content:flex-start;
+  padding-top:2px
 }
 .store-pro-reset{
-  min-height:34px;
-  padding:7px 10px;
+  min-height:36px;
+  padding:8px 12px;
   border:1px solid var(--line);
   border-radius:7px;
   background:transparent;
@@ -1909,9 +1927,11 @@ body .save-button[aria-pressed=true]:hover{
   .store-pro-upgrade{
     width:100%
   }
-  .store-pro-heading-actions{
-    width:100%;
-    justify-content:space-between
+  .store-pro-reset-row{
+    width:100%
+  }
+  .store-pro-reset{
+    width:100%
   }
   .seller-profile-marketplace-links span{
     display:none
