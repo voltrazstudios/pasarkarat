@@ -17,7 +17,7 @@ revoke all on public.marketplace_account_saves from public, anon, authenticated;
 
 insert into public.marketplace_account_saves(user_id,product_key,created_at)
 select
-  pg_catalog.substring(s.actor_key from 6)::uuid,
+  pg_catalog.substr(s.actor_key, 6)::uuid,
   s.product_id::text,
   s.created_at
 from public.marketplace_product_saves s
