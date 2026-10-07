@@ -2047,12 +2047,6 @@ body:has(.seller-page.seller-store-themed) footer{
   color:var(--navy)!important;
   font-family:var(--font-body),Arial,sans-serif!important
 }
-.seller-page.seller-store-themed .store-customizer-panel h2,
-.seller-page.seller-store-themed .store-customizer-panel strong,
-.seller-page.seller-store-themed .store-customizer-panel label,
-.seller-page.seller-store-themed .store-customizer-panel .store-pro-title{
-  color:var(--navy)!important
-}
 .seller-page.seller-store-themed .store-customizer-panel small,
 .seller-page.seller-store-themed .store-customizer-panel .store-sections-title>div>span,
 .seller-page.seller-store-themed .store-customizer-panel .store-featured-editor>p,
@@ -2072,8 +2066,8 @@ body:has(.seller-page.seller-store-themed) footer{
 .seller-page.seller-store-themed .store-customizer-panel .store-theme-live-preview>div{
   color:inherit
 }
-.seller-page.seller-store-themed .store-customizer .store-customizer-save,
-.seller-page.seller-store-themed .store-customizer .store-customizer-save:hover{
+.seller-page.seller-store-themed .store-customizer .button:not(.secondary),
+.seller-page.seller-store-themed .store-customizer .button:not(.secondary):hover{
   background:var(--orange)!important;
   border-color:var(--orange)!important;
   color:#fff!important
