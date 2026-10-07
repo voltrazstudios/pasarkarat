@@ -8,7 +8,7 @@ alter table public.marketplace_profiles
   add column if not exists gender text
     check(gender is null or gender in ('Male','Female','Other','Prefer not to say')),
   add column if not exists date_of_birth date
-    check(date_of_birth is null or (date_of_birth >= date '1900-01-01' and date_of_birth <= current_date)),
+    check(date_of_birth is null or date_of_birth >= date '1900-01-01'),
   add column if not exists avatar_path text
     check(avatar_path is null or char_length(avatar_path) <= 500),
   add column if not exists banner_path text
