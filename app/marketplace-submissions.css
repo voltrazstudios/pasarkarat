@@ -755,3 +755,79 @@ body .save-button[aria-pressed=true]:hover{
     width:100%
   }
 }
+
+
+/* Keep Collection title-to-subtitle spacing tight without moving the submit CTA. */
+.catalogue>h1{
+  margin-bottom:0!important
+}
+.catalogue-title-row{
+  margin-top:14px!important
+}
+.catalogue-title-row .intro{
+  margin-top:0!important;
+  margin-bottom:0!important
+}
+
+/* Store stats sit beside the shop copy on desktop and match the shop-name scale. */
+.seller-profile-identity{
+  display:flex!important;
+  align-items:center;
+  gap:16px
+}
+.seller-profile-name{
+  width:auto!important;
+  flex:0 1 360px;
+  min-width:0
+}
+.seller-stats-inline{
+  display:flex!important;
+  align-items:center;
+  justify-content:flex-start!important;
+  gap:10px 22px;
+  flex:0 1 auto;
+  margin:0 0 0 14px!important;
+  padding:0!important;
+  font-size:18px!important;
+  line-height:1.25
+}
+.seller-stats-inline span{
+  white-space:nowrap
+}
+.seller-stats-inline strong{
+  color:var(--navy)!important;
+  font-size:18px;
+  font-weight:600
+}
+.seller-stats-inline b{
+  color:var(--orange)!important;
+  font-size:18px;
+  font-weight:700
+}
+@media(max-width:1050px){
+  .seller-profile-identity{
+    flex-wrap:wrap
+  }
+  .seller-profile-name{
+    flex:1 1 320px
+  }
+  .seller-stats-inline{
+    flex:1 1 100%;
+    margin-left:88px!important
+  }
+}
+@media(max-width:700px){
+  .seller-profile-identity{
+    align-items:flex-start
+  }
+  .seller-stats-inline{
+    margin-left:0!important;
+    width:100%;
+    font-size:14px!important;
+    gap:8px 14px
+  }
+  .seller-stats-inline strong,
+  .seller-stats-inline b{
+    font-size:14px
+  }
+}

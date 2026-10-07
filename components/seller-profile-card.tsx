@@ -26,12 +26,12 @@ export function SellerProfileCard({seller,actions}:{seller:SellerSummary;actions
               </>
             : <Link href={`/seller/${seller.id}`} className="seller-store-link">View Store</Link>
         )}</div>
-        <div className="seller-stats-inline">
-          <span><strong>Ratings:</strong> <b>{seller.ratings}</b></span>
-          <span><strong>Products:</strong> <b>{seller.products}</b></span>
-          <span><strong>Follower:</strong> <b>{seller.followers}</b></span>
-          <span><strong>Joined:</strong> <b>{joinedLabel(seller.joinedAt)}</b></span>
-        </div>
+      </div>
+      <div className="seller-stats-inline">
+        <span><strong>Ratings:</strong> <b>{seller.ratings}</b></span>
+        <span><strong>Products:</strong> <b>{seller.products}</b></span>
+        <span><strong>Follower:</strong> <b>{seller.followers}</b></span>
+        <span><strong>Joined:</strong> <b>{joinedLabel(seller.joinedAt)}</b></span>
       </div>
     </div>
   </section>;
