@@ -1069,3 +1069,22 @@ body .save-button[aria-pressed=true]:hover{
     font-size:13px!important
   }
 }
+
+
+/* Restore the preferred seller header; only the stats get the soft cream panel. */
+.seller-profile-card .seller-stats-inline{
+  background:var(--cream)!important;
+  border-radius:9px;
+  padding:12px 16px!important;
+  box-sizing:border-box
+}
+@media(max-width:1050px){
+  .seller-profile-card .seller-stats-inline{
+    margin-top:12px!important
+  }
+}
+@media(max-width:700px){
+  .seller-profile-card .seller-stats-inline{
+    padding:12px!important
+  }
+}
