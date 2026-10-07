@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { signOut } from '@/app/auth/actions';
 import { configured, db } from '@/lib/supabase';
 export const metadata={title:'My Submissions'};
 export const dynamic='force-dynamic';
@@ -20,7 +19,7 @@ export default async function MySubmissionsPage({searchParams}:{searchParams:Pro
     return {...row,image:signed.data?.signedUrl||null};
   }));
   return <main id="main" className="container submissions-dashboard">
-    <div className="submission-heading"><div><p className="eyebrow">YOUR MARKETPLACE</p><h1>My submissions</h1><p className="intro">Track what is waiting for review and what has been approved.</p></div><div className="dashboard-actions"><Link href="/submit-product" prefetch={false} className="button">Submit another product</Link><form action={signOut}><button className="button secondary" type="submit">Sign out</button></form></div></div>
+    <div className="submission-heading"><div><p className="eyebrow">YOUR MARKETPLACE</p><h1>My submissions</h1><p className="intro">Track what is waiting for review and what has been approved.</p></div><div className="dashboard-actions"><Link href="/submit-product" prefetch={false} className="button">Submit another product</Link></div></div>
     {p.submitted==='1'&&<div className="form-notice" role="status">Product submitted. It is private while an administrator reviews it.</div>}
     {withImages.length?<div className="submission-list">{withImages.map(row=><article className="submission-row" key={row.id}>
       <div className="submission-thumb">{row.image?<img src={row.image} alt={row.name}/>:<span>Image unavailable</span>}</div>
