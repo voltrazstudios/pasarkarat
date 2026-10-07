@@ -111,6 +111,16 @@ export async function saveStoreCustomization(_:StoreCustomizationResult,form:For
   const oldCustomSlug=typeof profile?.custom_slug==='string'?profile.custom_slug:null;
   const isPro=Boolean(profile?.pro_until&&new Date(profile.pro_until).getTime()>Date.now());
 
+  // Products can be deleted by an admin after they were saved into a store section
+  // or Featured Products. Keep only products that still exist, belong to this seller,
+  // and remain approved so stale references never block a later store save.
+  const approvedProducts=await client.from('marketplace_products')
+    .select('id')
+    .eq('submitted_by',user.id)
+    .eq('status','approved');
+  if(approvedProducts.error)return {error:'Unable to read your approved products.'};
+  const allowedProductIds=new Set((approvedProducts.data||[]).map(row=>String(row.id)).filter(value=>uuid.test(value)));
+
   let storeLinksRaw:unknown={};
   try{
     storeLinksRaw=JSON.parse(String(form.get('store_links_json')||'{}'));
@@ -180,7 +190,7 @@ export async function saveStoreCustomization(_:StoreCustomizationResult,form:For
 
         if(block.type==='products'){
           const rawIds=Array.isArray(block.productIds)?block.productIds:[];
-          const productIds=[...new Set(rawIds.map(String).filter(value=>uuid.test(value)))];
+          const productIds=[...new Set(rawIds.map(String).filter(value=>uuid.test(value)&&allowedProductIds.has(value)))];
           content.push({type:'products',product_ids:productIds});
           continue;
         }
@@ -239,7 +249,7 @@ export async function saveStoreCustomization(_:StoreCustomizationResult,form:For
       try{
         const parsed=JSON.parse(String(form.get('featured_product_ids')||'[]')) as unknown;
         if(!Array.isArray(parsed))throw new Error();
-        featuredProductIds=[...new Set(parsed.map(String).filter(value=>uuid.test(value)))];
+        featuredProductIds=[...new Set(parsed.map(String).filter(value=>uuid.test(value)&&allowedProductIds.has(value)))];
       }catch{
         throw new Error('Unable to read featured products.');
       }
