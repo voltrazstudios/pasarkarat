@@ -17,7 +17,7 @@ export function SellerProfileCard({seller,actions}:{seller:SellerSummary;actions
       </Link>
       <div className="seller-profile-name">
         <Link href={`/seller/${seller.id}`}>{seller.storeName}</Link>
-        <small>{seller.description||'Pasar Karat seller'}</small>
+        <small className="seller-profile-description">{seller.description||'Pasar Karat seller'}</small>
         <div className="seller-profile-actions">{actions??<Link href={`/seller/${seller.id}`} className="seller-store-link">View Store</Link>}</div>
       </div>
     </div>

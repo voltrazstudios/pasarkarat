@@ -7,6 +7,7 @@ export type SellerSummary={
   storeName:string;
   description:string|null;
   avatarUrl:string|null;
+  bannerUrl:string|null;
   joinedAt:string;
   ratings:number;
   products:number;
@@ -26,7 +27,12 @@ export async function sellerSummary(id:string):Promise<SellerSummary|null>{
     id:row.id,
     storeName:row.store_name,
     description:typeof row.description==='string'&&row.description.trim()?row.description:null,
-    avatarUrl:typeof row.avatar_url==='string'?row.avatar_url:null,
+    avatarUrl:typeof row.avatar_path==='string'&&row.avatar_path
+      ? client.storage.from('marketplace-profile-images').getPublicUrl(row.avatar_path).data.publicUrl
+      : null,
+    bannerUrl:typeof row.banner_path==='string'&&row.banner_path
+      ? client.storage.from('marketplace-profile-images').getPublicUrl(row.banner_path).data.publicUrl
+      : null,
     joinedAt:row.joined_at,
     ratings:Number(row.ratings||0),
     products:Number(row.products||0),

@@ -1,23 +1,168 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useEffect, useRef, useState } from 'react';
+import { Camera, ImagePlus, UserRound } from 'lucide-react';
 import { updateProfile, type ProfileResult } from './actions';
 
-export function ProfileForm({name,description}:{name:string;description:string}){
+type Props={
+  username:string;
+  description:string;
+  fullName:string;
+  email:string;
+  phone:string;
+  gender:string;
+  dateOfBirth:string;
+  avatarUrl:string;
+  bannerUrl:string;
+};
+
+export function ProfileForm(props:Props){
   const [state,action,pending]=useActionState<ProfileResult,FormData>(updateProfile,{});
+  const [avatarPreview,setAvatarPreview]=useState(props.avatarUrl);
+  const [bannerPreview,setBannerPreview]=useState(props.bannerUrl);
+  const [removeAvatar,setRemoveAvatar]=useState(false);
+  const [removeBanner,setRemoveBanner]=useState(false);
+  const [avatarMenuOpen,setAvatarMenuOpen]=useState(false);
+  const avatarInput=useRef<HTMLInputElement>(null);
+  const bannerInput=useRef<HTMLInputElement>(null);
+  const avatarMenu=useRef<HTMLDivElement>(null);
+
+  useEffect(()=>{
+    if(!avatarMenuOpen)return;
+    const close=(event:MouseEvent|TouchEvent)=>{
+      if(avatarMenu.current&&!avatarMenu.current.contains(event.target as Node))setAvatarMenuOpen(false);
+    };
+    document.addEventListener('mousedown',close);
+    document.addEventListener('touchstart',close);
+    return()=>{
+      document.removeEventListener('mousedown',close);
+      document.removeEventListener('touchstart',close);
+    };
+  },[avatarMenuOpen]);
 
   return <form action={action} className="market-form profile-edit-form">
+    <section className="profile-media-editor">
+      <div className="profile-picture-editor" ref={avatarMenu}>
+        <button
+          type="button"
+          className="profile-picture-button"
+          aria-label="Change profile picture"
+          aria-expanded={avatarMenuOpen}
+          onClick={()=>setAvatarMenuOpen(open=>!open)}
+        >
+          <span className="profile-picture-visual">
+            {avatarPreview?<img src={avatarPreview} alt=""/>:<UserRound size={46} strokeWidth={1.5}/>}
+            <span className="profile-picture-badge" aria-hidden="true"><Camera size={16}/></span>
+          </span>
+          <span>Change photo</span>
+        </button>
+
+        <input
+          ref={avatarInput}
+          className="profile-hidden-file"
+          name="avatar"
+          type="file"
+          accept="image/png,image/jpeg,image/webp"
+          onChange={event=>{
+            const file=event.target.files?.[0];
+            if(!file)return;
+            setAvatarPreview(URL.createObjectURL(file));
+            setRemoveAvatar(false);
+            setAvatarMenuOpen(false);
+          }}
+        />
+        {removeAvatar?<input type="hidden" name="remove_avatar" value="1"/>:null}
+
+        {avatarMenuOpen?<div className="profile-picture-menu">
+          <button type="button" onClick={()=>avatarInput.current?.click()}>Upload picture</button>
+          {(avatarPreview||props.avatarUrl)?<button
+            type="button"
+            className="profile-remove-option"
+            onClick={()=>{
+              setAvatarPreview('');
+              setRemoveAvatar(true);
+              if(avatarInput.current)avatarInput.current.value='';
+              setAvatarMenuOpen(false);
+            }}
+          >Remove current picture</button>:null}
+        </div>:null}
+      </div>
+
+      <div className="profile-banner-editor">
+        <div className="profile-banner-preview">
+          {bannerPreview?<img src={bannerPreview} alt="Shop banner preview"/>:<div><ImagePlus size={25}/><span>Optional shop banner</span></div>}
+        </div>
+        <div className="profile-banner-actions">
+          <button className="button secondary" type="button" onClick={()=>bannerInput.current?.click()}>{bannerPreview?'Change banner':'Upload banner'}</button>
+          {bannerPreview?<button className="profile-banner-remove" type="button" onClick={()=>{
+            setBannerPreview('');
+            setRemoveBanner(true);
+            if(bannerInput.current)bannerInput.current.value='';
+          }}>Remove</button>:null}
+        </div>
+        <input
+          ref={bannerInput}
+          className="profile-hidden-file"
+          name="banner"
+          type="file"
+          accept="image/png,image/jpeg,image/webp"
+          onChange={event=>{
+            const file=event.target.files?.[0];
+            if(!file)return;
+            setBannerPreview(URL.createObjectURL(file));
+            setRemoveBanner(false);
+          }}
+        />
+        {removeBanner?<input type="hidden" name="remove_banner" value="1"/>:null}
+        <small>PNG, JPG or WebP · maximum 5 MB.</small>
+      </div>
+    </section>
+
     <label>
-      Name
-      <input name="display_name" required minLength={2} maxLength={60} defaultValue={name} autoComplete="name"/>
-      <small>This is the name people will see on your seller profile.</small>
+      Username
+      <input name="display_name" required minLength={2} maxLength={60} defaultValue={props.username} autoComplete="username"/>
+      <small>This is the public name shown on your store.</small>
     </label>
 
     <label>
-      Description
-      <textarea name="description" maxLength={300} rows={5} defaultValue={description} placeholder="Tell people a little about your store, collection, or the kinds of items you share."/>
+      Shop Description
+      <textarea name="description" maxLength={300} rows={5} defaultValue={props.description} placeholder="Tell people what you sell or collect."/>
       <small>Maximum 300 characters.</small>
     </label>
+
+    <label>
+      Name <span className="profile-optional">(optional)</span>
+      <input name="full_name" maxLength={100} defaultValue={props.fullName} autoComplete="name"/>
+    </label>
+
+    <label>
+      Email
+      <input value={props.email} readOnly disabled aria-describedby="profile-email-note"/>
+      <small id="profile-email-note">This is the email used to create your account.</small>
+    </label>
+
+    <label>
+      Phone number <span className="profile-optional">(optional)</span>
+      <input name="phone" type="tel" maxLength={25} defaultValue={props.phone} autoComplete="tel" placeholder="+60 12-345 6789"/>
+    </label>
+
+    <label>
+      Gender <span className="profile-optional">(optional)</span>
+      <select name="gender" defaultValue={props.gender}>
+        <option value="">Not selected</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
+        <option value="Prefer not to say">Prefer not to say</option>
+      </select>
+    </label>
+
+    <label>
+      Date of birth <span className="profile-optional">(optional)</span>
+      <input name="date_of_birth" type="date" defaultValue={props.dateOfBirth}/>
+    </label>
+
+    <div className="profile-private-note">Name, email, phone number, gender and date of birth stay private. Your public store shows only your username, shop description, profile picture and optional banner.</div>
 
     {state.error?<div className="form-notice error" role="alert">{state.error}</div>:null}
     {state.message?<div className="form-notice" role="status">{state.message}</div>:null}

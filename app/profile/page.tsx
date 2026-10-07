@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { UserRound } from 'lucide-react';
 import { configured, db } from '@/lib/supabase';
 import { ProfileForm } from './profile-form';
 
@@ -15,23 +14,36 @@ export default async function ProfilePage(){
   if(!user)redirect('/auth?next=/profile');
 
   const {data}=await client.from('marketplace_profiles')
-    .select('display_name,description')
+    .select('display_name,description,full_name,phone,gender,date_of_birth,avatar_path,banner_path')
     .eq('id',user.id)
     .maybeSingle();
 
-  const name=data?.display_name||String(user.user_metadata?.display_name||'Marketplace Member');
-  const description=data?.description||'';
+  const avatarUrl=data?.avatar_path
+    ? client.storage.from('marketplace-profile-images').getPublicUrl(data.avatar_path).data.publicUrl
+    : '';
+  const bannerUrl=data?.banner_path
+    ? client.storage.from('marketplace-profile-images').getPublicUrl(data.banner_path).data.publicUrl
+    : '';
 
   return <main id="main" className="container profile-page">
     <section className="profile-editor-card">
       <div className="profile-editor-heading">
-        <div className="profile-editor-avatar" aria-hidden="true"><UserRound size={46} strokeWidth={1.55}/></div>
-        <p className="eyebrow">YOUR PROFILE</p>
+        <p className="eyebrow">YOUR ACCOUNT</p>
         <h1>Edit profile</h1>
-        <p>Update the name and description people see when they view your seller profile.</p>
+        <p>Customize how your shop appears publicly and keep your account details up to date.</p>
       </div>
 
-      <ProfileForm name={name} description={description}/>
+      <ProfileForm
+        username={data?.display_name||String(user.user_metadata?.display_name||'Marketplace Member')}
+        description={data?.description||''}
+        fullName={data?.full_name||''}
+        email={user.email||''}
+        phone={data?.phone||''}
+        gender={data?.gender||''}
+        dateOfBirth={data?.date_of_birth||''}
+        avatarUrl={avatarUrl}
+        bannerUrl={bannerUrl}
+      />
 
       <div className="profile-editor-links">
         <Link className="text-link" href="/my-submissions" prefetch={false}>My submissions</Link>

@@ -29,6 +29,7 @@ export default async function SellerPage({params,searchParams}:{params:Promise<{
 
   return <main id="main" className="container seller-page">
     {query.error?<div className="form-notice error" role="alert">{query.error==='follow'?'Unable to update your follow right now. Please try again.':'Seller features are unavailable right now.'}</div>:null}
+    {seller.bannerUrl?<div className="seller-store-banner"><img src={seller.bannerUrl} alt=""/></div>:null}
     <SellerProfileCard seller={seller} actions={followAction}/>
     <section className="seller-products-section">
       <div className="section-heading"><div><p className="eyebrow">FROM THIS STORE</p><h1>{seller.storeName}&apos;s products</h1></div></div>
