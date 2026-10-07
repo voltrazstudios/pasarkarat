@@ -1954,3 +1954,30 @@ body:has(.seller-page.seller-store-themed) footer{
     border-top:0!important
   }
 }
+
+
+/* Profile save + sign-out actions. */
+.profile-form-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  width:100%
+}
+.profile-save-button{
+  flex:1 1 auto
+}
+.profile-signout-button{
+  flex:0 0 auto;
+  background:#c72833;
+  border-color:#c72833;
+  color:#fff
+}
+.profile-signout-button:hover{
+  background:#a91f29;
+  border-color:#a91f29
+}
+@media(max-width:480px){
+  .profile-form-actions{
+    align-items:stretch
+  }
+}
