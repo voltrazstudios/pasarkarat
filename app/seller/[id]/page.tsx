@@ -1,11 +1,11 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { SellerProfileCard } from '@/components/seller-profile-card';
-import { ProductCard } from '@/components/marketplace';
 import { collectionProducts } from '@/lib/products';
-import { sellerSections, sellerSummary, type StoreSection } from '@/lib/sellers';
+import { sellerProductMetrics, sellerSections, sellerSummary } from '@/lib/sellers';
 import { setSellerFollow } from '../actions';
 import { StoreCustomizer } from '../store-customizer';
+import { StoreProductsView } from '../store-products-view';
 import { StoreBanner } from '@/components/store-banner';
 
 export const dynamic='force-dynamic';
@@ -16,31 +16,6 @@ export async function generateMetadata({params}:{params:Promise<{id:string}>}){
   return {title:seller?`${seller.storeName} — Seller`:'Seller not found'};
 }
 
-function CustomSectionContent({
-  section,
-  products,
-}:{
-  section:StoreSection;
-  products:Awaited<ReturnType<typeof collectionProducts>>;
-}){
-  return <div className="seller-custom-section-content">
-    {section.blocks.map((block,index)=>{
-      if(block.type==='subcategory'){
-        return <h2 className="seller-subcategory-heading" key={`subcategory-${index}-${block.title}`}>{block.title}</h2>;
-      }
-
-      if(block.type==='image'){
-        return <div className="seller-section-image" key={`image-${index}-${block.imagePath}`}><img src={block.imageUrl} alt=""/></div>;
-      }
-
-      const selected=products.filter(product=>block.productIds.includes(product.id));
-      return selected.length
-        ? <div className="product-grid seller-section-product-grid" key={`products-${index}`}>{selected.map(product=><ProductCard key={product.id} product={product}/>)}</div>
-        : <p className="seller-section-block-empty" key={`products-${index}`}>No products in this block yet.</p>;
-    })}
-  </div>;
-}
-
 export default async function SellerPage({
   params,
   searchParams,
@@ -49,10 +24,11 @@ export default async function SellerPage({
   searchParams:Promise<{error?:string;section?:string;customize?:string}>;
 }){
   const {id}=await params;
-  const [seller,allProducts,sections,query]=await Promise.all([
+  const [seller,allProducts,sections,metrics,query]=await Promise.all([
     sellerSummary(id),
     collectionProducts(),
     sellerSections(id),
+    sellerProductMetrics(id),
     searchParams,
   ]);
   if(!seller)notFound();
@@ -62,13 +38,6 @@ export default async function SellerPage({
   const customSection=sections.find(section=>section.name===requested)||null;
   const active=requested==='all'?'all':customSection?customSection.name:'home';
   const customizing=seller.isOwner&&query.customize==='1';
-
-  const visibleProducts=active==='all'
-    ? products
-    : active==='home'
-      ? products.slice(0,4)
-      : [];
-
   const heading=active==='all'?'All Products':active==='home'?'Home':active;
 
   const followAction=seller.isOwner?null:
@@ -115,11 +84,12 @@ export default async function SellerPage({
 
     {!customizing?<section className="seller-products-section">
       <div className="section-heading seller-store-content-heading"><h1>{heading}</h1></div>
-      {customSection
-        ? <CustomSectionContent section={customSection} products={products}/>
-        : visibleProducts.length
-          ? <div className="product-grid">{visibleProducts.map(product=><ProductCard key={product.id} product={product}/>)}</div>
-          : <div className="empty-state seller-section-empty-state"><h2>No products here yet</h2><p>This seller does not currently have any approved products.</p></div>}
+      <StoreProductsView
+        products={products}
+        metrics={metrics}
+        section={customSection}
+        homeLimit={active==='home'?4:undefined}
+      />
     </section>:null}
   </main>;
 }

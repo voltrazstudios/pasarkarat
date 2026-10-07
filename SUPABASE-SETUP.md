@@ -23,6 +23,7 @@ Run these files in the Supabase SQL editor:
 11. `supabase/migrations/202610070011_store_content_blocks.sql`
 12. `supabase/migrations/202610070012_add_lazada.sql`
 13. `supabase/migrations/202610070013_banner_position.sql`
+14. `supabase/migrations/202610070014_seller_product_metrics.sql`
 
 ## 3. Configure local environment
 

@@ -98,3 +98,29 @@ export async function sellerSections(id:string):Promise<StoreSection[]>{
     return [{name:row.name,position:Number(row.position||index+1),blocks}];
   }).slice(0,3);
 }
+
+
+export type SellerProductMetric={
+  savedCount:number;
+  approvedAt:string;
+};
+
+export type SellerProductMetrics=Record<string,SellerProductMetric>;
+
+export async function sellerProductMetrics(id:string):Promise<SellerProductMetrics>{
+  if(!configured()||!uuid.test(id))return {};
+  const client=await db();
+  const {data,error}=await client.rpc('marketplace_public_seller_product_metrics',{p_seller:id});
+  if(error||!data||typeof data!=='object'||Array.isArray(data))return {};
+
+  const result:SellerProductMetrics={};
+  for(const [productId,value] of Object.entries(data as Record<string,unknown>)){
+    if(!uuid.test(productId)||!value||typeof value!=='object'||Array.isArray(value))continue;
+    const row=value as Record<string,unknown>;
+    result[productId]={
+      savedCount:Number(row.saved_count||0),
+      approvedAt:typeof row.approved_at==='string'?row.approved_at:'',
+    };
+  }
+  return result;
+}
