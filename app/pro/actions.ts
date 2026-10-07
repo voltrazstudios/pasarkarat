@@ -1,7 +1,7 @@
 'use server';
 
 import { redirect } from 'next/navigation';
-import { createBillplzBill, billplzConfigured } from '@/lib/billplz';
+import { BillplzRequestError, createBillplzBill, billplzConfigured } from '@/lib/billplz';
 import { configured, db } from '@/lib/supabase';
 import { serviceConfigured, serviceDb } from '@/lib/supabase-service';
 
@@ -18,6 +18,7 @@ export async function startProCheckout(form:FormData){
   const client=await db();
   const {data:{user}}=await client.auth.getUser();
   if(!user)redirect('/auth?next=/pro');
+  if(!user.email)redirect('/pro?error=email-required');
   if(!billplzConfigured()||!serviceConfigured())redirect('/pro?error=payment-not-configured');
 
   const {data:profile}=await client.from('marketplace_profiles')
@@ -26,6 +27,7 @@ export async function startProCheckout(form:FormData){
     .maybeSingle();
 
   let checkoutUrl='';
+  let stage:'billplz'|'database'='billplz';
   try{
     const selected=plans[plan];
     const bill=await createBillplzBill({
@@ -35,6 +37,7 @@ export async function startProCheckout(form:FormData){
       description:selected.label,
     });
 
+    stage='database';
     const admin=serviceDb();
     const registered=await admin.from('marketplace_pro_payments').insert({
       bill_id:bill.id,
@@ -46,7 +49,12 @@ export async function startProCheckout(form:FormData){
     });
     if(registered.error)throw new Error('Unable to register the Pro payment.');
     checkoutUrl=bill.url;
-  }catch{
+  }catch(error){
+    console.error('[Pro checkout] failed',{stage,error});
+    if(error instanceof BillplzRequestError){
+      redirect(`/pro?error=billplz&status=${error.status}`);
+    }
+    if(stage==='database')redirect('/pro?error=payment-database');
     redirect('/pro?error=payment');
   }
 
