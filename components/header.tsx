@@ -14,6 +14,7 @@ const links=[
   ['Virtual Experience','/experience'],
   ['SEN','/sen'],
   ['About','/about'],
+  ['My Store','/my-store'],
   ['Saved','/saved']
 ];
 
@@ -98,20 +99,22 @@ export function Header({isAdmin=false}:{isAdmin?:boolean}){
         <Link href="/" className="brand" aria-label="Pasar Karat home" onClick={()=>setOpen(false)}>
           <Image sizes="(max-width: 600px) 200px, (max-width: 900px) 220px, 240px" className="brand-logo" src="/pasar-karat-logo.png" width={1200} height={300} alt="Pasar Karat"/>
         </Link>
-        <button ref={toggle} type="button" className="mobile-menu-toggle" aria-label={open?'Close navigation menu':'Open navigation menu'} aria-expanded={open} aria-controls="main-navigation" onClick={()=>setOpen(!open)}>
-          {open?<X size={24}/>:<Menu size={24}/>}
-        </button>
         <nav ref={navigation} id="main-navigation" aria-label="Main navigation" data-open={open}>
           {links.map(([label,href])=><Link key={href} href={href} onClick={()=>setOpen(false)}>{label}{href==="/saved"&&<span className="saved-count">{ids.length}</span>}</Link>)}
           {isAdmin?<Link className="site-admin-link" href="/admin" onClick={()=>setOpen(false)}>Admin</Link>:null}
         </nav>
-        <div className="header-utility-controls">
-          <button ref={languageButton} type="button" className="language-toggle" onClick={toggleLanguage} aria-label={language==="en"?"Switch to Bahasa Melayu":"Switch to English"} title={language==="en"?"Bahasa Melayu":"English"}>
-            <LanguageFlag country={language==="en"?"my":"gb"}/>
+        <div className="header-right-controls">
+          <div className="header-utility-controls">
+            <button ref={languageButton} type="button" className="language-toggle" onClick={toggleLanguage} aria-label={language==="en"?"Switch to Bahasa Melayu":"Switch to English"} title={language==="en"?"Bahasa Melayu":"English"}>
+              <LanguageFlag country={language==="en"?"my":"gb"}/>
+            </button>
+            <Link ref={profileButton} href="/profile" prefetch={false} className="profile-toggle" aria-label="Profile" title="Profile">
+              <UserRound size={22}/>
+            </Link>
+          </div>
+          <button ref={toggle} type="button" className="mobile-menu-toggle" aria-label={open?'Close navigation menu':'Open navigation menu'} aria-expanded={open} aria-controls="main-navigation" onClick={()=>setOpen(!open)}>
+            {open?<X size={24}/>:<Menu size={24}/>}
           </button>
-          <Link ref={profileButton} href="/profile" prefetch={false} className="profile-toggle" aria-label="Profile" title="Profile">
-            <UserRound size={22}/>
-          </Link>
         </div>
       </div>
     </header>

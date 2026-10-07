@@ -16,6 +16,17 @@ export type SellerSummary={
   isOwner:boolean;
 };
 
+export type StoreSectionBlock=
+  | {type:'subcategory';title:string}
+  | {type:'products';productIds:string[]}
+  | {type:'image';imagePath:string;imageUrl:string};
+
+export type StoreSection={
+  name:string;
+  position:number;
+  blocks:StoreSectionBlock[];
+};
+
 export async function sellerSummary(id:string):Promise<SellerSummary|null>{
   if(!configured()||!uuid.test(id))return null;
   const client=await db();
@@ -42,13 +53,6 @@ export async function sellerSummary(id:string):Promise<SellerSummary|null>{
   };
 }
 
-
-export type StoreSection={
-  name:string;
-  position:number;
-  productIds:string[];
-};
-
 export async function sellerSections(id:string):Promise<StoreSection[]>{
   if(!configured()||!uuid.test(id))return [];
   const client=await db();
@@ -59,7 +63,34 @@ export async function sellerSections(id:string):Promise<StoreSection[]>{
     if(!entry||typeof entry!=='object')return [];
     const row=entry as Record<string,unknown>;
     if(typeof row.name!=='string')return [];
-    const productIds=Array.isArray(row.product_ids)?row.product_ids.map(String).filter(value=>uuid.test(value)):[];
-    return [{name:row.name,position:Number(row.position||index+1),productIds}];
+
+    const rawBlocks=Array.isArray(row.content)?row.content:[];
+    const blocks:StoreSectionBlock[]=rawBlocks.flatMap(block=>{
+      if(!block||typeof block!=='object')return [];
+      const item=block as Record<string,unknown>;
+
+      if(item.type==='subcategory'&&typeof item.title==='string'&&item.title.trim()){
+        return [{type:'subcategory' as const,title:item.title.trim()}];
+      }
+
+      if(item.type==='products'){
+        const productIds=Array.isArray(item.product_ids)
+          ? item.product_ids.map(String).filter(value=>uuid.test(value))
+          : [];
+        return [{type:'products' as const,productIds}];
+      }
+
+      if(item.type==='image'&&typeof item.image_path==='string'&&item.image_path){
+        return [{
+          type:'image' as const,
+          imagePath:item.image_path,
+          imageUrl:client.storage.from('marketplace-profile-images').getPublicUrl(item.image_path).data.publicUrl,
+        }];
+      }
+
+      return [];
+    });
+
+    return [{name:row.name,position:Number(row.position||index+1),blocks}];
   }).slice(0,3);
 }

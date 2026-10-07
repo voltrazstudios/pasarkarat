@@ -221,3 +221,8 @@ body .footer-bottom { display: block; padding-block: 22px; }
 }
 
 .header-utility-controls{display:flex;align-items:center;gap:8px;flex-shrink:0}
+
+.header-right-controls{display:flex;align-items:center;gap:8px;flex-shrink:0}
+@media(max-width:900px){
+  .header-right-controls{margin-left:auto}
+}

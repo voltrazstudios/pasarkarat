@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { SellerProfileCard } from '@/components/seller-profile-card';
 import { ProductCard } from '@/components/marketplace';
 import { collectionProducts } from '@/lib/products';
-import { sellerSections, sellerSummary } from '@/lib/sellers';
+import { sellerSections, sellerSummary, type StoreSection } from '@/lib/sellers';
 import { setSellerFollow } from '../actions';
 import { StoreCustomizer } from '../store-customizer';
 
@@ -15,12 +15,37 @@ export async function generateMetadata({params}:{params:Promise<{id:string}>}){
   return {title:seller?`${seller.storeName} — Seller`:'Seller not found'};
 }
 
+function CustomSectionContent({
+  section,
+  products,
+}:{
+  section:StoreSection;
+  products:Awaited<ReturnType<typeof collectionProducts>>;
+}){
+  return <div className="seller-custom-section-content">
+    {section.blocks.map((block,index)=>{
+      if(block.type==='subcategory'){
+        return <h2 className="seller-subcategory-heading" key={`subcategory-${index}-${block.title}`}>{block.title}</h2>;
+      }
+
+      if(block.type==='image'){
+        return <div className="seller-section-image" key={`image-${index}-${block.imagePath}`}><img src={block.imageUrl} alt=""/></div>;
+      }
+
+      const selected=products.filter(product=>block.productIds.includes(product.id));
+      return selected.length
+        ? <div className="product-grid seller-section-product-grid" key={`products-${index}`}>{selected.map(product=><ProductCard key={product.id} product={product}/>)}</div>
+        : <p className="seller-section-block-empty" key={`products-${index}`}>No products in this block yet.</p>;
+    })}
+  </div>;
+}
+
 export default async function SellerPage({
   params,
   searchParams,
 }:{
   params:Promise<{id:string}>;
-  searchParams:Promise<{error?:string;section?:string}>;
+  searchParams:Promise<{error?:string;section?:string;customize?:string}>;
 }){
   const {id}=await params;
   const [seller,allProducts,sections,query]=await Promise.all([
@@ -35,18 +60,15 @@ export default async function SellerPage({
   const requested=query.section||'home';
   const customSection=sections.find(section=>section.name===requested)||null;
   const active=requested==='all'?'all':customSection?customSection.name:'home';
+  const customizing=seller.isOwner&&query.customize==='1';
 
   const visibleProducts=active==='all'
     ? products
     : active==='home'
       ? products.slice(0,4)
-      : products.filter(product=>customSection?.productIds.includes(product.id));
+      : [];
 
-  const heading=active==='all'
-    ? 'All Products'
-    : active==='home'
-      ? 'Featured from this store'
-      : active;
+  const heading=active==='all'?'All Products':active==='home'?'Home':active;
 
   const followAction=seller.isOwner?null:
     <form action={setSellerFollow}>
@@ -76,11 +98,17 @@ export default async function SellerPage({
       bannerUrl={seller.bannerUrl||''}
       initialSections={sections}
       products={products.map(product=>({id:product.id,name:product.name}))}
+      initialOpen={customizing}
+      sellerId={seller.id}
     />:null}
 
-    <section className="seller-products-section">
-      <div className="section-heading"><div><p className="eyebrow">FROM THIS STORE</p><h1>{heading}</h1></div></div>
-      {visibleProducts.length?<div className="product-grid">{visibleProducts.map(product=><ProductCard key={product.id} product={product}/>)}</div>:<div className="empty-state seller-section-empty-state"><h2>No products here yet</h2><p>{active==='home'?'This seller does not currently have any approved products.':'This section does not have any products yet.'}</p></div>}
-    </section>
+    {!customizing?<section className="seller-products-section">
+      <div className="section-heading seller-store-content-heading"><h1>{heading}</h1></div>
+      {customSection
+        ? <CustomSectionContent section={customSection} products={products}/>
+        : visibleProducts.length
+          ? <div className="product-grid">{visibleProducts.map(product=><ProductCard key={product.id} product={product}/>)}</div>
+          : <div className="empty-state seller-section-empty-state"><h2>No products here yet</h2><p>This seller does not currently have any approved products.</p></div>}
+    </section>:null}
   </main>;
 }

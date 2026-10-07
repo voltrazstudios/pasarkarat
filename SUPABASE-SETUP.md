@@ -20,6 +20,7 @@ Run these files in the Supabase SQL editor:
 8. `supabase/migrations/202610070008_profile_description.sql`
 9. `supabase/migrations/202610070009_profile_details_and_media.sql`
 10. `supabase/migrations/202610070010_store_customization.sql`
+11. `supabase/migrations/202610070011_store_content_blocks.sql`
 
 ## 3. Configure local environment
 
