@@ -8,6 +8,8 @@ export type SellerSummary={
   description:string|null;
   avatarUrl:string|null;
   bannerUrl:string|null;
+  bannerPositionX:number;
+  bannerPositionY:number;
   joinedAt:string;
   ratings:number;
   products:number;
@@ -44,6 +46,8 @@ export async function sellerSummary(id:string):Promise<SellerSummary|null>{
     bannerUrl:typeof row.banner_path==='string'&&row.banner_path
       ? client.storage.from('marketplace-profile-images').getPublicUrl(row.banner_path).data.publicUrl
       : null,
+    bannerPositionX:Number(row.banner_position_x??50),
+    bannerPositionY:Number(row.banner_position_y??50),
     joinedAt:row.joined_at,
     ratings:Number(row.ratings||0),
     products:Number(row.products||0),

@@ -632,3 +632,50 @@
     line-height:1.3
   }
 }
+
+
+/* Mobile cards keep platform text to one consistent line. */
+@media(max-width:600px){
+  .product-card .seller{
+    display:block;
+    width:100%;
+    min-width:0;
+    overflow:hidden;
+    white-space:nowrap;
+    line-height:1.2
+  }
+
+  .product-card .platform-summary-list{
+    display:block;
+    width:100%;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:clip;
+    font-size:clamp(7px,1.9vw,10px);
+    letter-spacing:-.25px
+  }
+
+  /* Keep the all-platform menu inside the viewport, independent of the card edge. */
+  .platform-all-popover{
+    position:fixed;
+    left:50%;
+    right:auto;
+    bottom:max(16px,env(safe-area-inset-bottom));
+    width:min(300px,calc(100vw - 24px));
+    max-height:min(360px,calc(100dvh - 120px));
+    overflow-y:auto;
+    transform:translateX(-50%);
+    z-index:1400;
+    padding:15px 12px
+  }
+
+  .platform-all-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:14px 8px
+  }
+
+  .platform-all-icon{
+    width:42px;
+    height:42px
+  }
+}

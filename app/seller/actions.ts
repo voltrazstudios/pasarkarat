@@ -48,7 +48,7 @@ async function cleanImage(file:File,kind:'banner'|'section'){
     if(kind==='banner'){
       return await sharp(input,{failOn:'error',limitInputPixels:40000000})
         .rotate()
-        .resize(1800,600,{fit:'cover',position:'centre',withoutEnlargement:false})
+        .resize({width:1800,height:1200,fit:'inside',withoutEnlargement:true})
         .webp({quality:88})
         .toBuffer();
     }
@@ -83,7 +83,7 @@ export async function saveStoreCustomization(_:StoreCustomizationResult,form:For
   }
 
   const {data:profile,error:profileError}=await client.from('marketplace_profiles')
-    .select('banner_path')
+    .select('banner_path,banner_position_x,banner_position_y')
     .eq('id',user.id)
     .maybeSingle();
   if(profileError)return {error:'Unable to load your current store.'};
@@ -105,6 +105,10 @@ export async function saveStoreCustomization(_:StoreCustomizationResult,form:For
   }
 
   const oldBanner=profile?.banner_path||null;
+  const positionXRaw=Number(String(form.get('banner_position_x')||profile?.banner_position_x||50));
+  const positionYRaw=Number(String(form.get('banner_position_y')||profile?.banner_position_y||50));
+  const bannerPositionX=Math.max(0,Math.min(100,Number.isFinite(positionXRaw)?positionXRaw:50));
+  const bannerPositionY=Math.max(0,Math.min(100,Number.isFinite(positionYRaw)?positionYRaw:50));
   let bannerPath=oldBanner;
   let uploadedBanner:string|null=null;
   const uploadedSectionImages:string[]=[];
@@ -184,6 +188,8 @@ export async function saveStoreCustomization(_:StoreCustomizationResult,form:For
 
     const saved=await client.rpc('marketplace_save_store_customization_v2',{
       p_banner_path:bannerPath,
+      p_banner_position_x:bannerPositionX,
+      p_banner_position_y:bannerPositionY,
       p_sections:sections,
     });
     if(saved.error||saved.data!==true)throw new Error(saved.error?.message||'Unable to save your store customization.');
