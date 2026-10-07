@@ -679,3 +679,20 @@
     height:42px
   }
 }
+
+
+/* Added marketplace fallbacks: Lelong.my, eBay and Etsy. */
+.platform-logo-fallback.platform-lelong-my,
+.platform-all-icon.platform-lelong-my{background:#e85b24}
+.platform-logo-fallback.platform-ebay,
+.platform-all-icon.platform-ebay{background:#3665f3}
+.platform-logo-fallback.platform-etsy,
+.platform-all-icon.platform-etsy{background:#f1641e}
+
+.seller-platform-button.platform-lelong-my{background:#e85b24}
+.seller-platform-button.platform-ebay{background:#3665f3}
+.seller-platform-button.platform-etsy{background:#f1641e}
+
+.platform-indicator.platform-lelong-my{background:#e85b24;border-color:#e85b24}
+.platform-indicator.platform-ebay{background:#3665f3;border-color:#3665f3}
+.platform-indicator.platform-etsy{background:#f1641e;border-color:#f1641e}
