@@ -409,3 +409,206 @@
 
 .platform-indicator.platform-lazada,
 .seller-platform-button.platform-lazada{background:#6c2bbf;border-color:#6c2bbf}
+
+
+/* Product-card marketplace icons: show the original icon boxes, maximum 3. */
+.platform-quick-wrap{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:7px;
+  min-width:0;
+  margin-left:auto
+}
+
+.platform-quick-icons{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  flex:0 0 auto
+}
+
+.platform-quick-icon{
+  pointer-events:auto;
+  user-select:auto;
+  flex:0 0 auto
+}
+
+.platform-quick-icon:hover{
+  filter:brightness(.94);
+  transform:translateY(-1px)
+}
+
+.platform-all{
+  position:relative;
+  flex:0 0 auto
+}
+
+.platform-all summary{
+  list-style:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  min-height:44px;
+  padding:8px 12px;
+  border:1px solid #d88f68;
+  border-radius:8px;
+  background:var(--surface);
+  color:var(--orange);
+  font-size:12px;
+  font-weight:700;
+  white-space:nowrap;
+  cursor:pointer
+}
+
+.platform-all summary::-webkit-details-marker{
+  display:none
+}
+
+.platform-all[open] summary{
+  border-color:var(--orange);
+  box-shadow:0 3px 10px #182e3a10
+}
+
+.platform-all-chevron{
+  transition:transform .18s ease
+}
+
+.platform-all[open] .platform-all-chevron{
+  transform:rotate(180deg)
+}
+
+.platform-all-label-mobile{
+  display:none
+}
+
+.platform-all-popover{
+  position:absolute;
+  right:0;
+  bottom:calc(100% + 8px);
+  z-index:30;
+  width:238px;
+  padding:14px 12px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:var(--surface);
+  box-shadow:0 14px 34px #182e3a24
+}
+
+.platform-all-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px 8px
+}
+
+.platform-all-grid>a{
+  display:grid;
+  justify-items:center;
+  align-content:start;
+  gap:5px;
+  min-width:0;
+  color:var(--navy);
+  font-size:10px;
+  font-weight:600;
+  line-height:1.2;
+  text-align:center
+}
+
+.platform-all-grid>a:hover{
+  color:var(--orange)
+}
+
+.platform-all-icon{
+  width:42px;
+  height:42px;
+  display:grid;
+  place-items:center;
+  border-radius:9px;
+  background:#f2eee7
+}
+
+.platform-all-icon .platform-logo-image{
+  width:30px;
+  height:30px
+}
+
+.platform-all-icon .platform-logo-fallback{
+  width:30px!important;
+  height:30px!important
+}
+
+/* Marketplace-specific popup tiles for fallback-only logos. */
+.platform-all-icon.platform-shopee{background:#f26b3a}
+.platform-all-icon.platform-carousell{background:#e31c3d}
+.platform-all-icon.platform-facebook{background:#3978dd}
+.platform-all-icon.platform-tiktok-shop{background:#111}
+.platform-all-icon.platform-mudah-my{background:#198754}
+.platform-all-icon.platform-lazada{background:#6c2bbf}
+.platform-all-icon.platform-own-website{background:#233746}
+
+@media(max-width:1100px){
+  .platform-all-label{
+    display:none
+  }
+
+  .platform-all-label-mobile{
+    display:inline
+  }
+}
+
+@media(max-width:600px){
+  .platform-quick-wrap{
+    gap:4px
+  }
+
+  .platform-quick-icons{
+    gap:4px
+  }
+
+  .platform-quick-icon{
+    width:26px!important;
+    height:26px!important;
+    min-height:26px!important;
+    padding:3px!important
+  }
+
+  .platform-quick-icon .platform-logo-image{
+    width:20px;
+    height:20px
+  }
+
+  .platform-quick-icon .platform-logo-fallback{
+    width:20px!important;
+    height:20px!important;
+    font-size:10px
+  }
+
+  .platform-all summary{
+    min-height:30px;
+    padding:4px 6px;
+    gap:4px;
+    border-radius:6px;
+    font-size:10px
+  }
+
+  .platform-all summary>svg:first-child{
+    display:none
+  }
+
+  .platform-all-popover{
+    right:-2px;
+    width:210px;
+    padding:12px 10px
+  }
+
+  .platform-all-grid{
+    gap:12px 6px
+  }
+
+  .platform-all-icon{
+    width:38px;
+    height:38px
+  }
+}

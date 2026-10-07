@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, ChevronDown, Grid2X2 } from 'lucide-react';
 import { useLanguage } from './language-provider';
 import type { Platform, Product, ProductLink } from '@/data/products';
 
@@ -57,31 +57,42 @@ export function PlatformSummary({links}:{links:ProductLink[]}){
 
 export function PlatformQuickLinks({links}:{links:ProductLink[]}){
   const unique=links.filter((link,index,all)=>all.findIndex(item=>item.platform===link.platform)===index);
-  const visible=unique.slice(0,4);
-  const hidden=unique.slice(4);
+  const visible=unique.slice(0,3);
+  const hasMore=unique.length>3;
 
   return <div className="platform-quick-wrap">
-    <div className="platform-quick-scroll" aria-label="Marketplace links">
+    <div className="platform-quick-icons" aria-label="Marketplace links">
       {visible.map(link=><a
         key={link.platform}
-        className={`platform-quick-chip platform-${platformClass(link.platform)}`}
+        className={`platform-indicator platform-quick-icon platform-${platformClass(link.platform)}`}
         href={link.url}
         target="_blank"
         rel="noopener noreferrer sponsored"
         aria-label={`Open ${platformLabel[link.platform]} listing`}
         title={platformLabel[link.platform]}
-      ><PlatformLogo platform={link.platform} size={20}/><span>{platformLabel[link.platform]}</span></a>)}
+      ><PlatformLogo platform={link.platform} size={32}/></a>)}
     </div>
-    {hidden.length?<details className="platform-more">
-      <summary aria-label={`Show ${hidden.length} more marketplaces`}>+{hidden.length}</summary>
-      <div className="platform-more-popover">
-        <strong>Available on {unique.length} platforms</strong>
-        {unique.map(link=><a
-          key={link.platform}
-          href={link.url}
-          target="_blank"
-          rel="noopener noreferrer sponsored"
-        ><PlatformLogo platform={link.platform} size={20}/><span>{platformLabel[link.platform]}</span><ArrowUpRight size={15}/></a>)}
+
+    {hasMore?<details className="platform-all">
+      <summary aria-label={`View all ${unique.length} platforms`}>
+        <Grid2X2 size={14}/>
+        <span className="platform-all-label">View all platforms ({unique.length})</span>
+        <span className="platform-all-label-mobile">All ({unique.length})</span>
+        <ChevronDown className="platform-all-chevron" size={15}/>
+      </summary>
+      <div className="platform-all-popover">
+        <div className="platform-all-grid">
+          {unique.map(link=><a
+            key={link.platform}
+            href={link.url}
+            target="_blank"
+            rel="noopener noreferrer sponsored"
+            aria-label={`Open ${platformLabel[link.platform]} listing`}
+          >
+            <span className={`platform-all-icon platform-${platformClass(link.platform)}`}><PlatformLogo platform={link.platform} size={30}/></span>
+            <span>{platformLabel[link.platform]}</span>
+          </a>)}
+        </div>
       </div>
     </details>:null}
   </div>;
