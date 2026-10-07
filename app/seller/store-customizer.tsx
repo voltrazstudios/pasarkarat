@@ -4,6 +4,7 @@ import { useActionState, useEffect, useRef, useState } from 'react';
 import { ImagePlus, Layers3, Plus, Trash2, Type, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { saveStoreCustomization, type StoreCustomizationResult } from './actions';
+import { StoreBanner } from '@/components/store-banner';
 import type { StoreSection, StoreSectionBlock } from '@/lib/sellers';
 
 type ProductOption={id:string;name:string};
@@ -192,9 +193,7 @@ export function StoreCustomizer({
       </div>
 
       <div className="store-banner-control">
-        <div className="store-banner-editor-preview">
-          {bannerPreview?<img src={bannerPreview} alt="Shop banner preview"/>:<div><ImagePlus size={28}/><span>No banner yet</span></div>}
-        </div>
+        <StoreBanner src={bannerPreview} preview emptyLabel="No banner yet"/>
         <div className="store-banner-editor-actions">
           <button type="button" className="button secondary" onClick={()=>bannerInput.current?.click()}>{bannerPreview?'Change banner':'Upload banner'}</button>
           {bannerPreview?<button type="button" className="store-remove-button" onClick={()=>{

@@ -6,6 +6,7 @@ import { collectionProducts } from '@/lib/products';
 import { sellerSections, sellerSummary, type StoreSection } from '@/lib/sellers';
 import { setSellerFollow } from '../actions';
 import { StoreCustomizer } from '../store-customizer';
+import { StoreBanner } from '@/components/store-banner';
 
 export const dynamic='force-dynamic';
 
@@ -80,7 +81,7 @@ export default async function SellerPage({
   return <main id="main" className="container seller-page">
     {query.error?<div className="form-notice error" role="alert">{query.error==='follow'?'Unable to update your follow right now. Please try again.':'Seller features are unavailable right now.'}</div>:null}
 
-    {seller.bannerUrl?<div className="seller-store-banner"><img src={seller.bannerUrl} alt=""/></div>:null}
+    <StoreBanner src={seller.bannerUrl||''}/>
 
     <SellerProfileCard seller={seller} actions={followAction}/>
 

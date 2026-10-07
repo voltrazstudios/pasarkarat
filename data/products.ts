@@ -11,7 +11,7 @@ export const categoryImages: Record<Category, string> = {
   'Home & Decor': '/images/categories/home-decor.png',
 };
 
-export const platforms = ['Shopee','Carousell','Facebook','TikTok Shop','Mudah.my','Own website'] as const;
+export const platforms = ['Shopee','Carousell','Facebook','TikTok Shop','Mudah.my','Lazada','Own website'] as const;
 export type Platform = typeof platforms[number];
 export type ProductLink = { platform: Platform; url: string };
 export type Product = { id: string; slug: string; name: string; nameMs: string; image: string; category: Category; description: string; descriptionMs: string; links: ProductLink[]; featured: boolean; price?: number; currency?: 'MYR'; submitted?: boolean; sellerId?: string };

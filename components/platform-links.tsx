@@ -12,6 +12,7 @@ const platformLabel: Record<Platform, string> = {
   Facebook: 'Facebook',
   'TikTok Shop': 'TikTok Shop',
   'Mudah.my': 'Mudah.my',
+  Lazada: 'Lazada',
   'Own website': 'Own website',
 };
 
@@ -27,6 +28,7 @@ const fallbackMark: Record<Platform, string> = {
   Facebook: 'f',
   'TikTok Shop': 'T',
   'Mudah.my': 'M',
+  Lazada: 'L',
   'Own website': '↗',
 };
 
@@ -45,13 +47,43 @@ export function PlatformLogo({platform,size=24}:{platform:Platform;size?:number}
 
 export function PlatformSummary({links}:{links:ProductLink[]}){
   const values=[...new Set(links.map(link=>link.platform))];
-  return <span className="platform-summary-list">{values.map((platform,index)=><span key={platform}>{index>0&&<span className="platform-separator"> · </span>}{platformLabel[platform]}</span>)}</span>;
+  const visible=values.slice(0,4);
+  const hidden=values.length-visible.length;
+  return <span className="platform-summary-list">
+    {visible.map((platform,index)=><span key={platform}>{index>0&&<span className="platform-separator"> · </span>}{platformLabel[platform]}</span>)}
+    {hidden>0?<span className="platform-summary-more"><span className="platform-separator"> · </span>+{hidden} more</span>:null}
+  </span>;
 }
 
-export function PlatformIndicators({links}:{links:ProductLink[]}){
-  const values=[...new Set(links.map(link=>link.platform))];
-  return <div className="platform-indicators" aria-hidden="true">
-    {values.map(platform=><span key={platform} className={`platform-indicator platform-${platformClass(platform)}`}><PlatformLogo platform={platform} size={32}/></span>)}
+export function PlatformQuickLinks({links}:{links:ProductLink[]}){
+  const unique=links.filter((link,index,all)=>all.findIndex(item=>item.platform===link.platform)===index);
+  const visible=unique.slice(0,4);
+  const hidden=unique.slice(4);
+
+  return <div className="platform-quick-wrap">
+    <div className="platform-quick-scroll" aria-label="Marketplace links">
+      {visible.map(link=><a
+        key={link.platform}
+        className={`platform-quick-chip platform-${platformClass(link.platform)}`}
+        href={link.url}
+        target="_blank"
+        rel="noopener noreferrer sponsored"
+        aria-label={`Open ${platformLabel[link.platform]} listing`}
+        title={platformLabel[link.platform]}
+      ><PlatformLogo platform={link.platform} size={20}/><span>{platformLabel[link.platform]}</span></a>)}
+    </div>
+    {hidden.length?<details className="platform-more">
+      <summary aria-label={`Show ${hidden.length} more marketplaces`}>+{hidden.length}</summary>
+      <div className="platform-more-popover">
+        <strong>Available on {unique.length} platforms</strong>
+        {unique.map(link=><a
+          key={link.platform}
+          href={link.url}
+          target="_blank"
+          rel="noopener noreferrer sponsored"
+        ><PlatformLogo platform={link.platform} size={20}/><span>{platformLabel[link.platform]}</span><ArrowUpRight size={15}/></a>)}
+      </div>
+    </details>:null}
   </div>;
 }
 

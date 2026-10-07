@@ -370,3 +370,42 @@
 .platform-filter-pills .platform-filter-tiktok-shop.selected{background:#111;border-color:#111;color:#fff}
 .platform-filter-pills .platform-filter-mudah-my.selected{background:#198754;border-color:#198754;color:#fff}
 .platform-filter-pills .platform-filter-own-website.selected{background:#233746;border-color:#233746;color:#fff}
+
+
+/* Scalable marketplace row for product cards. */
+.product-marketplace-heading{margin-top:12px}
+.product-marketplace-heading .compare-sellers{font-size:12px;color:var(--muted);font-weight:700;letter-spacing:.02em}
+.product-bottom-single{justify-content:flex-end}
+.platform-quick-wrap{position:relative;display:flex;align-items:center;min-width:0;flex:1;gap:5px}
+.platform-quick-scroll{display:flex;align-items:center;gap:5px;min-width:0;overflow-x:auto;scrollbar-width:none;overscroll-behavior-inline:contain}
+.platform-quick-scroll::-webkit-scrollbar{display:none}
+.platform-quick-chip{display:inline-flex;align-items:center;gap:5px;flex:0 0 auto;min-height:34px;padding:5px 8px;border:1px solid var(--line);border-radius:7px;background:var(--surface);color:var(--navy);font-size:11px;font-weight:700}
+.platform-quick-chip:hover{border-color:var(--orange);transform:translateY(-1px)}
+.platform-quick-chip .platform-logo-image{width:20px;height:20px}
+.platform-quick-chip .platform-logo-fallback{width:20px!important;height:20px!important;font-size:11px}
+.platform-more{position:relative;flex:0 0 auto}
+.platform-more summary{list-style:none;display:grid;place-items:center;min-width:34px;height:34px;padding:0 7px;border:1px solid var(--line);border-radius:7px;background:var(--surface);color:var(--navy);font-size:11px;font-weight:800;cursor:pointer}
+.platform-more summary::-webkit-details-marker{display:none}
+.platform-more[open] summary{border-color:var(--orange);color:var(--orange)}
+.platform-more-popover{position:absolute;right:0;bottom:calc(100% + 8px);z-index:20;width:220px;padding:10px;border:1px solid var(--line);border-radius:9px;background:var(--surface);box-shadow:0 14px 32px #182e3a20}
+.platform-more-popover>strong{display:block;padding:4px 7px 8px;font-size:12px}
+.platform-more-popover a{display:flex;align-items:center;gap:8px;min-height:38px;padding:7px;border-radius:6px;font-size:12px}
+.platform-more-popover a:hover{background:var(--cream)}
+.platform-more-popover a svg{margin-left:auto}
+.platform-summary-more{white-space:nowrap}
+.product-card-actions{align-items:center}
+.product-card-actions .save-control{flex:0 0 auto}
+@media(max-width:600px){
+  .product-card-actions{flex-wrap:nowrap!important;align-items:center;gap:5px!important}
+  .platform-quick-chip{min-height:30px;padding:4px 6px}
+  .platform-quick-chip span:last-child{display:none}
+  .platform-more summary{min-width:30px;height:30px;padding-inline:5px}
+  .platform-more-popover{right:-2px;width:205px}
+  .product-marketplace-heading{margin-top:9px}
+  .product-marketplace-heading .compare-sellers{font-size:10px}
+}
+.platform-logo-fallback.platform-lazada{background:#6c2bbf;color:#fff}
+.platform-filter-pills .platform-filter-lazada.selected{background:#6c2bbf;border-color:#6c2bbf;color:#fff}
+
+.platform-indicator.platform-lazada,
+.seller-platform-button.platform-lazada{background:#6c2bbf;border-color:#6c2bbf}

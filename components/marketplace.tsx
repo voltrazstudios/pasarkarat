@@ -5,7 +5,7 @@ import Image from 'next/image';
 import imageAssets from '@/data/image-assets.json';
 import { CommunityCTA } from './community-cta';
 import { SaveButton } from './saved-items';
-import { CompareSellerPrices, PlatformIndicators, PlatformSummary, ProductName, platformClass } from './platform-links';
+import { CompareSellerPrices, PlatformQuickLinks, PlatformSummary, ProductName, platformClass } from './platform-links';
 import { useState } from 'react';
 import { useLanguage } from './language-provider';
 import { ArrowUpRight, ArrowRight, Search, Layers, Image as ImageIcon, X } from 'lucide-react';
@@ -76,13 +76,14 @@ export function ProductCard({product:p}:{product:Product}){
     <div className="product-content">
       <p className="seller"><PlatformSummary links={p.links}/></p>
       <h3><Link href={`/items/${p.slug}`}><ProductName product={p}/></Link></h3>
-      <div className="product-bottom">
-        {p.price!=null?<strong className="compare-sellers">{new Intl.NumberFormat('en-MY',{style:'currency',currency:p.currency??'MYR'}).format(p.price)}</strong>:<CompareSellerPrices/>}
+      <div className={`product-bottom ${p.price==null?'product-bottom-single':''}`}>
+        {p.price!=null?<strong className="compare-sellers">{new Intl.NumberFormat('en-MY',{style:'currency',currency:p.currency??'MYR'}).format(p.price)}</strong>:null}
         <Link href={`/items/${p.slug}`} className="view-item">View Item <ArrowUpRight size={15}/></Link>
       </div>
+      <div className="product-marketplace-heading"><CompareSellerPrices/></div>
       <div className="product-card-actions">
         <SaveButton id={p.id} name={displayName}/>
-        <PlatformIndicators links={p.links}/>
+        <PlatformQuickLinks links={p.links}/>
       </div>
     </div>
   </article>;

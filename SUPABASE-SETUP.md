@@ -21,6 +21,7 @@ Run these files in the Supabase SQL editor:
 9. `supabase/migrations/202610070009_profile_details_and_media.sql`
 10. `supabase/migrations/202610070010_store_customization.sql`
 11. `supabase/migrations/202610070011_store_content_blocks.sql`
+12. `supabase/migrations/202610070012_add_lazada.sql`
 
 ## 3. Configure local environment
 

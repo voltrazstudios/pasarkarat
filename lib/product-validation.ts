@@ -7,6 +7,7 @@ const hosts:Partial<Record<Platform,string[]>>={
   Facebook:['facebook.com','fb.com'],
   'TikTok Shop':['tiktok.com'],
   'Mudah.my':['mudah.my'],
+  Lazada:['lazada.com.my','lazada.com','lazada.sg'],
 };
 
 function allowedHost(hostname:string,roots:string[]){
