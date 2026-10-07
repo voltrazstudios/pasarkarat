@@ -1,3 +1,5 @@
+import { platformDisplayNames, platforms, type Platform } from '@/data/products';
+import { defaultStoreTheme, storeFonts, type StoreFont } from './store-theme';
 import { configured, db } from './supabase';
 
 const uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
@@ -16,6 +18,14 @@ export type SellerSummary={
   followers:number;
   isFollowing:boolean;
   isOwner:boolean;
+  isPro:boolean;
+  accentColor:string;
+  pageBackground:string;
+  cardColor:string;
+  storeFont:StoreFont;
+  featuredProductIds:string[];
+  customSlug:string|null;
+  storeLinks:Partial<Record<Platform,string>>;
 };
 
 export type StoreSectionBlock=
@@ -36,6 +46,19 @@ export async function sellerSummary(id:string):Promise<SellerSummary|null>{
   if(error||!data)return null;
   const row=data as Record<string,unknown>;
   if(typeof row.id!=='string'||typeof row.store_name!=='string'||typeof row.joined_at!=='string')return null;
+  const rawLinks=row.store_links&&typeof row.store_links==='object'&&!Array.isArray(row.store_links)
+    ? row.store_links as Record<string,unknown>
+    : {};
+  const storeLinks:Partial<Record<Platform,string>>={};
+  for(const platform of platforms){
+    const value=rawLinks[platform];
+    if(typeof value==='string'&&value.startsWith('https://'))storeLinks[platform]=value;
+  }
+
+  const storeFont=typeof row.store_font==='string'&&storeFonts.includes(row.store_font as StoreFont)
+    ? row.store_font as StoreFont
+    : defaultStoreTheme.font;
+
   return {
     id:row.id,
     storeName:row.store_name,
@@ -54,6 +77,16 @@ export async function sellerSummary(id:string):Promise<SellerSummary|null>{
     followers:Number(row.followers||0),
     isFollowing:row.is_following===true,
     isOwner:row.is_owner===true,
+    isPro:row.is_pro===true,
+    accentColor:typeof row.accent_color==='string'?row.accent_color:defaultStoreTheme.accentColor,
+    pageBackground:typeof row.page_background==='string'?row.page_background:defaultStoreTheme.pageBackground,
+    cardColor:typeof row.card_color==='string'?row.card_color:defaultStoreTheme.cardColor,
+    storeFont,
+    featuredProductIds:Array.isArray(row.featured_product_ids)
+      ? row.featured_product_ids.map(String).filter(value=>uuid.test(value)).slice(0,4)
+      : [],
+    customSlug:typeof row.custom_slug==='string'&&row.custom_slug?row.custom_slug:null,
+    storeLinks,
   };
 }
 
@@ -123,4 +156,20 @@ export async function sellerProductMetrics(id:string):Promise<SellerProductMetri
     };
   }
   return result;
+}
+
+
+export async function sellerIdBySlug(slug:string):Promise<string|null>{
+  const clean=slug.trim().toLowerCase();
+  if(!configured()||!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(clean))return null;
+  const client=await db();
+  const {data,error}=await client.rpc('marketplace_public_seller_id_by_slug',{p_slug:clean});
+  return !error&&typeof data==='string'&&uuid.test(data)?data:null;
+}
+
+export function sellerStoreLinkLabels(links:Partial<Record<Platform,string>>){
+  return platforms.flatMap(platform=>links[platform]
+    ? [{platform,label:platformDisplayNames[platform],url:links[platform]!}]
+    : []
+  );
 }

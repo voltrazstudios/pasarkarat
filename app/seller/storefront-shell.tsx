@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useMemo, useState, type MouseEvent } from 'react';
 import { Search, X } from 'lucide-react';
+import { ProductCard } from '@/components/marketplace';
 import { SellerProfileCard } from '@/components/seller-profile-card';
 import type { Product } from '@/data/products';
 import type { SellerProductMetrics, SellerSummary, StoreSection } from '@/lib/sellers';
@@ -47,7 +48,17 @@ export function SellerStorefrontShell({
     ()=>sections.find(section=>section.name===active)||null,
     [active,sections]
   );
-  const heading=active==='all'?'All Products':active==='home'?'Home':active;
+  const featuredProducts=useMemo(()=>{
+    if(!seller.isPro||active!=='home')return [];
+    const ids=new Set(seller.featuredProductIds);
+    const normalized=searchQuery.trim().toLowerCase();
+    return products.filter(product=>ids.has(product.id)).filter(product=>!normalized||`${product.name} ${product.nameMs} ${product.category} ${product.description} ${product.descriptionMs}`.toLowerCase().includes(normalized));
+  },[active,products,searchQuery,seller.featuredProductIds,seller.isPro]);
+
+  const regularProducts=active==='home'&&featuredProducts.length
+    ? products.filter(product=>!seller.featuredProductIds.includes(product.id))
+    : products;
+  const heading=active==='all'?'All Products':active==='home'&&featuredProducts.length?'More from this shop':active==='home'?'Home':active;
 
   function activate(event:MouseEvent<HTMLAnchorElement>,next:string,href:string){
     if(event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
@@ -106,17 +117,33 @@ export function SellerStorefrontShell({
       products={products.map(product=>({id:product.id,name:product.name}))}
       initialOpen={customizing}
       sellerId={seller.id}
+      isPro={seller.isPro}
+      theme={{
+        accentColor:seller.accentColor,
+        pageBackground:seller.pageBackground,
+        cardColor:seller.cardColor,
+        font:seller.storeFont,
+      }}
+      featuredProductIds={seller.featuredProductIds}
+      customSlug={seller.customSlug||''}
+      storeLinks={seller.storeLinks}
     />:null}
 
-    {!customizing?<section className="seller-products-section">
+    {!customizing?<>
+      {featuredProducts.length?<section className="seller-featured-products">
+        <div className="section-heading seller-store-content-heading"><div><p className="eyebrow">HANDPICKED BY THE SELLER</p><h1>Featured Products</h1></div></div>
+        <div className="product-grid">{featuredProducts.map(product=><ProductCard key={product.id} product={product}/>)}</div>
+      </section>:null}
+      <section className="seller-products-section">
       <div className="section-heading seller-store-content-heading"><h1>{heading}</h1></div>
       <StoreProductsView
-        products={products}
+        products={regularProducts}
         metrics={metrics}
         section={customSection}
         searchQuery={searchQuery}
         homeLimit={active==='home'?4:undefined}
       />
-    </section>:null}
+    </section>
+    </>:null}
   </>;
 }

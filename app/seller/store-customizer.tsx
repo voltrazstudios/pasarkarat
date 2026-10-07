@@ -1,11 +1,14 @@
 'use client';
 
+import Link from 'next/link';
 import { useActionState, useEffect, useRef, useState } from 'react';
-import { ImagePlus, Layers3, Plus, Trash2, Type, X } from 'lucide-react';
+import { Crown, ImagePlus, Layers3, LockKeyhole, Plus, Trash2, Type, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { saveStoreCustomization, type StoreCustomizationResult } from './actions';
 import { StoreBanner } from '@/components/store-banner';
-import type { StoreSection, StoreSectionBlock } from '@/lib/sellers';
+import { platformDisplayName, platforms, type Platform } from '@/data/products';
+import type { SellerSummary, StoreSection, StoreSectionBlock } from '@/lib/sellers';
+import { contrastText, storeFontFamily, type StoreFont, type StoreTheme } from '@/lib/store-theme';
 
 type ProductOption={id:string;name:string};
 type EditableSubcategory={key:string;type:'subcategory';title:string;productIds:string[]};
@@ -83,12 +86,22 @@ export function StoreCustomizer({
   products,
   initialOpen=false,
   sellerId,
+  isPro,
+  theme,
+  featuredProductIds,
+  customSlug,
+  storeLinks,
 }:{
   bannerUrl:string;
   initialSections:StoreSection[];
   products:ProductOption[];
   initialOpen?:boolean;
   sellerId:string;
+  isPro:boolean;
+  theme:StoreTheme;
+  featuredProductIds:string[];
+  customSlug:string;
+  storeLinks:SellerSummary['storeLinks'];
 }){
   const router=useRouter();
   const [open,setOpen]=useState(initialOpen);
@@ -96,6 +109,13 @@ export function StoreCustomizer({
   const [state,action,pending]=useActionState<StoreCustomizationResult,FormData>(saveStoreCustomization,{});
   const [bannerPreview,setBannerPreview]=useState(bannerUrl);
   const [removeBanner,setRemoveBanner]=useState(false);
+  const [accentColor,setAccentColor]=useState(theme.accentColor);
+  const [pageBackground,setPageBackground]=useState(theme.pageBackground);
+  const [cardColor,setCardColor]=useState(theme.cardColor);
+  const [storeFont,setStoreFont]=useState<StoreFont>(theme.font);
+  const [featured,setFeatured]=useState<string[]>(featuredProductIds);
+  const [slug,setSlug]=useState(customSlug);
+  const [links,setLinks]=useState<Partial<Record<Platform,string>>>(storeLinks);
   const bannerInput=useRef<HTMLInputElement>(null);
   const [sections,setSections]=useState<EditableSection[]>(
     initialSections.map((section,index)=>({
@@ -173,6 +193,14 @@ export function StoreCustomizer({
     ));
   }
 
+  function toggleFeatured(productId:string,checked:boolean){
+    setFeatured(current=>{
+      if(!checked)return current.filter(id=>id!==productId);
+      if(current.includes(productId)||current.length>=4)return current;
+      return [...current,productId];
+    });
+  }
+
   const sectionsPayload=sections.map(section=>({
     name:section.name,
     blocks:section.blocks.flatMap(block=>{
@@ -191,6 +219,13 @@ export function StoreCustomizer({
   return <section className="store-customizer" id="customize-store">
     <form action={action} className="store-customizer-panel">
       <input type="hidden" name="sections_json" value={JSON.stringify(sectionsPayload)}/>
+      <input type="hidden" name="store_links_json" value={JSON.stringify(links)}/>
+      <input type="hidden" name="accent_color" value={accentColor}/>
+      <input type="hidden" name="page_background" value={pageBackground}/>
+      <input type="hidden" name="card_color" value={cardColor}/>
+      <input type="hidden" name="store_font" value={storeFont}/>
+      <input type="hidden" name="featured_product_ids" value={JSON.stringify(featured)}/>
+      <input type="hidden" name="custom_slug" value={slug}/>
 
       <div className="store-customizer-heading">
         <div>
@@ -230,6 +265,96 @@ export function StoreCustomizer({
         />
         {removeBanner?<input type="hidden" name="remove_banner" value="1"/>:null}
         <small>PNG, JPG or WebP · maximum 5 MB. Banner is centered automatically.</small>
+      </div>
+
+      <div className="store-links-editor">
+        <div className="store-sections-title">
+          <div>
+            <strong>Marketplace links</strong>
+            <span>Add your main seller/store links. Available on Free and Pro.</span>
+          </div>
+        </div>
+        <div className="store-links-grid">
+          {platforms.map(platform=><label key={platform}>
+            {platformDisplayName(platform)}
+            <input
+              type="url"
+              value={links[platform]||''}
+              onChange={event=>setLinks(current=>({...current,[platform]:event.target.value}))}
+              placeholder="https://..."
+            />
+          </label>)}
+        </div>
+      </div>
+
+      <div className="store-pro-editor" data-locked={isPro?'false':'true'}>
+        <div className="store-pro-heading">
+          <div>
+            <span className="store-pro-title"><Crown size={18}/> Pro storefront</span>
+            <span>Colours, fonts, featured products and your custom shop URL.</span>
+          </div>
+          {isPro?<span className="store-pro-status">PRO ACTIVE</span>:<Link href="/pro" className="button store-pro-upgrade"><LockKeyhole size={15}/> Upgrade to Pro</Link>}
+        </div>
+
+        <fieldset disabled={!isPro} className="store-pro-fields">
+          <div className="store-theme-controls">
+            <label>Accent colour
+              <span className="store-color-control"><input type="color" value={accentColor} onChange={event=>setAccentColor(event.target.value)}/><code>{accentColor}</code></span>
+            </label>
+            <label>Page background
+              <span className="store-color-control"><input type="color" value={pageBackground} onChange={event=>setPageBackground(event.target.value)}/><code>{pageBackground}</code></span>
+            </label>
+            <label>Cards / boxes
+              <span className="store-color-control"><input type="color" value={cardColor} onChange={event=>setCardColor(event.target.value)}/><code>{cardColor}</code></span>
+            </label>
+            <label>Store font
+              <select value={storeFont} onChange={event=>setStoreFont(event.target.value as StoreFont)}>
+                <option value="default">Pasar Karat Default</option>
+                <option value="classic">Classic — Georgia</option>
+                <option value="clean">Clean — Inter</option>
+                <option value="modern">Modern — Manrope</option>
+                <option value="vintage">Vintage — Lora</option>
+                <option value="typewriter">Typewriter — Courier</option>
+              </select>
+            </label>
+          </div>
+
+          <div
+            className="store-theme-live-preview"
+            style={{background:pageBackground,color:contrastText(pageBackground),fontFamily:storeFontFamily(storeFont)}}
+          >
+            <span>Store preview</span>
+            <div style={{background:cardColor,color:contrastText(cardColor)}}>
+              <strong>Your shop identity</strong>
+              <small>Text colour changes automatically for readability.</small>
+              <button type="button" style={{background:accentColor,color:contrastText(accentColor)}}>Accent button</button>
+            </div>
+          </div>
+
+          <div className="store-featured-editor">
+            <strong>Featured Products <span>{featured.length}/4</span></strong>
+            <p>Choose up to four approved products to highlight on Home.</p>
+            {products.length?<div className="store-featured-grid">{products.map(product=><label key={product.id}>
+              <input type="checkbox" checked={featured.includes(product.id)} disabled={!featured.includes(product.id)&&featured.length>=4} onChange={event=>toggleFeatured(product.id,event.target.checked)}/>
+              <span>{product.name}</span>
+            </label>)}</div>:<p className="store-section-empty">Add an approved product first.</p>}
+          </div>
+
+          <label className="store-custom-url">
+            Custom store URL
+            <div><span>/shop/</span><input
+              value={slug}
+              minLength={3}
+              maxLength={40}
+              pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
+              onChange={event=>setSlug(event.target.value.toLowerCase().replace(/[^a-z0-9-]/g,'').slice(0,40))}
+              placeholder="abc-shop"
+            /></div>
+            <small>3–40 characters · lowercase letters, numbers and hyphens.</small>
+          </label>
+        </fieldset>
+
+        {!isPro?<div className="store-pro-lock-note"><LockKeyhole size={16}/> Your saved Free storefront stays unchanged. Upgrade only unlocks visual identity and Pro tools.</div>:null}
       </div>
 
       <div className="store-sections-editor">

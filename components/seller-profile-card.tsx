@@ -1,5 +1,7 @@
 import Link from 'next/link';
-import { Star, Store, UserRound, UsersRound } from 'lucide-react';
+import { Crown, Star, Store, UserRound, UsersRound } from 'lucide-react';
+import { PlatformLogo, platformClass } from './platform-links';
+import { platformDisplayName, platforms } from '@/data/products';
 import type { ReactNode } from 'react';
 import type { SellerSummary } from '@/lib/sellers';
 
@@ -10,14 +12,28 @@ function joinedLabel(value:string){
 }
 
 export function SellerProfileCard({seller,actions}:{seller:SellerSummary;actions?:ReactNode}){
+  const storePlatforms=platforms.filter(platform=>seller.storeLinks[platform]);
   return <section className="seller-profile-card" aria-label={`Seller: ${seller.storeName}`}>
     <div className="seller-profile-identity">
       <Link className="seller-profile-avatar" href={`/seller/${seller.id}`} aria-label={`View ${seller.storeName} store`}>
         {seller.avatarUrl?<img src={seller.avatarUrl} alt=""/>:<UserRound size={32} strokeWidth={1.7} aria-hidden="true"/>}
       </Link>
       <div className="seller-profile-name">
-        <Link href={`/seller/${seller.id}`}>{seller.storeName}</Link>
+        <div className="seller-profile-title-row">
+          <Link href={`/seller/${seller.id}`}>{seller.storeName}</Link>
+          {seller.isPro?<span className="seller-pro-badge"><Crown size={13}/> PRO</span>:null}
+        </div>
         <small className="seller-profile-description">{seller.description||'Pasar Karat seller'}</small>
+        {storePlatforms.length?<div className="seller-profile-marketplace-links" aria-label="Seller marketplace links">
+          {storePlatforms.map(platform=><a
+            key={platform}
+            href={seller.storeLinks[platform]}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`seller-marketplace-pill platform-${platformClass(platform)}`}
+            title={platformDisplayName(platform)}
+          ><PlatformLogo platform={platform} size={20}/><span>{platformDisplayName(platform)}</span></a>)}
+        </div>:null}
         <div className="seller-profile-actions">{actions??(
           <Link href={`/seller/${seller.id}`} className="seller-store-link">View Store</Link>
         )}</div>

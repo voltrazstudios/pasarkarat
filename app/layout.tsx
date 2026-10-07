@@ -1,5 +1,5 @@
 import { FloralBackground } from '@/components/floral-background';
-import { Lora, Source_Sans_3 } from 'next/font/google';
+import { Inter, Lora, Manrope, Source_Sans_3 } from 'next/font/google';
 import { SavedItemsProvider } from '@/components/saved-items';
 import { LanguageProvider } from '@/components/language-provider';
 import { adminClient } from '@/lib/admin';
@@ -12,6 +12,8 @@ import './marketplace-submissions.css';
 
 const headingFont = Lora({ subsets: ['latin'], display: 'swap', variable: '--font-heading' });
 const bodyFont = Source_Sans_3({ subsets: ['latin'], display: 'swap', variable: '--font-body' });
+const storeInter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-store-inter' });
+const storeManrope = Manrope({ subsets: ['latin'], display: 'swap', variable: '--font-store-manrope' });
 
 import { Header, Footer } from '@/components/marketplace';
 
@@ -23,7 +25,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({children}:{children:React.ReactNode}) {
   const isAdmin=Boolean(await adminClient());
-  return <html lang="en" className={`${headingFont.variable} ${bodyFont.variable}`}>
+  return <html lang="en" className={`${headingFont.variable} ${bodyFont.variable} ${storeInter.variable} ${storeManrope.variable}`}>
     <body style={{ isolation: 'isolate', position: 'relative' }}>
       <FloralBackground/>
       <a className="skip-link" href="#main">Skip to content</a>

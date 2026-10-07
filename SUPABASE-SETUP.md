@@ -25,6 +25,7 @@ Run these files in the Supabase SQL editor:
 13. `supabase/migrations/202610070013_banner_position.sql`
 14. `supabase/migrations/202610070014_seller_product_metrics.sql`
 15. `supabase/migrations/202610070015_expand_store_sections.sql`
+16. `supabase/migrations/202610070016_store_pro_and_billplz.sql`
 
 ## 3. Configure local environment
 
@@ -36,7 +37,7 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=...
 NEXT_PUBLIC_SITE_URL=http://127.0.0.1:3000
 ```
 
-Do not put a Supabase service-role key in the website environment.
+Never expose the Supabase service-role key to browser code. It is used only as a server-only secret for the Billplz callback route.
 
 ## 4. Configure Auth URLs
 
@@ -82,3 +83,13 @@ New submissions are always pending. Pending and rejected products are excluded b
 Uploaded PNG/JPG/WebP files are decoded with Sharp, checked against their declared MIME type and extension, resized when needed, stripped through WebP re-encoding, and stored in a private bucket. Approval performs a second decode/re-encode before the image is copied to the public approved-product bucket.
 
 Seller and affiliate links must use HTTPS and match the selected platform's allowed domains. The database repeats those platform/domain checks so bypassing the form does not bypass validation.
+
+
+## Pasar Karat Pro / Billplz
+
+For Pro checkout, configure the server-only values shown in `.env.example`.
+
+- `SUPABASE_SERVICE_ROLE_KEY` is used only by the Billplz callback route and must never be exposed to browser code.
+- `BILLPLZ_CALLBACK_BASE_URL` must be a public HTTPS origin. Billplz cannot call a localhost callback.
+- Use the Billplz sandbox base URL and sandbox credentials while testing.
+- The current prototype plans are RM9.90 for 30 days and RM99.00 for 365 days.

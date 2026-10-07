@@ -4,6 +4,9 @@ import sharp from 'sharp';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { configured, db } from '@/lib/supabase';
+import { platforms, type Platform } from '@/data/products';
+import { validatePlatformUrl } from '@/lib/product-validation';
+import { storeFonts, validHexColor, type StoreFont } from '@/lib/store-theme';
 import { cleanPlainText, containsBlockedContent, containsUnsafeMarkup } from '@/lib/moderation';
 
 const uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
@@ -83,7 +86,7 @@ export async function saveStoreCustomization(_:StoreCustomizationResult,form:For
   }
 
   const {data:profile,error:profileError}=await client.from('marketplace_profiles')
-    .select('banner_path')
+    .select('banner_path,pro_until,custom_slug')
     .eq('id',user.id)
     .maybeSingle();
   if(profileError)return {error:'Unable to load your current store.'};
@@ -105,6 +108,26 @@ export async function saveStoreCustomization(_:StoreCustomizationResult,form:For
   }
 
   const oldBanner=profile?.banner_path||null;
+  const oldCustomSlug=typeof profile?.custom_slug==='string'?profile.custom_slug:null;
+  const isPro=Boolean(profile?.pro_until&&new Date(profile.pro_until).getTime()>Date.now());
+
+  let storeLinksRaw:unknown={};
+  try{
+    storeLinksRaw=JSON.parse(String(form.get('store_links_json')||'{}'));
+  }catch{
+    return {error:'Unable to read your marketplace links.'};
+  }
+  if(!storeLinksRaw||typeof storeLinksRaw!=='object'||Array.isArray(storeLinksRaw)){
+    return {error:'Unable to read your marketplace links.'};
+  }
+  const storeLinks:Partial<Record<Platform,string>>={};
+  for(const platform of platforms){
+    const raw=String((storeLinksRaw as Record<string,unknown>)[platform]||'').trim();
+    if(!raw)continue;
+    const valid=validatePlatformUrl(platform,raw);
+    if(!valid)return {error:`Enter a valid HTTPS ${platform==='Own website'?'Seller Website':platform} URL or leave it blank.`};
+    storeLinks[platform]=valid;
+  }
   const bannerPositionX=50;
   const bannerPositionY=50;
   let bannerPath=oldBanner;
@@ -192,6 +215,50 @@ export async function saveStoreCustomization(_:StoreCustomizationResult,form:For
     });
     if(saved.error||saved.data!==true)throw new Error(saved.error?.message||'Unable to save your store customization.');
 
+    const linksSaved=await client.from('marketplace_profiles')
+      .update({store_links:storeLinks,updated_at:new Date().toISOString()})
+      .eq('id',user.id);
+    if(linksSaved.error)throw new Error('Unable to save your marketplace links.');
+
+    if(isPro){
+      const accentColor=String(form.get('accent_color')||'').trim().toLowerCase();
+      const pageBackground=String(form.get('page_background')||'').trim().toLowerCase();
+      const cardColor=String(form.get('card_color')||'').trim().toLowerCase();
+      const storeFont=String(form.get('store_font')||'default') as StoreFont;
+      const customSlug=String(form.get('custom_slug')||'').trim().toLowerCase()||null;
+
+      if(!validHexColor(accentColor)||!validHexColor(pageBackground)||!validHexColor(cardColor)){
+        throw new Error('Choose valid storefront colours.');
+      }
+      if(!storeFonts.includes(storeFont))throw new Error('Choose a valid store font.');
+      if(customSlug&&(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(customSlug)||customSlug.length<3||customSlug.length>40)){
+        throw new Error('Custom store URL must use 3–40 lowercase letters, numbers or hyphens.');
+      }
+
+      let featuredProductIds:string[]=[];
+      try{
+        const parsed=JSON.parse(String(form.get('featured_product_ids')||'[]')) as unknown;
+        if(!Array.isArray(parsed))throw new Error();
+        featuredProductIds=[...new Set(parsed.map(String).filter(value=>uuid.test(value)))];
+      }catch{
+        throw new Error('Unable to read featured products.');
+      }
+      if(featuredProductIds.length>4)throw new Error('Choose up to four featured products.');
+
+      const themeSaved=await client.rpc('marketplace_save_pro_store_theme',{
+        p_accent_color:accentColor,
+        p_page_background:pageBackground,
+        p_card_color:cardColor,
+        p_store_font:storeFont,
+        p_featured_product_ids:featuredProductIds,
+        p_custom_slug:customSlug,
+      });
+      if(themeSaved.error||themeSaved.data!==true){
+        if(themeSaved.error?.code==='23505')throw new Error('That custom store URL is already taken.');
+        throw new Error(themeSaved.error?.message||'Unable to save Pro storefront settings.');
+      }
+    }
+
     if(oldBanner&&oldBanner!==bannerPath){
       await client.storage.from('marketplace-profile-images').remove([oldBanner]);
     }
@@ -209,6 +276,9 @@ export async function saveStoreCustomization(_:StoreCustomizationResult,form:For
 
   revalidatePath(`/seller/${user.id}`);
   revalidatePath('/my-store');
+  if(oldCustomSlug)revalidatePath(`/shop/${oldCustomSlug}`);
+  const nextSlug=String(form.get('custom_slug')||'').trim().toLowerCase();
+  if(nextSlug)revalidatePath(`/shop/${nextSlug}`);
   return {
     message:'Store customization saved.',
     imagePaths:sections.map(section=>section.content.map(block=>typeof block.image_path==='string'?block.image_path:null)),
