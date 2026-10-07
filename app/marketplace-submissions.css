@@ -682,3 +682,76 @@
     flex-wrap:wrap
   }
 }
+
+
+/* Collection intro: align the compact submission box bottom with the intro text. */
+.catalogue-title-row{
+  align-items:flex-end!important;
+  margin-top:14px
+}
+.catalogue-title-row .intro{
+  margin-top:0!important;
+  margin-bottom:0!important
+}
+.catalogue-title-row .collection-submit-mini{
+  margin-top:0!important
+}
+
+/* Saved state: filled rose button. */
+body .save-button[aria-pressed=true]{
+  background:#c94163!important;
+  border-color:#c94163!important;
+  color:#fff!important
+}
+body .save-button[aria-pressed=true]:hover{
+  background:#b63857!important;
+  border-color:#b63857!important;
+  color:#fff!important
+}
+
+/* View-all-platforms is a filled Pasar Karat orange action. */
+.platform-all summary{
+  background:#c34e23!important;
+  border-color:#c34e23!important;
+  color:#fff!important
+}
+.platform-all[open] summary,
+.platform-all summary:hover{
+  background:#a83f1c!important;
+  border-color:#a83f1c!important;
+  color:#fff!important
+}
+
+/* Seller stats sit with the identity on the left; only values are orange. */
+.seller-profile-card{
+  display:block!important
+}
+.seller-profile-identity{
+  padding-right:0!important
+}
+.seller-profile-name{
+  width:min(100%,760px)
+}
+.seller-stats-inline{
+  justify-content:flex-start!important;
+  gap:8px 22px;
+  margin-top:11px;
+  padding-top:0!important;
+  color:var(--navy)
+}
+.seller-stats-inline strong{
+  color:var(--muted);
+  font-weight:600
+}
+.seller-stats-inline b{
+  color:var(--orange);
+  font-weight:700
+}
+@media(max-width:520px){
+  .seller-stats-inline{
+    display:flex!important;
+    flex-wrap:wrap;
+    gap:7px 14px;
+    width:100%
+  }
+}
