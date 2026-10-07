@@ -635,6 +635,13 @@ Object.assign(EN_TO_MS, {
   "Unable to submit this product. Please check the details and try again.": "Produk ini tidak dapat dihantar. Semak butiran dan cuba lagi."
 });
 
+Object.assign(EN_TO_MS, {
+  "Sell something unique?": "Ada barangan unik untuk dijual?",
+  "Submit it for review.": "Hantar untuk semakan.",
+  "Submit Product": "Hantar Produk",
+  "Compare Seller Price": "Bandingkan Harga Penjual"
+});
+
 const MS_TO_EN = Object.fromEntries(Object.entries(EN_TO_MS).map(([en, ms]) => [ms, en]));
 
 function translateDynamic(value: string, language: SiteLanguage) {
