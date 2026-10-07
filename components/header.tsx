@@ -11,8 +11,8 @@ const links=[
   ['Home','/'],
   ['Collection','/items'],
   ['Archive','/archive'],
-  ['Virtual Experience','/experience'],
-  ['SEN','/sen'],
+  ['Experience','/experience'],
+  ['SEN','https://sen-development-voltrazstudios.netlify.app/store'],
   ['About','/about'],
   ['My Store','/my-store'],
   ['Saved','/saved']
@@ -100,7 +100,10 @@ export function Header({isAdmin=false}:{isAdmin?:boolean}){
           <Image sizes="(max-width: 600px) 200px, (max-width: 900px) 220px, 240px" className="brand-logo" src="/pasar-karat-logo.png" width={1200} height={300} alt="Pasar Karat"/>
         </Link>
         <nav ref={navigation} id="main-navigation" aria-label="Main navigation" data-open={open}>
-          {links.map(([label,href])=><Link key={href} href={href} prefetch onClick={()=>setOpen(false)}>{label}{href==="/saved"&&<span className="saved-count">{ids.length}</span>}</Link>)}
+          {links.map(([label,href])=>href.startsWith('http')
+            ? <a key={href} href={href} onClick={()=>setOpen(false)}>{label}</a>
+            : <Link key={href} href={href} prefetch onClick={()=>setOpen(false)}>{label}{href==="/saved"&&<span className="saved-count">{ids.length}</span>}</Link>
+          )}
           {isAdmin?<Link className="site-admin-link" href="/admin" onClick={()=>setOpen(false)}>Admin</Link>:null}
         </nav>
         <div className="header-right-controls">
