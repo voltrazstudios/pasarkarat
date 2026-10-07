@@ -831,3 +831,42 @@ body .save-button[aria-pressed=true]:hover{
     font-size:14px
   }
 }
+
+
+/* Balance seller stats evenly from left to right. */
+.seller-stats-inline{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  align-items:center;
+  flex:1 1 0!important;
+  width:100%;
+  max-width:760px;
+  gap:0!important
+}
+.seller-stats-inline span{
+  min-width:0;
+  padding:0 14px;
+  white-space:nowrap;
+  text-align:left
+}
+.seller-stats-inline span:first-child{
+  padding-left:0
+}
+.seller-stats-inline span:last-child{
+  padding-right:0
+}
+@media(max-width:1050px){
+  .seller-stats-inline{
+    max-width:none;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important
+  }
+}
+@media(max-width:700px){
+  .seller-stats-inline{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:10px 16px!important
+  }
+  .seller-stats-inline span{
+    padding:0
+  }
+}
