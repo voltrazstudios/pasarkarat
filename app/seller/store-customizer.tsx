@@ -304,7 +304,7 @@ export function StoreCustomizer({
             <span className="store-pro-title"><Crown size={18}/> Pro storefront</span>
             <span>Colours, fonts, featured products and your custom shop URL.</span>
           </div>
-          {isPro?<div className="store-pro-heading-actions"><button type="button" className="store-pro-reset" onClick={resetProTheme}>Reset to default</button><span className="store-pro-status">PRO ACTIVE</span></div>:<Link href="/pro" className="button store-pro-upgrade"><LockKeyhole size={15}/> Upgrade to Pro</Link>}
+          {isPro?<span className="store-pro-status">PRO ACTIVE</span>:<Link href="/pro" className="button store-pro-upgrade"><LockKeyhole size={15}/> Upgrade to Pro</Link>}
         </div>
 
         <fieldset disabled={!isPro} className="store-pro-fields">
@@ -341,6 +341,10 @@ export function StoreCustomizer({
               <button type="button" style={{background:accentColor,color:contrastText(accentColor)}}>Accent button</button>
             </div>
           </div>
+
+          {isPro?<div className="store-pro-reset-row">
+            <button type="button" className="store-pro-reset" onClick={resetProTheme}>Reset to default</button>
+          </div>:null}
 
           <div className="store-featured-editor">
             <strong>Featured Products <span>{featured.length}/4</span></strong>
