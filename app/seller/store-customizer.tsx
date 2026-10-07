@@ -1,26 +1,71 @@
 'use client';
 
 import { useActionState, useEffect, useRef, useState } from 'react';
-import { ImagePlus, Layers3, PackageSearch, Plus, Trash2, Type, X } from 'lucide-react';
+import { ImagePlus, Layers3, Plus, Trash2, Type, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { saveStoreCustomization, type StoreCustomizationResult } from './actions';
 import type { StoreSection, StoreSectionBlock } from '@/lib/sellers';
 
 type ProductOption={id:string;name:string};
-type EditableSubcategory={key:string;type:'subcategory';title:string};
-type EditableProducts={key:string;type:'products';productIds:string[]};
+type EditableSubcategory={key:string;type:'subcategory';title:string;productIds:string[]};
 type EditableImage={key:string;type:'image';imagePath:string;preview:string};
-type EditableBlock=EditableSubcategory|EditableProducts|EditableImage;
+type EditableBlock=EditableSubcategory|EditableImage;
 type EditableSection={key:string;name:string;blocks:EditableBlock[]};
 
 function newKey(prefix:string){
   return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
 }
 
-function editableBlock(block:StoreSectionBlock,index:number):EditableBlock{
-  if(block.type==='subcategory')return {key:`saved-subcategory-${index}`,type:'subcategory',title:block.title};
-  if(block.type==='products')return {key:`saved-products-${index}`,type:'products',productIds:block.productIds};
-  return {key:`saved-image-${index}`,type:'image',imagePath:block.imagePath,preview:block.imageUrl};
+function storedBlockCount(blocks:EditableBlock[]){
+  return blocks.reduce((total,block)=>total+(block.type==='subcategory'?2:1),0);
+}
+
+function editableBlocks(blocks:StoreSectionBlock[]):EditableBlock[]{
+  const result:EditableBlock[]=[];
+
+  for(let index=0;index<blocks.length;index++){
+    const block=blocks[index];
+
+    if(block.type==='subcategory'){
+      const next=blocks[index+1];
+      if(next?.type==='products'){
+        result.push({
+          key:`saved-subcategory-${index}`,
+          type:'subcategory',
+          title:block.title,
+          productIds:next.productIds,
+        });
+        index++;
+      }else{
+        result.push({
+          key:`saved-subcategory-${index}`,
+          type:'subcategory',
+          title:block.title,
+          productIds:[],
+        });
+      }
+      continue;
+    }
+
+    if(block.type==='products'){
+      result.push({
+        key:`saved-products-${index}`,
+        type:'subcategory',
+        title:'Products',
+        productIds:block.productIds,
+      });
+      continue;
+    }
+
+    result.push({
+      key:`saved-image-${index}`,
+      type:'image',
+      imagePath:block.imagePath,
+      preview:block.imageUrl,
+    });
+  }
+
+  return result;
 }
 
 export function StoreCustomizer({
@@ -47,7 +92,7 @@ export function StoreCustomizer({
     initialSections.map((section,index)=>({
       key:`saved-${index}-${section.name}`,
       name:section.name,
-      blocks:section.blocks.map((block,blockIndex)=>editableBlock(block,blockIndex)),
+      blocks:editableBlocks(section.blocks),
     }))
   );
 
@@ -63,7 +108,11 @@ export function StoreCustomizer({
         ...section,
         blocks:section.blocks.map((block,blockIndex)=>{
           if(block.type!=='image')return block;
-          const savedPath=state.imagePaths?.[sectionIndex]?.[blockIndex];
+          let rawIndex=0;
+          for(let index=0;index<blockIndex;index++){
+            rawIndex+=section.blocks[index].type==='subcategory'?2:1;
+          }
+          const savedPath=state.imagePaths?.[sectionIndex]?.[rawIndex];
           return savedPath?{...block,imagePath:savedPath}:block;
         }),
       })));
@@ -97,13 +146,13 @@ export function StoreCustomizer({
 
   function addBlock(sectionIndex:number,type:EditableBlock['type']){
     setSections(current=>current.map((section,index)=>{
-      if(index!==sectionIndex||section.blocks.length>=12)return section;
+      if(index!==sectionIndex)return section;
+      const cost=type==='subcategory'?2:1;
+      if(storedBlockCount(section.blocks)+cost>12)return section;
       const block:EditableBlock=
         type==='subcategory'
-          ? {key:newKey('subcategory'),type:'subcategory',title:''}
-          : type==='products'
-            ? {key:newKey('products'),type:'products',productIds:[]}
-            : {key:newKey('image'),type:'image',imagePath:'',preview:''};
+          ? {key:newKey('subcategory'),type:'subcategory',title:'',productIds:[]}
+          : {key:newKey('image'),type:'image',imagePath:'',preview:''};
       return {...section,blocks:[...section.blocks,block]};
     }));
   }
@@ -117,10 +166,14 @@ export function StoreCustomizer({
 
   const sectionsPayload=sections.map(section=>({
     name:section.name,
-    blocks:section.blocks.map(block=>{
-      if(block.type==='subcategory')return {type:block.type,title:block.title};
-      if(block.type==='products')return {type:block.type,productIds:block.productIds};
-      return {type:block.type,imagePath:block.imagePath};
+    blocks:section.blocks.flatMap(block=>{
+      if(block.type==='subcategory'){
+        return [
+          {type:'subcategory',title:block.title},
+          {type:'products',productIds:block.productIds},
+        ];
+      }
+      return [{type:'image',imagePath:block.imagePath}];
     }),
   }));
 
@@ -195,39 +248,41 @@ export function StoreCustomizer({
           <div className="store-content-blocks">
             {section.blocks.map((block,blockIndex)=><div className="store-content-block-editor" data-type={block.type} key={block.key}>
               <div className="store-content-block-heading">
-                <strong>{block.type==='subcategory'?'Subcategory':block.type==='products'?'Show products':'Image'}</strong>
+                <strong>{block.type==='subcategory'?'Sub Category':'Image'}</strong>
                 <button type="button" aria-label="Remove content block" onClick={()=>removeBlock(sectionIndex,blockIndex)}><Trash2 size={15}/></button>
               </div>
 
-              {block.type==='subcategory'?<label>
-                Subcategory title
-                <input
-                  value={block.title}
-                  maxLength={60}
-                  required
-                  onChange={event=>updateBlock(sectionIndex,blockIndex,{title:event.target.value})}
-                  placeholder="e.g. Turntables"
-                />
-              </label>:null}
-
-              {block.type==='products'?(
-                products.length?<div className="store-section-product-list">{products.map(product=>{
-                  const checked=block.productIds.includes(product.id);
-                  return <label key={product.id}>
-                    <input
-                      type="checkbox"
-                      value={product.id}
-                      checked={checked}
-                      onChange={event=>updateBlock(sectionIndex,blockIndex,{
-                        productIds:event.target.checked
-                          ? [...new Set([...block.productIds,product.id])]
-                          : block.productIds.filter(id=>id!==product.id),
-                      })}
-                    />
-                    <span>{product.name}</span>
-                  </label>;
-                })}</div>:<p className="store-section-empty">You need an approved product before using a product block.</p>
-              ):null}
+              {block.type==='subcategory'?<>
+                <label>
+                  Sub Category name
+                  <input
+                    value={block.title}
+                    maxLength={60}
+                    required
+                    onChange={event=>updateBlock(sectionIndex,blockIndex,{title:event.target.value})}
+                    placeholder="e.g. Turntables"
+                  />
+                </label>
+                <div className="store-subcategory-products">
+                  <strong>Products</strong>
+                  {products.length?<div className="store-section-product-list">{products.map(product=>{
+                    const checked=block.productIds.includes(product.id);
+                    return <label key={product.id}>
+                      <input
+                        type="checkbox"
+                        value={product.id}
+                        checked={checked}
+                        onChange={event=>updateBlock(sectionIndex,blockIndex,{
+                          productIds:event.target.checked
+                            ? [...new Set([...block.productIds,product.id])]
+                            : block.productIds.filter(id=>id!==product.id),
+                        })}
+                      />
+                      <span>{product.name}</span>
+                    </label>;
+                  })}</div>:<p className="store-section-empty">You need an approved product before adding products to this Sub Category.</p>}
+                </div>
+              </>:null}
 
               {block.type==='image'?<div className="store-section-image-editor">
                 <div className="store-section-image-preview">
@@ -251,12 +306,11 @@ export function StoreCustomizer({
               </div>:null}
             </div>)}
 
-            {section.blocks.length<12?<div className="store-add-block-row">
+            {storedBlockCount(section.blocks)<12?<div className="store-add-block-row">
               <span>Add content</span>
-              <button type="button" onClick={()=>addBlock(sectionIndex,'subcategory')}><Type size={15}/> Subcategory</button>
-              <button type="button" onClick={()=>addBlock(sectionIndex,'products')}><PackageSearch size={15}/> Show products</button>
+              <button type="button" disabled={storedBlockCount(section.blocks)>10} onClick={()=>addBlock(sectionIndex,'subcategory')}><Type size={15}/> Sub Category</button>
               <button type="button" onClick={()=>addBlock(sectionIndex,'image')}><ImagePlus size={15}/> Image</button>
-            </div>:<p className="store-section-empty">This section has reached the 12-block limit.</p>}
+            </div>:<p className="store-section-empty">This section has reached the content limit.</p>}
           </div>
         </article>):<p className="store-section-empty">No custom sections yet. Your store still has Home and All Products.</p>}
       </div>
