@@ -1980,3 +1980,101 @@ body:has(.seller-page.seller-store-themed) footer{
     align-items:stretch
   }
 }
+
+
+/* Final three-column seller stats + platform placement. */
+.seller-profile-card .seller-stats-inline{
+  display:grid!important;
+  grid-template-columns:minmax(150px,1fr) minmax(175px,1fr) minmax(220px,1.35fr)!important;
+  align-items:start!important;
+  gap:18px!important;
+  flex:1 1 0!important;
+  width:min(100%,700px)!important;
+  max-width:700px!important;
+  margin-left:0!important
+}
+.seller-profile-card .seller-stat-column{
+  display:grid;
+  gap:10px;
+  min-width:0
+}
+.seller-profile-card .seller-stat-column .seller-stat-item{
+  padding:0!important
+}
+.seller-profile-card .seller-platform-column{
+  display:grid;
+  align-content:start;
+  gap:7px;
+  min-width:0
+}
+.seller-profile-card .seller-platform-column>strong{
+  color:var(--navy);
+  font-size:17px;
+  font-weight:600
+}
+.seller-profile-card .seller-platform-column .seller-profile-marketplace-links{
+  margin:0;
+  gap:6px
+}
+.seller-profile-card .seller-platform-empty{
+  color:var(--muted)
+}
+@media(max-width:1050px){
+  .seller-profile-card .seller-stats-inline{
+    width:100%!important;
+    max-width:none!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    margin:14px 0 0!important
+  }
+}
+@media(max-width:700px){
+  .seller-profile-card .seller-stats-inline{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:12px 16px!important
+  }
+  .seller-profile-card .seller-platform-column{
+    grid-column:1 / -1
+  }
+  .seller-profile-card .seller-platform-column>strong{
+    font-size:14px
+  }
+}
+
+/* Store theme must not recolor the Customize Store editor itself.
+   Only the intentional Store preview reflects the selected theme. */
+.seller-page.seller-store-themed .store-customizer-panel{
+  background:var(--surface)!important;
+  color:var(--navy)!important;
+  font-family:var(--font-body),Arial,sans-serif!important
+}
+.seller-page.seller-store-themed .store-customizer-panel h2,
+.seller-page.seller-store-themed .store-customizer-panel strong,
+.seller-page.seller-store-themed .store-customizer-panel label,
+.seller-page.seller-store-themed .store-customizer-panel .store-pro-title{
+  color:var(--navy)!important
+}
+.seller-page.seller-store-themed .store-customizer-panel small,
+.seller-page.seller-store-themed .store-customizer-panel .store-sections-title>div>span,
+.seller-page.seller-store-themed .store-customizer-panel .store-featured-editor>p,
+.seller-page.seller-store-themed .store-customizer-panel .store-custom-url small,
+.seller-page.seller-store-themed .store-customizer-panel .store-pro-heading>div>span:last-child{
+  color:var(--muted)!important;
+  opacity:1!important
+}
+.seller-page.seller-store-themed .store-customizer-panel input,
+.seller-page.seller-store-themed .store-customizer-panel select,
+.seller-page.seller-store-themed .store-customizer-panel textarea{
+  color:var(--navy)!important
+}
+.seller-page.seller-store-themed .store-customizer-panel .store-theme-live-preview{
+  color:inherit
+}
+.seller-page.seller-store-themed .store-customizer-panel .store-theme-live-preview>div{
+  color:inherit
+}
+.seller-page.seller-store-themed .store-customizer .store-customizer-save,
+.seller-page.seller-store-themed .store-customizer .store-customizer-save:hover{
+  background:var(--orange)!important;
+  border-color:var(--orange)!important;
+  color:#fff!important
+}
