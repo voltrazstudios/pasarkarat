@@ -1460,7 +1460,7 @@ body:has(.seller-page.seller-store-themed) footer{
   margin-top:44px
 }
 
-/* Seller marketplace links + Pro badge. */
+/* Seller profile title + Pro badge. */
 .seller-profile-title-row{
   display:flex;
   align-items:center;
@@ -1493,56 +1493,6 @@ body:has(.seller-page.seller-store-themed) footer{
 .seller-profile-name>a{
   font-size:inherit!important
 }
-.seller-profile-marketplace-links{
-  display:flex;
-  align-items:center;
-  gap:7px;
-  flex-wrap:wrap;
-  margin-top:5px
-}
-.seller-marketplace-pill{
-  display:inline-flex;
-  align-items:center;
-  gap:7px;
-  min-height:34px;
-  padding:6px 10px;
-  border:1px solid transparent;
-  border-radius:6px;
-  color:#fff;
-  font-size:11px;
-  font-weight:700
-}
-.seller-marketplace-pill:hover{
-  filter:brightness(.92);
-  transform:translateY(-1px)
-}
-
-/* Free marketplace-link editor. */
-.store-links-editor{
-  display:grid;
-  gap:14px
-}
-.store-links-grid{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:12px 14px
-}
-.store-links-grid label{
-  display:grid;
-  gap:6px;
-  color:var(--navy);
-  font-size:13px;
-  font-weight:700
-}
-.store-links-grid input{
-  min-height:42px;
-  padding:9px 11px;
-  border:1px solid var(--line);
-  border-radius:7px;
-  background:#fff;
-  color:var(--navy)
-}
-
 /* Pro controls in Customize Store. */
 .store-pro-editor{
   position:relative;
@@ -1931,15 +1881,6 @@ body:has(.seller-page.seller-store-themed) footer{
   }
   .store-pro-reset{
     width:100%
-  }
-  .seller-profile-marketplace-links span{
-    display:none
-  }
-  .seller-marketplace-pill{
-    width:34px;
-    height:34px;
-    padding:0;
-    justify-content:center
   }
 }
 
