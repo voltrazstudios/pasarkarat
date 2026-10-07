@@ -1923,3 +1923,14 @@ body .save-button[aria-pressed=true]:hover{
     justify-content:center
   }
 }
+
+
+/* Mobile storefront: keep the stats-to-tabs transition clean without divider lines. */
+@media(max-width:700px){
+  .seller-profile-card .seller-profile-identity{
+    border-bottom:0!important
+  }
+  .seller-store-panel .seller-store-nav{
+    border-top:0!important
+  }
+}
