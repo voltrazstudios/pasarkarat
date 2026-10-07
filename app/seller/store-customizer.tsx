@@ -21,6 +21,14 @@ function storedBlockCount(blocks:EditableBlock[]){
   return blocks.reduce((total,block)=>total+(block.type==='subcategory'?2:1),0);
 }
 
+function storedBlockIndex(blocks:EditableBlock[],blockIndex:number){
+  let rawIndex=0;
+  for(let index=0;index<blockIndex;index++){
+    rawIndex+=blocks[index].type==='subcategory'?2:1;
+  }
+  return rawIndex;
+}
+
 function editableBlocks(blocks:StoreSectionBlock[]):EditableBlock[]{
   const result:EditableBlock[]=[];
 
@@ -296,7 +304,7 @@ export function StoreCustomizer({
                   {block.preview?'Change image':'Choose image'}
                   <input
                     className="profile-hidden-file"
-                    name={`section_image_${sectionIndex}_${blockIndex}`}
+                    name={`section_image_${sectionIndex}_${storedBlockIndex(section.blocks,blockIndex)}`}
                     type="file"
                     accept="image/png,image/jpeg,image/webp"
                     onChange={event=>{
