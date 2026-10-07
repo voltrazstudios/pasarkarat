@@ -628,3 +628,57 @@
     border-radius:9px
   }
 }
+
+
+/* Cleaner storefront identity: inline stats, no column dividers, softer tab spacing. */
+.seller-profile-card{
+  grid-template-columns:minmax(260px,1fr) auto;
+  column-gap:24px
+}
+.seller-stats-inline{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:22px;
+  flex-wrap:wrap;
+  min-width:0;
+  color:var(--navy);
+  font-size:13px
+}
+.seller-stats-inline span{
+  white-space:nowrap
+}
+.seller-stats-inline strong{
+  color:var(--muted);
+  font-weight:600
+}
+.seller-store-panel .seller-store-nav{
+  border-top:0!important;
+  margin-top:10px;
+  padding-top:2px
+}
+.profile-editor-links{
+  display:none!important
+}
+@media(max-width:900px){
+  .seller-profile-card{
+    grid-template-columns:1fr
+  }
+  .seller-stats-inline{
+    justify-content:flex-start;
+    gap:12px 20px;
+    padding-top:16px
+  }
+}
+@media(max-width:520px){
+  .seller-stats-inline{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    width:100%;
+    gap:9px 14px;
+    font-size:12px
+  }
+  .seller-profile-actions{
+    flex-wrap:wrap
+  }
+}

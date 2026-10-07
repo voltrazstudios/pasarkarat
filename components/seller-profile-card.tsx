@@ -6,7 +6,7 @@ import type { SellerSummary } from '@/lib/sellers';
 function joinedLabel(value:string){
   const date=new Date(value);
   if(Number.isNaN(date.getTime()))return '—';
-  return new Intl.DateTimeFormat('en-MY',{month:'short',year:'numeric'}).format(date);
+  return new Intl.DateTimeFormat('en-MY',{day:'numeric',month:'short',year:'numeric'}).format(date);
 }
 
 export function SellerProfileCard({seller,actions}:{seller:SellerSummary;actions?:ReactNode}){
@@ -20,14 +20,19 @@ export function SellerProfileCard({seller,actions}:{seller:SellerSummary;actions
         <small className="seller-profile-description">{seller.description||'Pasar Karat seller'}</small>
         <div className="seller-profile-actions">{actions??(
           seller.isOwner
-            ? <Link href={`/seller/${seller.id}?customize=1#customize-store`} className="seller-store-link">Customize Store</Link>
+            ? <>
+                <Link href={`/seller/${seller.id}?customize=1#customize-store`} className="seller-store-link">Customize Store</Link>
+                <Link href="/my-submissions" prefetch={false} className="seller-store-link">My Submission</Link>
+              </>
             : <Link href={`/seller/${seller.id}`} className="seller-store-link">View Store</Link>
         )}</div>
       </div>
     </div>
-    <div className="seller-stat"><span>Ratings</span><strong title="Total saves across this seller's products">{seller.ratings}</strong></div>
-    <div className="seller-stat"><span>Products</span><strong>{seller.products}</strong></div>
-    <div className="seller-stat"><span>Follower</span><strong>{seller.followers}</strong></div>
-    <div className="seller-stat"><span>Joined</span><strong>{joinedLabel(seller.joinedAt)}</strong></div>
+    <div className="seller-stats-inline">
+      <span><strong>Ratings:</strong> {seller.ratings}</span>
+      <span><strong>Products:</strong> {seller.products}</span>
+      <span><strong>Follower:</strong> {seller.followers}</span>
+      <span><strong>Joined:</strong> {joinedLabel(seller.joinedAt)}</span>
+    </div>
   </section>;
 }

@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { configured, db } from '@/lib/supabase';
 import { ProfileForm } from './profile-form';
@@ -41,10 +40,6 @@ export default async function ProfilePage(){
         avatarUrl={avatarUrl}
       />
 
-      <div className="profile-editor-links">
-        <Link className="text-link" href="/my-submissions" prefetch={false}>My submissions</Link>
-        <Link className="text-link" href="/saved" prefetch={false}>Saved finds</Link>
-      </div>
     </section>
   </main>;
 }
