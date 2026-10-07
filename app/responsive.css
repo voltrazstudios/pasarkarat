@@ -90,16 +90,12 @@ footer{background:#f2eee5;color:var(--navy)}
     min-width:0
   }
 
-  .language-toggle{
+  .header-utility-controls{
     order:2
   }
 
-  .profile-toggle{
-    order:3
-  }
-
   .mobile-menu-toggle{
-    order:4
+    order:3
   }
 
   .header nav{

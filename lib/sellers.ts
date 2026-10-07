@@ -41,3 +41,25 @@ export async function sellerSummary(id:string):Promise<SellerSummary|null>{
     isOwner:row.is_owner===true,
   };
 }
+
+
+export type StoreSection={
+  name:string;
+  position:number;
+  productIds:string[];
+};
+
+export async function sellerSections(id:string):Promise<StoreSection[]>{
+  if(!configured()||!uuid.test(id))return [];
+  const client=await db();
+  const {data,error}=await client.rpc('marketplace_public_store_sections',{p_seller:id});
+  if(error||!Array.isArray(data))return [];
+
+  return data.flatMap((entry,index)=>{
+    if(!entry||typeof entry!=='object')return [];
+    const row=entry as Record<string,unknown>;
+    if(typeof row.name!=='string')return [];
+    const productIds=Array.isArray(row.product_ids)?row.product_ids.map(String).filter(value=>uuid.test(value)):[];
+    return [{name:row.name,position:Number(row.position||index+1),productIds}];
+  }).slice(0,3);
+}

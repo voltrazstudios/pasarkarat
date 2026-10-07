@@ -14,15 +14,12 @@ export default async function ProfilePage(){
   if(!user)redirect('/auth?next=/profile');
 
   const {data}=await client.from('marketplace_profiles')
-    .select('display_name,description,full_name,phone,gender,date_of_birth,avatar_path,banner_path')
+    .select('display_name,description,full_name,phone,gender,date_of_birth,avatar_path')
     .eq('id',user.id)
     .maybeSingle();
 
   const avatarUrl=data?.avatar_path
     ? client.storage.from('marketplace-profile-images').getPublicUrl(data.avatar_path).data.publicUrl
-    : '';
-  const bannerUrl=data?.banner_path
-    ? client.storage.from('marketplace-profile-images').getPublicUrl(data.banner_path).data.publicUrl
     : '';
 
   return <main id="main" className="container profile-page">
@@ -30,7 +27,7 @@ export default async function ProfilePage(){
       <div className="profile-editor-heading">
         <p className="eyebrow">YOUR ACCOUNT</p>
         <h1>Edit profile</h1>
-        <p>Customize how your shop appears publicly and keep your account details up to date.</p>
+        <p>Update your account details and the identity shown on your shop.</p>
       </div>
 
       <ProfileForm
@@ -42,7 +39,6 @@ export default async function ProfilePage(){
         gender={data?.gender||''}
         dateOfBirth={data?.date_of_birth||''}
         avatarUrl={avatarUrl}
-        bannerUrl={bannerUrl}
       />
 
       <div className="profile-editor-links">

@@ -219,3 +219,5 @@ body .footer-bottom { display: block; padding-block: 22px; }
     max-height:30px
   }
 }
+
+.header-utility-controls{display:flex;align-items:center;gap:8px;flex-shrink:0}

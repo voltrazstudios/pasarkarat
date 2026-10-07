@@ -105,12 +105,14 @@ export function Header({isAdmin=false}:{isAdmin?:boolean}){
           {links.map(([label,href])=><Link key={href} href={href} onClick={()=>setOpen(false)}>{label}{href==="/saved"&&<span className="saved-count">{ids.length}</span>}</Link>)}
           {isAdmin?<Link className="site-admin-link" href="/admin" onClick={()=>setOpen(false)}>Admin</Link>:null}
         </nav>
-        <button ref={languageButton} type="button" className="language-toggle" onClick={toggleLanguage} aria-label={language==="en"?"Switch to Bahasa Melayu":"Switch to English"} title={language==="en"?"Bahasa Melayu":"English"}>
-          <LanguageFlag country={language==="en"?"my":"gb"}/>
-        </button>
-        <Link ref={profileButton} href="/profile" prefetch={false} className="profile-toggle" aria-label="Profile" title="Profile">
-          <UserRound size={22}/>
-        </Link>
+        <div className="header-utility-controls">
+          <button ref={languageButton} type="button" className="language-toggle" onClick={toggleLanguage} aria-label={language==="en"?"Switch to Bahasa Melayu":"Switch to English"} title={language==="en"?"Bahasa Melayu":"English"}>
+            <LanguageFlag country={language==="en"?"my":"gb"}/>
+          </button>
+          <Link ref={profileButton} href="/profile" prefetch={false} className="profile-toggle" aria-label="Profile" title="Profile">
+            <UserRound size={22}/>
+          </Link>
+        </div>
       </div>
     </header>
   </>;
