@@ -22,6 +22,15 @@ export function billplzCollectionId(){
 
 export type BillplzBill={id:string;url:string;state?:string;paid?:boolean};
 
+export class BillplzRequestError extends Error{
+  status:number;
+  constructor(status:number){
+    super(`Billplz request failed with status ${status}.`);
+    this.name='BillplzRequestError';
+    this.status=status;
+  }
+}
+
 export async function createBillplzBill({
   amount,
   email,
@@ -60,8 +69,11 @@ export async function createBillplzBill({
   });
 
   const data=await response.json().catch(()=>null) as Record<string,unknown>|null;
-  if(!response.ok||!data||typeof data.id!=='string'||typeof data.url!=='string'){
-    throw new Error('Unable to create the Billplz payment right now.');
+  if(!response.ok){
+    throw new BillplzRequestError(response.status);
+  }
+  if(!data||typeof data.id!=='string'||typeof data.url!=='string'){
+    throw new BillplzRequestError(502);
   }
   return {id:data.id,url:data.url,state:typeof data.state==='string'?data.state:undefined,paid:data.paid===true};
 }
