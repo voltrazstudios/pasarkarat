@@ -102,7 +102,7 @@ export async function sellerSections(id:string):Promise<StoreSection[]>{
     if(typeof row.name!=='string')return [];
 
     const rawBlocks=Array.isArray(row.content)?row.content:[];
-    const blocks:StoreSectionBlock[]=rawBlocks.flatMap(block=>{
+    const blocks:StoreSectionBlock[]=rawBlocks.flatMap<StoreSectionBlock>(block=>{
       if(!block||typeof block!=='object')return [];
       const item=block as Record<string,unknown>;
 
