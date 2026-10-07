@@ -581,6 +581,60 @@ Object.assign(EN_TO_MS, {
   "rejected": "ditolak"
 });
 
+Object.assign(EN_TO_MS, {
+  "Products": "Produk",
+  "Seller Website": "Laman Web Penjual",
+  "Own website": "Laman web sendiri",
+  "Choose image": "Pilih imej",
+  "Custom /shop/ store URL": "URL kedai /shop/ tersuai",
+  "e.g. Vintage enamel tray": "cth. Dulang enamel vintaj",
+  "Pasar Karat Supabase is not configured yet. Follow SUPABASE-SETUP.md first.": "Supabase Pasar Karat belum dikonfigurasi. Ikuti SUPABASE-SETUP.md terlebih dahulu.",
+
+  "Pasar Karat authentication is not configured yet.": "Pengesahan Pasar Karat belum dikonfigurasi.",
+  "Enter your email and a password of at least 8 characters.": "Masukkan e-mel anda dan kata laluan sekurang-kurangnya 8 aksara.",
+  "Unable to sign in. Check your email and password.": "Tidak dapat log masuk. Semak e-mel dan kata laluan anda.",
+  "Use a safe display name between 2 and 60 characters.": "Gunakan nama paparan yang selamat antara 2 hingga 60 aksara.",
+  "Your passwords do not match.": "Kata laluan anda tidak sepadan.",
+  "Unable to create this account. Try again later.": "Akaun ini tidak dapat dicipta. Cuba lagi kemudian.",
+  "Check your email to confirm your account, then return here to sign in.": "Semak e-mel anda untuk mengesahkan akaun, kemudian kembali ke sini untuk log masuk.",
+  "Enter your email address.": "Masukkan alamat e-mel anda.",
+  "Unable to send a reset email right now.": "E-mel tetapan semula tidak dapat dihantar buat masa ini.",
+  "If an account exists for this email, a password reset link has been sent.": "Jika akaun wujud untuk e-mel ini, pautan tetapan semula kata laluan telah dihantar.",
+  "Use a password of at least 8 characters.": "Gunakan kata laluan sekurang-kurangnya 8 aksara.",
+  "This password reset link is no longer valid.": "Pautan tetapan semula kata laluan ini tidak lagi sah.",
+  "Unable to update your password.": "Kata laluan anda tidak dapat dikemas kini.",
+
+  "Profile picture must be 2 MB or smaller.": "Gambar profil mestilah 2 MB atau lebih kecil.",
+  "Profile editing is not configured yet.": "Pengeditan profil belum dikonfigurasi.",
+  "Use a safe username between 2 and 60 characters.": "Gunakan nama pengguna yang selamat antara 2 hingga 60 aksara.",
+  "Use a safe shop description of up to 300 characters.": "Gunakan penerangan kedai yang selamat sehingga 300 aksara.",
+  "Name must be 100 characters or fewer.": "Nama mestilah 100 aksara atau kurang.",
+  "Enter a valid phone number or leave it blank.": "Masukkan nombor telefon yang sah atau biarkan kosong.",
+  "Choose a valid gender option.": "Pilih pilihan jantina yang sah.",
+  "Enter a valid date of birth.": "Masukkan tarikh lahir yang sah.",
+  "Unable to load your current profile.": "Profil semasa anda tidak dapat dimuatkan.",
+  "Unable to upload your profile picture.": "Gambar profil anda tidak dapat dimuat naik.",
+  "Unable to save your profile right now.": "Profil anda tidak dapat disimpan buat masa ini.",
+  "Profile saved.": "Profil telah disimpan.",
+
+  "Product submissions are not configured yet.": "Penghantaran produk belum dikonfigurasi.",
+  "Product name must be between 2 and 100 characters.": "Nama produk mestilah antara 2 hingga 100 aksara.",
+  "Description must be between 10 and 2,000 characters.": "Penerangan mestilah antara 10 hingga 2,000 aksara.",
+  "Please remove unsafe markup or harmful technical content before submitting.": "Sila buang markup tidak selamat atau kandungan teknikal berbahaya sebelum menghantar.",
+  "Choose a valid category.": "Pilih kategori yang sah.",
+  "Enter a valid price with up to two decimal places.": "Masukkan harga yang sah dengan sehingga dua tempat perpuluhan.",
+  "Enter a valid product price.": "Masukkan harga produk yang sah.",
+  "Choose a product image.": "Pilih imej produk.",
+  "Product image must be 5 MB or smaller.": "Imej produk mestilah 5 MB atau lebih kecil.",
+  "Use a PNG, JPG, JPEG or WebP image.": "Gunakan imej PNG, JPG, JPEG atau WebP.",
+  "The uploaded file is not a supported image.": "Fail yang dimuat naik bukan imej yang disokong.",
+  "The image file type does not match its contents.": "Jenis fail imej tidak sepadan dengan kandungannya.",
+  "The image extension does not match its contents.": "Sambungan imej tidak sepadan dengan kandungannya.",
+  "The image could not be safely decoded. Please choose another PNG, JPG or WebP image.": "Imej tidak dapat dinyahkod dengan selamat. Sila pilih imej PNG, JPG atau WebP yang lain.",
+  "Unable to upload the product image.": "Imej produk tidak dapat dimuat naik.",
+  "Unable to submit this product. Please check the details and try again.": "Produk ini tidak dapat dihantar. Semak butiran dan cuba lagi."
+});
+
 const MS_TO_EN = Object.fromEntries(Object.entries(EN_TO_MS).map(([en, ms]) => [ms, en]));
 
 function translateDynamic(value: string, language: SiteLanguage) {
