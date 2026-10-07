@@ -2047,7 +2047,6 @@ body:has(.seller-page.seller-store-themed) footer{
   color:var(--navy)!important;
   font-family:var(--font-body),Arial,sans-serif!important
 }
-.seller-page.seller-store-themed .store-customizer-panel small,
 .seller-page.seller-store-themed .store-customizer-panel .store-sections-title>div>span,
 .seller-page.seller-store-themed .store-customizer-panel .store-featured-editor>p,
 .seller-page.seller-store-themed .store-customizer-panel .store-custom-url small,
