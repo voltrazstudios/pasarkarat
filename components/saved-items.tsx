@@ -1,81 +1,113 @@
 'use client';
+
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
-import { useRouter } from 'next/navigation';
-import { syncSavedProducts } from '@/app/marketplace-actions';
+import { usePathname, useRouter } from 'next/navigation';
+import { getAccountSavedIds, toggleAccountSavedProduct } from '@/app/marketplace-actions';
 
-const storageKey='pasar-karat-saved-items';
-const visitorStorageKey='pasar-karat-visitor-id';
 const validId=/^(?:[0-9]{1,8}|[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})$/i;
-const uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i;
 
-function readIds(raw:string|null):string[]{
-  try { const value:unknown=JSON.parse(raw??'[]'); return Array.isArray(value)?[...new Set(value.filter((id):id is string=>typeof id==='string'&&validId.test(id)))]:[]; }
-  catch { return []; }
-}
+type SavedContextValue={
+  ids:string[];
+  ready:boolean;
+  signedIn:boolean;
+  notice:string;
+  toggle:(id:string)=>Promise<boolean>;
+};
 
-function visitorId(){
-  try{
-    const existing=localStorage.getItem(visitorStorageKey);
-    if(existing&&uuid.test(existing))return existing;
-    const created=crypto.randomUUID();
-    localStorage.setItem(visitorStorageKey,created);
-    return created;
-  }catch{return crypto.randomUUID();}
-}
-
-const SavedContext=createContext<{ids:string[];ready:boolean;notice:string;toggle:(id:string)=>Promise<boolean>}|null>(null);
+const SavedContext=createContext<SavedContextValue|null>(null);
 
 export function SavedItemsProvider({children}:{children:ReactNode}){
+  const pathname=usePathname();
   const [ids,setIds]=useState<string[]>([]);
   const [ready,setReady]=useState(false);
+  const [signedIn,setSignedIn]=useState(false);
   const [notice,setNotice]=useState('');
-  const [visitor,setVisitor]=useState('');
 
   useEffect(()=>{
-    let current:string[]=[];
-    try{current=readIds(localStorage.getItem(storageKey));setIds(current);}catch{setNotice('Browser storage is unavailable. Saved finds will only last for this visit.');}
-    const key=visitorId();
-    setVisitor(key);
-    setReady(true);
-    void syncSavedProducts(current.filter(id=>uuid.test(id)),key);
+    let active=true;
+    setReady(false);
 
-    const sync=(event:StorageEvent)=>{
-      if(event.storageArea===localStorage&&(event.key===storageKey||event.key===null)){
-        const next=readIds(event.newValue);
-        setIds(next);
-        void syncSavedProducts(next.filter(id=>uuid.test(id)),key);
-      }
-    };
-    window.addEventListener('storage',sync);
-    return()=>window.removeEventListener('storage',sync);
-  },[]);
+    try{
+      localStorage.removeItem('pasar-karat-saved-items');
+      localStorage.removeItem('pasar-karat-visitor-id');
+    }catch{}
+
+    void getAccountSavedIds().then(result=>{
+      if(!active)return;
+      setSignedIn(result.signedIn);
+      setIds(result.signedIn?result.ids:[]);
+      setNotice('');
+      setReady(true);
+    }).catch(()=>{
+      if(!active)return;
+      setSignedIn(false);
+      setIds([]);
+      setNotice('Saved finds are unavailable right now.');
+      setReady(true);
+    });
+
+    return()=>{active=false;};
+  },[pathname]);
 
   async function toggle(id:string){
-    if(!ready||!validId.test(id))return false;
-    let current=ids;
-    try{if(!notice)current=readIds(localStorage.getItem(storageKey));}catch{/* Use this visit's state when storage cannot be read. */}
-    const next=current.includes(id)?current.filter(x=>x!==id):[...current,id];
-    setIds(next);
-    try{localStorage.setItem(storageKey,JSON.stringify(next));setNotice('');}catch{setNotice('Browser storage is unavailable. Saved finds will only last for this visit.');}
-    if(visitor&&uuid.test(id)){
-      await syncSavedProducts(next.filter(value=>uuid.test(value)),visitor);
-      return true;
+    if(!ready||!signedIn||!validId.test(id))return false;
+
+    const wasSaved=ids.includes(id);
+    setIds(current=>wasSaved?current.filter(value=>value!==id):[...current,id]);
+
+    const result=await toggleAccountSavedProduct(id);
+    if(!result.signedIn){
+      setSignedIn(false);
+      setIds([]);
+      return false;
     }
-    return false;
+    if(result.error){
+      setIds(current=>wasSaved?[...new Set([...current,id])]:current.filter(value=>value!==id));
+      setNotice('Unable to update Saved right now. Please try again.');
+      return false;
+    }
+
+    setIds(current=>result.saved?[...new Set([...current,id])]:current.filter(value=>value!==id));
+    setNotice('');
+    return true;
   }
 
-  return <SavedContext.Provider value={{ids,ready,notice,toggle}}>{children}</SavedContext.Provider>;
+  return <SavedContext.Provider value={{ids,ready,signedIn,notice,toggle}}>{children}</SavedContext.Provider>;
 }
 
-export function useSavedItems(){const value=useContext(SavedContext);if(!value)throw new Error('SavedItemsProvider is required');return value;}
+export function useSavedItems(){
+  const value=useContext(SavedContext);
+  if(!value)throw new Error('SavedItemsProvider is required');
+  return value;
+}
 
 export function SaveButton({id,name}:{id:string;name:string}){
   const router=useRouter();
-  const {ids,ready,toggle,notice}=useSavedItems();
+  const pathname=usePathname();
+  const {ids,ready,signedIn,toggle,notice}=useSavedItems();
   const saved=ids.includes(id);
+
   async function onToggle(){
-    const tracked=await toggle(id);
-    if(tracked)router.refresh();
+    if(!signedIn){
+      const next=pathname||'/items';
+      router.push(`/auth?next=${encodeURIComponent(next)}`);
+      return;
+    }
+    const changed=await toggle(id);
+    if(changed)router.refresh();
   }
-  return <div className="save-control"><button type="button" className="save-button" aria-pressed={saved} aria-label={`${saved?'Remove':'Save'} ${name}${saved?' from saved items':''}`} disabled={!ready} onClick={()=>void onToggle()}>{saved?'♥ Saved':'♡ Save'}</button>{notice&&<small role="status" className="save-notice">{notice}</small>}</div>;
+
+  return <div className="save-control">
+    <button
+      type="button"
+      className="save-button"
+      aria-pressed={signedIn?saved:false}
+      aria-label={signedIn?`${saved?'Remove':'Save'} ${name}${saved?' from saved items':''}`:`Sign in to save ${name}`}
+      disabled={!ready}
+      onClick={()=>void onToggle()}
+    >
+      {signedIn&&saved?'♥ Saved':'♡ Save'}
+    </button>
+    {notice&&<small role="status" className="save-notice">{notice}</small>}
+  </div>;
 }

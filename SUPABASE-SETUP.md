@@ -16,6 +16,7 @@ Run these files in the Supabase SQL editor:
 4. `supabase/migrations/202610070004_more_marketplace_platforms.sql`
 5. `supabase/migrations/202610070005_admin_delete_products.sql`
 6. `supabase/migrations/202610070006_seller_storefronts.sql`
+7. `supabase/migrations/202610070007_account_saved_items.sql`
 
 ## 3. Configure local environment
 
