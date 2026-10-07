@@ -24,25 +24,32 @@ export function SellerProfileCard({seller,actions}:{seller:SellerSummary;actions
           {seller.isPro?<span className="seller-pro-badge"><Crown size={13}/> PRO</span>:null}
         </div>
         <small className="seller-profile-description">{seller.description||'Pasar Karat seller'}</small>
-        {storePlatforms.length?<div className="seller-profile-marketplace-links" aria-label="Seller marketplace links">
-          {storePlatforms.map(platform=><a
-            key={platform}
-            href={seller.storeLinks[platform]}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`seller-marketplace-pill platform-${platformClass(platform)}`}
-            title={platformDisplayName(platform)}
-          ><PlatformLogo platform={platform} size={20}/><span>{platformDisplayName(platform)}</span></a>)}
-        </div>:null}
         <div className="seller-profile-actions">{actions??(
           <Link href={`/seller/${seller.id}`} className="seller-store-link">View Store</Link>
         )}</div>
       </div>
       <div className="seller-stats-inline">
-        <span className="seller-stat-item"><Star className="seller-stat-icon" size={18} strokeWidth={1.9} aria-hidden="true"/><strong>Ratings:</strong> <b>{seller.ratings}</b></span>
-        <span className="seller-stat-item"><Store className="seller-stat-icon" size={18} strokeWidth={1.9} aria-hidden="true"/><strong>Products:</strong> <b>{seller.products}</b></span>
-        <span className="seller-stat-item"><UsersRound className="seller-stat-icon" size={18} strokeWidth={1.9} aria-hidden="true"/><strong>Follower:</strong> <b>{seller.followers}</b></span>
-        <span className="seller-stat-item"><UserRound className="seller-stat-icon" size={18} strokeWidth={1.9} aria-hidden="true"/><strong>Joined:</strong> <b>{joinedLabel(seller.joinedAt)}</b></span>
+        <div className="seller-stat-column">
+          <span className="seller-stat-item"><Star className="seller-stat-icon" size={18} strokeWidth={1.9} aria-hidden="true"/><strong>Ratings:</strong> <b>{seller.ratings}</b></span>
+          <span className="seller-stat-item"><Store className="seller-stat-icon" size={18} strokeWidth={1.9} aria-hidden="true"/><strong>Products:</strong> <b>{seller.products}</b></span>
+        </div>
+        <div className="seller-stat-column">
+          <span className="seller-stat-item"><UsersRound className="seller-stat-icon" size={18} strokeWidth={1.9} aria-hidden="true"/><strong>Follower:</strong> <b>{seller.followers}</b></span>
+          <span className="seller-stat-item"><UserRound className="seller-stat-icon" size={18} strokeWidth={1.9} aria-hidden="true"/><strong>Joined:</strong> <b>{joinedLabel(seller.joinedAt)}</b></span>
+        </div>
+        <div className="seller-platform-column">
+          <strong>Platform:</strong>
+          {storePlatforms.length?<div className="seller-profile-marketplace-links" aria-label="Seller marketplace links">
+            {storePlatforms.map(platform=><a
+              key={platform}
+              href={seller.storeLinks[platform]}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`seller-marketplace-pill platform-${platformClass(platform)}`}
+              title={platformDisplayName(platform)}
+            ><PlatformLogo platform={platform} size={20}/><span>{platformDisplayName(platform)}</span></a>)}
+          </div>:<span className="seller-platform-empty">—</span>}
+        </div>
       </div>
     </div>
   </section>;
