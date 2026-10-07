@@ -244,3 +244,22 @@
   .store-customizer-footer .button{width:100%}
   .seller-subcategory-heading{font-size:24px}
 }
+
+
+/* Customize mode keeps store tabs visible as a non-interactive preview. */
+.seller-store-nav span{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:8px 14px;border-radius:7px;color:var(--muted);font-size:14px;font-weight:700}
+.seller-store-nav span.active{background:var(--navy);color:var(--surface)}
+.seller-store-nav[data-preview=true] span{cursor:default;user-select:none}
+.seller-store-nav[data-preview=true] span:not(.active){opacity:.82}
+
+/* The customization preview uses exactly the same geometry and crop as the saved shop banner. */
+.store-banner-editor-preview{width:100%;aspect-ratio:3 / 1;max-height:380px;overflow:hidden;border:1px solid var(--line);border-radius:12px;background:var(--surface);display:grid;place-items:center;color:var(--muted)}
+.store-banner-editor-preview img{width:100%;height:100%;object-fit:cover}
+@media(max-width:700px){
+  .store-banner-editor-preview{aspect-ratio:2.2 / 1;border-radius:9px}
+  .seller-store-nav span{white-space:nowrap}
+}
+
+/* Section-image previews also mirror the final storefront image treatment. */
+.store-section-image-preview{width:100%;max-width:none;min-height:0;max-height:620px;overflow:hidden;border:1px solid var(--line);border-radius:10px;background:var(--surface);display:grid;place-items:center;color:var(--muted)}
+.store-section-image-preview img{display:block;width:100%;height:auto;max-height:620px;object-fit:contain;background:#fff}

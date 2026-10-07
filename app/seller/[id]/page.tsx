@@ -84,14 +84,24 @@ export default async function SellerPage({
 
     <SellerProfileCard seller={seller} actions={followAction}/>
 
-    <nav className="seller-store-nav" aria-label="Store sections">
-      <Link className={active==='home'?'active':''} href={`/seller/${seller.id}`}>Home</Link>
-      <Link className={active==='all'?'active':''} href={{pathname:`/seller/${seller.id}`,query:{section:'all'}}}>All Products</Link>
-      {sections.map(section=><Link
-        className={active===section.name?'active':''}
-        href={{pathname:`/seller/${seller.id}`,query:{section:section.name}}}
-        key={section.name}
-      >{section.name}</Link>)}
+    <nav className="seller-store-nav" aria-label="Store sections" data-preview={customizing?'true':'false'}>
+      {customizing?<>
+        <span className={active==='home'?'active':''} aria-disabled="true">Home</span>
+        <span className={active==='all'?'active':''} aria-disabled="true">All Products</span>
+        {sections.map(section=><span
+          className={active===section.name?'active':''}
+          aria-disabled="true"
+          key={section.name}
+        >{section.name}</span>)}
+      </>:<>
+        <Link className={active==='home'?'active':''} href={`/seller/${seller.id}`}>Home</Link>
+        <Link className={active==='all'?'active':''} href={{pathname:`/seller/${seller.id}`,query:{section:'all'}}}>All Products</Link>
+        {sections.map(section=><Link
+          className={active===section.name?'active':''}
+          href={{pathname:`/seller/${seller.id}`,query:{section:section.name}}}
+          key={section.name}
+        >{section.name}</Link>)}
+      </>}
     </nav>
 
     {seller.isOwner?<StoreCustomizer
