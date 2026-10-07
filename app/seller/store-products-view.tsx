@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { ProductCard } from '@/components/marketplace';
-import { platforms, type Platform, type Product } from '@/data/products';
+import { platformDisplayName, platforms, type Platform, type Product } from '@/data/products';
 import type { SellerProductMetrics, StoreSection } from '@/lib/sellers';
 
 type SortMode='popular'|'latest'|'price-low'|'price-high';
@@ -64,7 +64,7 @@ export function StoreProductsView({
 
   useEffect(()=>{
     setPage(1);
-  },[sort,platform,section?.name]);
+  },[sort,platform,section?.name,homeLimit]);
 
   useEffect(()=>{
     if(page>totalPages)setPage(totalPages);
@@ -117,7 +117,7 @@ export function StoreProductsView({
         onChange={event=>setPlatform(event.target.value as Platform|'')}
       >
         <option value="">Platform</option>
-        {platforms.map(value=><option value={value} key={value}>{value}</option>)}
+        {platforms.map(value=><option value={value} key={value}>{platformDisplayName(value)}</option>)}
       </select>
 
       <div className="store-pagination" aria-label="Product pages">

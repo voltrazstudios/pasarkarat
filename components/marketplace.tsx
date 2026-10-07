@@ -8,7 +8,7 @@ import { PlatformQuickLinks, PlatformSummary, ProductName, platformClass } from 
 import { useState } from 'react';
 import { useLanguage } from './language-provider';
 import { ArrowUpRight, ArrowRight, Search, Layers, Image as ImageIcon, X } from 'lucide-react';
-import { categories, categoryImages, platforms, products, type Platform, type Product } from '@/data/products';
+import { categories, categoryImages, platformDisplayName, platforms, products, type Platform, type Product } from '@/data/products';
 
 export { Header } from './header';
 
@@ -159,12 +159,14 @@ export function Catalogue({initialQuery='',initialCategory='',items=products}:{i
 
   return <main id="main" className="container catalogue">
     <p className="eyebrow">THE DIGITAL PASAR KARAT</p>
-    <h1>Explore the collection</h1>
-    <div className="catalogue-title-row">
-      <p className="intro">A little nostalgia. A touch of tradition. Something that speaks to you.</p>
+    <div className="catalogue-heading-row">
+      <div className="catalogue-heading-copy">
+        <h1>Explore the collection</h1>
+        <p className="intro">A little nostalgia. A touch of tradition. Something that speaks to you.</p>
+      </div>
       <div className="collection-submit-mini">
         <span><strong>Sell something unique?</strong><small>Submit it for review.</small></span>
-        <Link href="/submit-product" prefetch={false} className="button submission-cta">Submit Product <ArrowUpRight size={17}/></Link>
+        <Link href="/submit-product" prefetch className="button submission-cta">Submit Product <ArrowUpRight size={17}/></Link>
       </div>
     </div>
     <div className="catalogue-controls">
@@ -185,7 +187,7 @@ export function Catalogue({initialQuery='',initialCategory='',items=products}:{i
       <p className="filter-label">Platform</p>
       <div className="filter-pills platform-filter-pills">
         <button className={!platform?'selected':''} onClick={()=>setPlatform('')}>{language==='ms'?'Semua platform':'All platforms'}</button>
-        {platformFilters.map(p=><button key={p} className={`${platform===p?'selected ':''}platform-filter-${platformClass(p)}`} onClick={()=>setPlatform(p)}>{p}</button>)}
+        {platformFilters.map(p=><button key={p} className={`${platform===p?'selected ':''}platform-filter-${platformClass(p)}`} onClick={()=>setPlatform(p)}>{platformDisplayName(p)}</button>)}
       </div>
     </div>
     <div className="results-meta"><span role="status">{filtered.length} {filtered.length===1?'item':'items'}{category?` in ${category}`:''}</span><span>{language==='ms'?'Senarai penjual luar':'External seller listings'}</span></div>

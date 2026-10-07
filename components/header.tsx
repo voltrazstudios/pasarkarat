@@ -100,7 +100,7 @@ export function Header({isAdmin=false}:{isAdmin?:boolean}){
           <Image sizes="(max-width: 600px) 200px, (max-width: 900px) 220px, 240px" className="brand-logo" src="/pasar-karat-logo.png" width={1200} height={300} alt="Pasar Karat"/>
         </Link>
         <nav ref={navigation} id="main-navigation" aria-label="Main navigation" data-open={open}>
-          {links.map(([label,href])=><Link key={href} href={href} onClick={()=>setOpen(false)}>{label}{href==="/saved"&&<span className="saved-count">{ids.length}</span>}</Link>)}
+          {links.map(([label,href])=><Link key={href} href={href} prefetch onClick={()=>setOpen(false)}>{label}{href==="/saved"&&<span className="saved-count">{ids.length}</span>}</Link>)}
           {isAdmin?<Link className="site-admin-link" href="/admin" onClick={()=>setOpen(false)}>Admin</Link>:null}
         </nav>
         <div className="header-right-controls">
@@ -108,7 +108,7 @@ export function Header({isAdmin=false}:{isAdmin?:boolean}){
             <button ref={languageButton} type="button" className="language-toggle" onClick={toggleLanguage} aria-label={language==="en"?"Switch to Bahasa Melayu":"Switch to English"} title={language==="en"?"Bahasa Melayu":"English"}>
               <LanguageFlag country={language==="en"?"my":"gb"}/>
             </button>
-            <Link ref={profileButton} href="/profile" prefetch={false} className="profile-toggle" aria-label="Profile" title="Profile">
+            <Link ref={profileButton} href="/profile" prefetch className="profile-toggle" aria-label="Profile" title="Profile">
               <UserRound size={22}/>
             </Link>
           </div>

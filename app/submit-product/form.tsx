@@ -1,7 +1,7 @@
 'use client';
 
 import { startTransition, useActionState, useState } from 'react';
-import { categories, platforms, type Platform } from '@/data/products';
+import { categories, platformDisplayName, platforms, type Platform } from '@/data/products';
 import { submitProduct } from './actions';
 
 export function ProductSubmissionForm(){
@@ -56,9 +56,9 @@ export function ProductSubmissionForm(){
         return <div className="platform-submit-card" data-active={active} key={item}>
           <label className="platform-check">
             <input type="checkbox" name="platform" value={item} checked={active} onChange={e=>toggle(item,e.target.checked)}/>
-            <strong>{item}</strong>
+            <strong>{platformDisplayName(item)}</strong>
           </label>
-          <label>{item==='Own website'?'Website/product URL':`${item} seller/product URL`}
+          <label>{item==='Own website'?'Seller website/product URL':`${platformDisplayName(item)} seller/product URL`}
             <input name={`seller_${item}`} type="url" required={active} disabled={!active} placeholder="https://..."/>
           </label>
           <label>Affiliate URL <span>(optional)</span>

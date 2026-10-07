@@ -13,6 +13,16 @@ export const categoryImages: Record<Category, string> = {
 
 export const platforms = ['Shopee','Carousell','Facebook','TikTok Shop','Mudah.my','Lazada','Own website'] as const;
 export type Platform = typeof platforms[number];
+export const platformDisplayNames: Record<Platform,string> = {
+  Shopee:'Shopee',
+  Carousell:'Carousell',
+  Facebook:'Facebook',
+  'TikTok Shop':'TikTok Shop',
+  'Mudah.my':'Mudah.my',
+  Lazada:'Lazada',
+  'Own website':'Seller Website',
+};
+export const platformDisplayName=(platform:Platform)=>platformDisplayNames[platform];
 export type ProductLink = { platform: Platform; url: string };
 export type Product = { id: string; slug: string; name: string; nameMs: string; image: string; category: Category; description: string; descriptionMs: string; links: ProductLink[]; featured: boolean; price?: number; currency?: 'MYR'; submitted?: boolean; sellerId?: string };
 

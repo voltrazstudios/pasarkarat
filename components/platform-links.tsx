@@ -4,17 +4,9 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { ArrowUpRight, ChevronDown, Grid2X2 } from 'lucide-react';
 import { useLanguage } from './language-provider';
-import type { Platform, Product, ProductLink } from '@/data/products';
+import { platformDisplayNames, type Platform, type Product, type ProductLink } from '@/data/products';
 
-const platformLabel: Record<Platform, string> = {
-  Shopee: 'Shopee',
-  Carousell: 'Carousell',
-  Facebook: 'Facebook',
-  'TikTok Shop': 'TikTok Shop',
-  'Mudah.my': 'Mudah.my',
-  Lazada: 'Lazada',
-  'Own website': 'Own website',
-};
+const platformLabel=platformDisplayNames;
 
 const platformLogo: Partial<Record<Platform, string>> = {
   Shopee: '/images/platforms/shopee.png',

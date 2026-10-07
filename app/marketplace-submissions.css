@@ -1185,3 +1185,67 @@ body .save-button[aria-pressed=true]:hover{
     font-size:14px!important
   }
 }
+
+
+/* Collection header mirrors Archive spacing; CTA cannot push the copy apart. */
+.catalogue-heading-row{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:28px
+}
+.catalogue-heading-copy{
+  min-width:0
+}
+.catalogue-heading-copy h1{
+  margin-top:12px!important;
+  margin-bottom:0!important
+}
+.catalogue-heading-copy .intro{
+  margin-top:14px!important;
+  margin-bottom:0!important
+}
+.catalogue-heading-row .collection-submit-mini{
+  flex:0 0 auto;
+  margin:0!important;
+  padding:11px 12px 11px 16px;
+  min-height:64px
+}
+.catalogue-heading-row .collection-submit-mini .submission-cta{
+  min-height:44px;
+  padding:10px 15px
+}
+@media(max-width:900px){
+  .catalogue-heading-row{
+    align-items:flex-start;
+    flex-direction:column;
+    gap:16px
+  }
+  .catalogue-heading-row .collection-submit-mini{
+    width:100%
+  }
+}
+
+/* Keep the 2x2 seller stats close to the shop identity. */
+.seller-profile-card .seller-profile-identity{
+  gap:16px!important
+}
+.seller-profile-card .seller-stats-inline{
+  margin-left:4px!important;
+  max-width:500px!important;
+  width:min(100%,500px)!important;
+  gap:10px 22px!important
+}
+@media(max-width:1050px){
+  .seller-profile-card .seller-stats-inline{
+    margin-left:108px!important;
+    width:calc(100% - 108px)!important;
+    max-width:none!important
+  }
+}
+@media(max-width:700px){
+  .seller-profile-card .seller-stats-inline{
+    margin-left:0!important;
+    width:100%!important
+  }
+}
