@@ -4,8 +4,6 @@ import sharp from 'sharp';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { configured, db } from '@/lib/supabase';
-import { platforms, type Platform } from '@/data/products';
-import { validatePlatformUrl } from '@/lib/product-validation';
 import { storeFonts, validHexColor, type StoreFont } from '@/lib/store-theme';
 import { cleanPlainText, containsBlockedContent, containsUnsafeMarkup } from '@/lib/moderation';
 
