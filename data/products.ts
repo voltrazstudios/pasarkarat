@@ -11,7 +11,7 @@ export const categoryImages: Record<Category, string> = {
   'Home & Decor': '/images/categories/home-decor.png',
 };
 
-export const platforms = ['Shopee','Carousell','Facebook','TikTok Shop','Mudah.my','Lazada','Own website'] as const;
+export const platforms = ['Shopee','Carousell','Facebook','TikTok Shop','Mudah.my','Lazada','Lelong.my','eBay','Etsy','Own website'] as const;
 export type Platform = typeof platforms[number];
 export const platformDisplayNames: Record<Platform,string> = {
   Shopee:'Shopee',
@@ -20,6 +20,9 @@ export const platformDisplayNames: Record<Platform,string> = {
   'TikTok Shop':'TikTok Shop',
   'Mudah.my':'Mudah.my',
   Lazada:'Lazada',
+  'Lelong.my':'Lelong.my',
+  eBay:'eBay',
+  Etsy:'Etsy',
   'Own website':'Seller Website',
 };
 export const platformDisplayName=(platform:Platform)=>platformDisplayNames[platform];
