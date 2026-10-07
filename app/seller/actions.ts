@@ -83,7 +83,7 @@ export async function saveStoreCustomization(_:StoreCustomizationResult,form:For
   }
 
   const {data:profile,error:profileError}=await client.from('marketplace_profiles')
-    .select('banner_path,banner_position_x,banner_position_y')
+    .select('banner_path')
     .eq('id',user.id)
     .maybeSingle();
   if(profileError)return {error:'Unable to load your current store.'};
@@ -105,10 +105,8 @@ export async function saveStoreCustomization(_:StoreCustomizationResult,form:For
   }
 
   const oldBanner=profile?.banner_path||null;
-  const positionXRaw=Number(String(form.get('banner_position_x')||profile?.banner_position_x||50));
-  const positionYRaw=Number(String(form.get('banner_position_y')||profile?.banner_position_y||50));
-  const bannerPositionX=Math.max(0,Math.min(100,Number.isFinite(positionXRaw)?positionXRaw:50));
-  const bannerPositionY=Math.max(0,Math.min(100,Number.isFinite(positionYRaw)?positionYRaw:50));
+  const bannerPositionX=50;
+  const bannerPositionY=50;
   let bannerPath=oldBanner;
   let uploadedBanner:string|null=null;
   const uploadedSectionImages:string[]=[];

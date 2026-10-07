@@ -71,16 +71,12 @@ function editableBlocks(blocks:StoreSectionBlock[]):EditableBlock[]{
 
 export function StoreCustomizer({
   bannerUrl,
-  initialBannerPositionX,
-  initialBannerPositionY,
   initialSections,
   products,
   initialOpen=false,
   sellerId,
 }:{
   bannerUrl:string;
-  initialBannerPositionX:number;
-  initialBannerPositionY:number;
   initialSections:StoreSection[];
   products:ProductOption[];
   initialOpen?:boolean;
@@ -91,11 +87,8 @@ export function StoreCustomizer({
   const [savedSinceOpen,setSavedSinceOpen]=useState(false);
   const [state,action,pending]=useActionState<StoreCustomizationResult,FormData>(saveStoreCustomization,{});
   const [bannerPreview,setBannerPreview]=useState(bannerUrl);
-  const [bannerPositionX,setBannerPositionX]=useState(initialBannerPositionX);
-  const [bannerPositionY,setBannerPositionY]=useState(initialBannerPositionY);
   const [removeBanner,setRemoveBanner]=useState(false);
   const bannerInput=useRef<HTMLInputElement>(null);
-  const bannerDrag=useRef<{pointerX:number;pointerY:number;positionX:number;positionY:number}|null>(null);
   const [sections,setSections]=useState<EditableSection[]>(
     initialSections.map((section,index)=>({
       key:`saved-${index}-${section.name}`,
@@ -190,8 +183,6 @@ export function StoreCustomizer({
   return <section className="store-customizer" id="customize-store">
     <form action={action} className="store-customizer-panel">
       <input type="hidden" name="sections_json" value={JSON.stringify(sectionsPayload)}/>
-      <input type="hidden" name="banner_position_x" value={bannerPositionX}/>
-      <input type="hidden" name="banner_position_y" value={bannerPositionY}/>
 
       <div className="store-customizer-heading">
         <div>
@@ -202,48 +193,15 @@ export function StoreCustomizer({
       </div>
 
       <div className="store-banner-control">
-        <div
-          className={`store-banner-drag-surface${bannerPreview?' has-banner':''}`}
-          onPointerDown={event=>{
-            if(!bannerPreview)return;
-            event.currentTarget.setPointerCapture(event.pointerId);
-            bannerDrag.current={
-              pointerX:event.clientX,
-              pointerY:event.clientY,
-              positionX:bannerPositionX,
-              positionY:bannerPositionY,
-            };
-          }}
-          onPointerMove={event=>{
-            const start=bannerDrag.current;
-            if(!start||!bannerPreview)return;
-            const rect=event.currentTarget.getBoundingClientRect();
-            if(!rect.width||!rect.height)return;
-            const clamp=(value:number)=>Math.max(0,Math.min(100,value));
-            setBannerPositionX(clamp(start.positionX-((event.clientX-start.pointerX)/rect.width)*100));
-            setBannerPositionY(clamp(start.positionY-((event.clientY-start.pointerY)/rect.height)*100));
-          }}
-          onPointerUp={event=>{
-            if(event.currentTarget.hasPointerCapture(event.pointerId))event.currentTarget.releasePointerCapture(event.pointerId);
-            bannerDrag.current=null;
-          }}
-          onPointerCancel={()=>{bannerDrag.current=null;}}
-        >
-          <StoreBanner
-            src={bannerPreview}
-            preview
-            emptyLabel="No banner yet"
-            positionX={bannerPositionX}
-            positionY={bannerPositionY}
-          />
-          {bannerPreview?<span className="store-banner-drag-hint">Drag image to reposition</span>:null}
-        </div>
+        <StoreBanner
+          src={bannerPreview}
+          preview
+          emptyLabel="No banner yet"
+        />
         <div className="store-banner-editor-actions">
           <button type="button" className="button secondary" onClick={()=>bannerInput.current?.click()}>{bannerPreview?'Change banner':'Upload banner'}</button>
           {bannerPreview?<button type="button" className="store-remove-button" onClick={()=>{
             setBannerPreview('');
-            setBannerPositionX(50);
-            setBannerPositionY(50);
             setRemoveBanner(true);
             if(bannerInput.current)bannerInput.current.value='';
           }}>Remove banner</button>:null}
@@ -258,13 +216,11 @@ export function StoreCustomizer({
             const file=event.target.files?.[0];
             if(!file)return;
             setBannerPreview(URL.createObjectURL(file));
-            setBannerPositionX(50);
-            setBannerPositionY(50);
             setRemoveBanner(false);
           }}
         />
         {removeBanner?<input type="hidden" name="remove_banner" value="1"/>:null}
-        <small>PNG, JPG or WebP · maximum 5 MB. Drag the preview to choose the visible crop.</small>
+        <small>PNG, JPG or WebP · maximum 5 MB. Banner is centered automatically.</small>
       </div>
 
       <div className="store-sections-editor">

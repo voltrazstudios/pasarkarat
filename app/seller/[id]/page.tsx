@@ -81,11 +81,7 @@ export default async function SellerPage({
   return <main id="main" className="container seller-page">
     {query.error?<div className="form-notice error" role="alert">{query.error==='follow'?'Unable to update your follow right now. Please try again.':'Seller features are unavailable right now.'}</div>:null}
 
-    <StoreBanner
-      src={seller.bannerUrl||''}
-      positionX={seller.bannerPositionX}
-      positionY={seller.bannerPositionY}
-    />
+    <StoreBanner src={seller.bannerUrl||''}/>
 
     <SellerProfileCard seller={seller} actions={followAction}/>
 
@@ -111,8 +107,6 @@ export default async function SellerPage({
 
     {seller.isOwner?<StoreCustomizer
       bannerUrl={seller.bannerUrl||''}
-      initialBannerPositionX={seller.bannerPositionX}
-      initialBannerPositionY={seller.bannerPositionY}
       initialSections={sections}
       products={products.map(product=>({id:product.id,name:product.name}))}
       initialOpen={customizing}

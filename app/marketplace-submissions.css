@@ -265,17 +265,6 @@
 .store-section-image-preview img{display:block;width:100%;height:auto;max-height:620px;object-fit:contain;background:#fff}
 
 
-/* Banner crop/reposition preview. */
-.store-banner-drag-surface{position:relative;margin:0 -24px}
-.store-banner-drag-surface.has-banner{cursor:grab;touch-action:none;user-select:none}
-.store-banner-drag-surface.has-banner:active{cursor:grabbing}
-.store-banner-drag-surface .store-banner-editor-preview{margin:0;width:100%}
-.store-banner-drag-hint{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);z-index:3;padding:5px 9px;border-radius:999px;background:#17333acc;color:#fff;font-size:11px;font-weight:700;pointer-events:none;white-space:nowrap}
-@media(max-width:700px){
-  .store-banner-drag-surface{margin-inline:-18px}
-  .store-banner-drag-hint{bottom:8px;font-size:10px}
-}
-
 
 /* Compact Collection submission CTA; product submissions stay inside Pasar Karat. */
 .collection-submit-mini{
@@ -325,4 +314,11 @@
   .collection-submit-mini .submission-cta{
     width:100%
   }
+}
+
+
+/* Banner preview and public banner share one centered crop. */
+.seller-store-banner img,
+.store-banner-editor-preview img{
+  object-position:center center!important
 }
