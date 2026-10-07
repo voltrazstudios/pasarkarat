@@ -126,7 +126,6 @@ export function SellerStorefrontShell({
       }}
       featuredProductIds={seller.featuredProductIds}
       customSlug={seller.customSlug||''}
-      storeLinks={seller.storeLinks}
     />:null}
 
     {!customizing?<>
