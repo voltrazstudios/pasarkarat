@@ -1,7 +1,5 @@
 import Link from 'next/link';
 import { Crown, Star, Store, UserRound, UsersRound } from 'lucide-react';
-import { PlatformLogo, platformClass } from './platform-links';
-import { platformDisplayName, platforms } from '@/data/products';
 import type { ReactNode } from 'react';
 import type { SellerSummary } from '@/lib/sellers';
 
@@ -12,7 +10,6 @@ function joinedLabel(value:string){
 }
 
 export function SellerProfileCard({seller,actions}:{seller:SellerSummary;actions?:ReactNode}){
-  const storePlatforms=platforms.filter(platform=>seller.storeLinks[platform]);
   return <section className="seller-profile-card" aria-label={`Seller: ${seller.storeName}`}>
     <div className="seller-profile-identity">
       <Link className="seller-profile-avatar" href={`/seller/${seller.id}`} aria-label={`View ${seller.storeName} store`}>
@@ -36,19 +33,6 @@ export function SellerProfileCard({seller,actions}:{seller:SellerSummary;actions
         <div className="seller-stat-column">
           <span className="seller-stat-item"><UsersRound className="seller-stat-icon" size={18} strokeWidth={1.9} aria-hidden="true"/><strong>Follower:</strong> <b>{seller.followers}</b></span>
           <span className="seller-stat-item"><UserRound className="seller-stat-icon" size={18} strokeWidth={1.9} aria-hidden="true"/><strong>Joined:</strong> <b>{joinedLabel(seller.joinedAt)}</b></span>
-        </div>
-        <div className="seller-platform-column">
-          <strong>Platform:</strong>
-          {storePlatforms.length?<div className="seller-profile-marketplace-links" aria-label="Seller marketplace links">
-            {storePlatforms.map(platform=><a
-              key={platform}
-              href={seller.storeLinks[platform]}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`seller-marketplace-pill platform-${platformClass(platform)}`}
-              title={platformDisplayName(platform)}
-            ><PlatformLogo platform={platform} size={20}/><span>{platformDisplayName(platform)}</span></a>)}
-          </div>:<span className="seller-platform-empty">—</span>}
         </div>
       </div>
     </div>
