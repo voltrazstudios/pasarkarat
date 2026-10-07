@@ -13,7 +13,7 @@ function dateLabel(value:string){
   return Number.isNaN(date.getTime())?'':new Intl.DateTimeFormat('en-MY',{day:'numeric',month:'short',year:'numeric'}).format(date);
 }
 
-export default async function ProPage({searchParams}:{searchParams:Promise<{error?:string;payment?:string}>}){
+export default async function ProPage({searchParams}:{searchParams:Promise<{error?:string;payment?:string;status?:string}>}){
   const query=await searchParams;
   let user:null|{id:string;email?:string}=null;
   let proUntil:string|null=null;
@@ -39,7 +39,23 @@ export default async function ProPage({searchParams}:{searchParams:Promise<{erro
       <p>Keep the same trusted Pasar Karat layout, then unlock your own colours, fonts, featured products and custom store URL.</p>
       {active?<div className="pro-active-note"><strong>Pro active</strong><span>Until {dateLabel(proUntil!)}</span></div>:null}
       {query.payment==='processing'?<div className="form-notice">Your Billplz payment is being confirmed. Pro will activate when the secure callback arrives.</div>:null}
-      {query.error?<div className="form-notice error">{query.error==='payment-not-configured'?'Billplz sandbox is not configured yet. Add the server keys first.':'Unable to start the payment. Please try again.'}</div>:null}
+      {query.error?<div className="form-notice error">{
+        query.error==='payment-not-configured'
+          ? 'Billplz sandbox is not configured yet. Add the server keys first.'
+          : query.error==='email-required'
+            ? 'Your account needs an email address before Billplz checkout can start.'
+            : query.error==='payment-database'
+              ? 'Billplz created the checkout step, but Pasar Karat could not register the payment in Supabase.'
+              : query.error==='billplz'&&query.status==='401'
+                ? 'Billplz rejected the Sandbox Secret Key. Check that the new Sandbox key is saved in Netlify.'
+                : query.error==='billplz'&&query.status==='422'
+                  ? 'Billplz rejected the bill details. Check that the Collection ID is from Collection (not Payment Form/Open Collection) and belongs to the same Sandbox account as the Secret Key.'
+                  : query.error==='billplz'&&(query.status==='500'||query.status==='503')
+                    ? 'Billplz Sandbox is temporarily unavailable. Try again shortly.'
+                    : query.error==='billplz'&&query.status==='429'
+                      ? 'Billplz rate-limited the request. Wait a moment and try again.'
+                      : 'Unable to start the payment. Please try again.'
+      }</div>:null}
     </section>
 
     <section className="pro-plans" aria-label="Pasar Karat Pro plans">
