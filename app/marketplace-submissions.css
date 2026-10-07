@@ -403,3 +403,228 @@
     padding-inline:10px
   }
 }
+
+
+/* Unified seller profile + storefront navigation card. */
+.seller-store-panel{
+  margin-top:0;
+  border:1px solid var(--line);
+  border-radius:12px;
+  overflow:hidden;
+  background:var(--surface);
+  box-shadow:0 8px 24px #182e3a0a
+}
+.seller-store-panel .seller-profile-card{
+  margin:0;
+  border:0;
+  border-radius:0;
+  box-shadow:none
+}
+.seller-store-panel .seller-store-nav{
+  position:relative;
+  display:flex;
+  align-items:stretch;
+  gap:0;
+  margin:0;
+  padding:0 22px;
+  border:0;
+  border-top:1px solid var(--line);
+  border-radius:0;
+  background:transparent;
+  overflow-x:auto;
+  flex-wrap:nowrap;
+  scrollbar-width:none
+}
+.seller-store-panel .seller-store-nav::-webkit-scrollbar{display:none}
+.seller-store-panel .seller-store-nav a,
+.seller-store-panel .seller-store-nav span{
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  flex:1 0 auto;
+  min-width:130px;
+  min-height:58px;
+  padding:14px 20px 13px;
+  border-radius:0;
+  background:transparent!important;
+  color:var(--navy);
+  font-size:14px;
+  font-weight:600;
+  white-space:nowrap
+}
+.seller-store-panel .seller-store-nav a:hover{
+  color:var(--orange)
+}
+.seller-store-panel .seller-store-nav a.active,
+.seller-store-panel .seller-store-nav span.active{
+  color:var(--orange);
+  background:transparent!important
+}
+.seller-store-panel .seller-store-nav a.active::after,
+.seller-store-panel .seller-store-nav span.active::after{
+  content:'';
+  position:absolute;
+  left:14px;
+  right:14px;
+  bottom:0;
+  height:2px;
+  background:var(--orange)
+}
+.seller-store-panel .seller-store-nav[data-preview=true] span:not(.active){
+  opacity:1
+}
+
+/* Customize banner preview reuses the exact public banner box. */
+.store-banner-result-preview{
+  width:calc(100% + 48px);
+  margin:0 -24px
+}
+.store-banner-result-preview .seller-store-banner{
+  width:100%;
+  margin:0;
+  aspect-ratio:3 / 1;
+  max-height:380px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--surface)
+}
+.store-banner-result-preview .seller-store-banner img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center center
+}
+
+/* Pasar Karat storefront sort/filter bar + pagination. */
+.store-sort-bar{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin:0 0 22px;
+  padding:10px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:var(--cream)
+}
+.store-sort-label{
+  flex:0 0 auto;
+  padding:0 4px 0 2px;
+  color:var(--muted);
+  font-size:13px;
+  font-weight:600
+}
+.store-sort-bar>button,
+.store-sort-bar>select{
+  min-height:40px;
+  border:1px solid var(--line);
+  border-radius:7px;
+  background:var(--surface);
+  color:var(--navy);
+  font:inherit;
+  font-size:13px
+}
+.store-sort-bar>button{
+  min-width:88px;
+  padding:8px 16px;
+  cursor:pointer
+}
+.store-sort-bar>button:hover,
+.store-sort-bar>select:hover{
+  border-color:var(--orange)
+}
+.store-sort-bar>button.active{
+  border-color:var(--orange);
+  background:var(--orange);
+  color:#fff
+}
+.store-sort-bar>select{
+  min-width:190px;
+  padding:8px 34px 8px 12px;
+  cursor:pointer
+}
+.store-sort-bar>select:nth-of-type(2){
+  min-width:165px
+}
+.store-pagination{
+  display:flex;
+  align-items:center;
+  margin-left:auto;
+  flex:0 0 auto
+}
+.store-pagination>span{
+  min-width:48px;
+  margin-right:10px;
+  color:var(--navy);
+  font-size:13px;
+  text-align:center
+}
+.store-pagination>span strong{
+  color:var(--orange);
+  font-weight:500
+}
+.store-pagination>button{
+  display:grid;
+  place-items:center;
+  width:38px;
+  height:38px;
+  padding:0;
+  border:1px solid var(--line);
+  border-right:0;
+  border-radius:7px 0 0 7px;
+  background:var(--surface);
+  color:var(--navy);
+  cursor:pointer
+}
+.store-pagination>button+button{
+  border-right:1px solid var(--line);
+  border-radius:0 7px 7px 0
+}
+.store-pagination>button:disabled{
+  opacity:.35;
+  cursor:not-allowed
+}
+.store-pagination>button:not(:disabled):hover{
+  color:var(--orange);
+  border-color:var(--orange)
+}
+@media(max-width:900px){
+  .store-sort-bar{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr))
+  }
+  .store-sort-label{
+    grid-column:1 / -1
+  }
+  .store-sort-bar>button,
+  .store-sort-bar>select,
+  .store-sort-bar>select:nth-of-type(2){
+    width:100%;
+    min-width:0
+  }
+  .store-pagination{
+    grid-column:1 / -1;
+    justify-content:flex-end;
+    margin-left:0;
+    padding-top:2px
+  }
+}
+@media(max-width:700px){
+  .seller-store-panel .seller-store-nav{
+    padding-inline:0
+  }
+  .seller-store-panel .seller-store-nav a,
+  .seller-store-panel .seller-store-nav span{
+    min-width:120px;
+    min-height:52px;
+    padding:12px 15px 11px
+  }
+  .store-banner-result-preview{
+    width:calc(100% + 36px);
+    margin-inline:-18px
+  }
+  .store-banner-result-preview .seller-store-banner{
+    aspect-ratio:2.2 / 1;
+    border-radius:9px
+  }
+}

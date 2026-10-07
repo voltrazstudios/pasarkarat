@@ -193,11 +193,12 @@ export function StoreCustomizer({
       </div>
 
       <div className="store-banner-control">
-        <StoreBanner
-          src={bannerPreview}
-          preview
-          emptyLabel="No banner yet"
-        />
+        <div className="store-banner-result-preview">
+          <StoreBanner
+            src={bannerPreview}
+            emptyLabel="No banner yet"
+          />
+        </div>
         <div className="store-banner-editor-actions">
           <button type="button" className="button secondary" onClick={()=>bannerInput.current?.click()}>{bannerPreview?'Change banner':'Upload banner'}</button>
           {bannerPreview?<button type="button" className="store-remove-button" onClick={()=>{
