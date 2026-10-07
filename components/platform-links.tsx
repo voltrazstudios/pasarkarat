@@ -21,6 +21,9 @@ const fallbackMark: Record<Platform, string> = {
   'TikTok Shop': 'T',
   'Mudah.my': 'M',
   Lazada: 'L',
+  'Lelong.my': 'L',
+  eBay: 'e',
+  Etsy: 'E',
   'Own website': '↗',
 };
 
