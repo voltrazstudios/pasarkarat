@@ -19,6 +19,13 @@ export function validHexColor(value:string){
   return /^#[0-9a-f]{6}$/i.test(value);
 }
 
+export function darkenHexColor(hex:string,amount=0.15){
+  const normalized=validHexColor(hex)?hex.slice(1):'ffffff';
+  const factor=Math.max(0,Math.min(1,1-amount));
+  const channels=[0,2,4].map(index=>Math.round(parseInt(normalized.slice(index,index+2),16)*factor));
+  return `#${channels.map(value=>value.toString(16).padStart(2,'0')).join('')}`;
+}
+
 export function contrastText(hex:string){
   const normalized=validHexColor(hex)?hex.slice(1):'ffffff';
   const rgb=[0,2,4].map(index=>parseInt(normalized.slice(index,index+2),16)/255);
@@ -44,6 +51,7 @@ export function storeThemeVariables(theme:StoreTheme){
     '--store-page-text':contrastText(theme.pageBackground),
     '--store-card':theme.cardColor,
     '--store-card-text':contrastText(theme.cardColor),
+    '--store-card-border':darkenHexColor(theme.cardColor),
     '--store-font-family':storeFontFamily(theme.font),
   };
 }
