@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useRef, useState } from 'react';
 import { Camera, UserRound } from 'lucide-react';
+import { signOut } from '@/app/auth/actions';
 import { updateProfile, type ProfileResult } from './actions';
 
 type Props={
@@ -132,6 +133,9 @@ export function ProfileForm(props:Props){
     {state.error?<div className="form-notice error" role="alert">{state.error}</div>:null}
     {state.message?<div className="form-notice" role="status">{state.message}</div>:null}
 
-    <button className="button full-button" type="submit" disabled={pending}>{pending?'Saving…':'Save profile'}</button>
+    <div className="profile-form-actions">
+      <button className="button profile-save-button" type="submit" disabled={pending}>{pending?'Saving…':'Save profile'}</button>
+      <button className="button profile-signout-button" type="submit" formAction={signOut}>Sign out</button>
+    </div>
   </form>;
 }
