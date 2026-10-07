@@ -1605,8 +1605,8 @@ body:has(.seller-page.seller-store-themed) footer{
   height:42px;
   padding:0;
   overflow:hidden;
-  border:0;
-  border-radius:0;
+  border:1px solid var(--line);
+  border-radius:7px;
   background:transparent;
   cursor:pointer;
   appearance:none;
@@ -1617,11 +1617,11 @@ body:has(.seller-page.seller-store-themed) footer{
 }
 .store-color-control input[type=color]::-webkit-color-swatch{
   border:0;
-  border-radius:0
+  border-radius:6px
 }
 .store-color-control input[type=color]::-moz-color-swatch{
   border:0;
-  border-radius:0
+  border-radius:6px
 }
 .store-color-control code{
   min-height:42px;
