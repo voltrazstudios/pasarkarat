@@ -135,7 +135,7 @@ export function ProfileForm(props:Props){
 
     <div className="profile-form-actions">
       <button className="button profile-save-button" type="submit" disabled={pending}>{pending?'Saving…':'Save profile'}</button>
-      <button className="button profile-signout-button" type="submit" formAction={signOut}>Sign out</button>
+      <button className="button profile-signout-button" type="submit" formAction={signOut} formNoValidate>Sign out</button>
     </div>
   </form>;
 }
