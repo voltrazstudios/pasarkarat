@@ -275,3 +275,54 @@
   .store-banner-drag-surface{margin-inline:-18px}
   .store-banner-drag-hint{bottom:8px;font-size:10px}
 }
+
+
+/* Compact Collection submission CTA; product submissions stay inside Pasar Karat. */
+.collection-submit-mini{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  flex:0 0 auto;
+  padding:9px 10px 9px 14px;
+  border:1px solid var(--line);
+  border-radius:9px;
+  background:var(--surface)
+}
+.collection-submit-mini>span{
+  display:grid;
+  gap:1px;
+  min-width:0;
+  line-height:1.25
+}
+.collection-submit-mini strong{
+  font-size:13px
+}
+.collection-submit-mini small{
+  color:var(--muted);
+  font-size:11px
+}
+.collection-submit-mini .submission-cta{
+  min-height:40px;
+  padding:9px 13px;
+  gap:8px;
+  white-space:nowrap
+}
+@media(max-width:900px){
+  .collection-submit-mini{
+    width:100%;
+    justify-content:space-between
+  }
+  .collection-submit-mini .submission-cta{
+    width:auto
+  }
+}
+@media(max-width:520px){
+  .collection-submit-mini{
+    align-items:stretch;
+    flex-direction:column;
+    gap:9px
+  }
+  .collection-submit-mini .submission-cta{
+    width:100%
+  }
+}

@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import imageAssets from '@/data/image-assets.json';
-import { CommunityCTA } from './community-cta';
 import { SaveButton } from './saved-items';
 import { PlatformQuickLinks, PlatformSummary, ProductName, platformClass } from './platform-links';
 import { useState } from 'react';
@@ -163,7 +162,10 @@ export function Catalogue({initialQuery='',initialCategory='',items=products}:{i
     <h1>Explore the collection</h1>
     <div className="catalogue-title-row">
       <p className="intro">A little nostalgia. A touch of tradition. Something that speaks to you.</p>
-      <Link href="/submit-product" prefetch={false} className="button submission-cta">Submit a product <ArrowUpRight size={17}/></Link>
+      <div className="collection-submit-mini">
+        <span><strong>Sell something unique?</strong><small>Submit it for review.</small></span>
+        <Link href="/submit-product" prefetch={false} className="button submission-cta">Submit Product <ArrowUpRight size={17}/></Link>
+      </div>
     </div>
     <div className="catalogue-controls">
       <label className="filter-search">
@@ -191,7 +193,6 @@ export function Catalogue({initialQuery='',initialCategory='',items=products}:{i
       <div className="product-grid">{filtered.map(p=><ProductCard key={p.id} product={p}/>)}</div>:
       <div className="empty-state"><Search size={32}/><h2>No treasures found just yet</h2><p>Try another search or explore a different category.</p><button className="button" onClick={()=>{setQuery('');setCategory('');setPlatform('');}}>Reset filters <ArrowRight size={18}/></button></div>
     }
-    <CommunityCTA/>
   </main>;
 }
 

@@ -1,6 +1,5 @@
 import { FloralBackground } from '@/components/floral-background';
 import { Lora, Source_Sans_3 } from 'next/font/google';
-import { MalaysiaSideOverlay } from '@/components/malaysia-side-overlay';
 import { SavedItemsProvider } from '@/components/saved-items';
 import { LanguageProvider } from '@/components/language-provider';
 import { adminClient } from '@/lib/admin';
@@ -27,7 +26,6 @@ export default async function RootLayout({children}:{children:React.ReactNode}) 
   return <html lang="en" className={`${headingFont.variable} ${bodyFont.variable}`}>
     <body style={{ isolation: 'isolate', position: 'relative' }}>
       <FloralBackground/>
-      <MalaysiaSideOverlay/>
       <a className="skip-link" href="#main">Skip to content</a>
       <LanguageProvider>
         <SavedItemsProvider>
