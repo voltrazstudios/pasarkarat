@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { UserRound } from 'lucide-react';
 import type { ReactNode } from 'react';
 import type { SellerSummary } from '@/lib/sellers';
 
@@ -9,15 +10,14 @@ function joinedLabel(value:string){
 }
 
 export function SellerProfileCard({seller,actions}:{seller:SellerSummary;actions?:ReactNode}){
-  const initial=seller.storeName.trim().charAt(0).toUpperCase()||'S';
   return <section className="seller-profile-card" aria-label={`Seller: ${seller.storeName}`}>
     <div className="seller-profile-identity">
       <Link className="seller-profile-avatar" href={`/seller/${seller.id}`} aria-label={`View ${seller.storeName} store`}>
-        {seller.avatarUrl?<img src={seller.avatarUrl} alt=""/>:<span aria-hidden="true">{initial}</span>}
+        {seller.avatarUrl?<img src={seller.avatarUrl} alt=""/>:<UserRound size={32} strokeWidth={1.7} aria-hidden="true"/>}
       </Link>
       <div className="seller-profile-name">
         <Link href={`/seller/${seller.id}`}>{seller.storeName}</Link>
-        <small>Pasar Karat seller</small>
+        <small>{seller.description||'Pasar Karat seller'}</small>
         <div className="seller-profile-actions">{actions??<Link href={`/seller/${seller.id}`} className="seller-store-link">View Store</Link>}</div>
       </div>
     </div>

@@ -94,8 +94,12 @@ footer{background:#f2eee5;color:var(--navy)}
     order:2
   }
 
-  .mobile-menu-toggle{
+  .profile-toggle{
     order:3
+  }
+
+  .mobile-menu-toggle{
+    order:4
   }
 
   .header nav{

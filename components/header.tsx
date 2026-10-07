@@ -5,7 +5,7 @@ import { useSavedItems } from './saved-items';
 import { useLanguage } from './language-provider';
 import { LanguageFlag } from './language-flag';
 import { useEffect, useRef, useState } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, UserRound, X } from 'lucide-react';
 
 const links=[
   ['Home','/'],
@@ -23,6 +23,7 @@ export function Header({isAdmin=false}:{isAdmin?:boolean}){
   const [open,setOpen]=useState(false);
   const toggle=useRef<HTMLButtonElement>(null);
   const languageButton=useRef<HTMLButtonElement>(null);
+  const profileButton=useRef<HTMLAnchorElement>(null);
   const navigation=useRef<HTMLElement>(null);
   const header=useRef<HTMLElement>(null);
 
@@ -45,7 +46,7 @@ export function Header({isAdmin=false}:{isAdmin?:boolean}){
 
       if(e.key==='Tab'&&open){
         const menuLinks=Array.from(navigation.current?.querySelectorAll<HTMLElement>('a[href]')??[]);
-        const focusables=[toggle.current,...menuLinks,languageButton.current].filter((item):item is HTMLElement=>Boolean(item));
+        const focusables=[toggle.current,...menuLinks,languageButton.current,profileButton.current].filter((item):item is HTMLElement=>Boolean(item));
         if(!focusables.length)return;
 
         const first=focusables[0];
@@ -107,6 +108,9 @@ export function Header({isAdmin=false}:{isAdmin?:boolean}){
         <button ref={languageButton} type="button" className="language-toggle" onClick={toggleLanguage} aria-label={language==="en"?"Switch to Bahasa Melayu":"Switch to English"} title={language==="en"?"Bahasa Melayu":"English"}>
           <LanguageFlag country={language==="en"?"my":"gb"}/>
         </button>
+        <Link ref={profileButton} href="/profile" prefetch={false} className="profile-toggle" aria-label="Profile" title="Profile">
+          <UserRound size={22}/>
+        </Link>
       </div>
     </header>
   </>;
