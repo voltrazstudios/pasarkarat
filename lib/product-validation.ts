@@ -8,6 +8,9 @@ const hosts:Partial<Record<Platform,string[]>>={
   'TikTok Shop':['tiktok.com'],
   'Mudah.my':['mudah.my'],
   Lazada:['lazada.com.my','lazada.com','lazada.sg'],
+  'Lelong.my':['lelong.com.my'],
+  eBay:['ebay.com','ebay.com.my','ebay.com.sg','ebay.com.au','ebay.co.uk'],
+  Etsy:['etsy.com'],
 };
 
 function allowedHost(hostname:string,roots:string[]){
