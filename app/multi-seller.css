@@ -696,3 +696,16 @@
 .platform-indicator.platform-lelong-my{background:#e85b24;border-color:#e85b24}
 .platform-indicator.platform-ebay{background:#3665f3;border-color:#3665f3}
 .platform-indicator.platform-etsy{background:#f1641e;border-color:#f1641e}
+
+
+/* Filled seller profile marketplace links. */
+.seller-marketplace-pill.platform-shopee{background:#c34e23;border-color:#c34e23}
+.seller-marketplace-pill.platform-carousell{background:#c72833;border-color:#c72833}
+.seller-marketplace-pill.platform-facebook{background:#3069c8;border-color:#3069c8}
+.seller-marketplace-pill.platform-tiktok-shop{background:#111;border-color:#111}
+.seller-marketplace-pill.platform-mudah-my{background:#198754;border-color:#198754}
+.seller-marketplace-pill.platform-lazada{background:#6c2bbf;border-color:#6c2bbf}
+.seller-marketplace-pill.platform-lelong-my{background:#e85b24;border-color:#e85b24}
+.seller-marketplace-pill.platform-ebay{background:#3665f3;border-color:#3665f3}
+.seller-marketplace-pill.platform-etsy{background:#f1641e;border-color:#f1641e}
+.seller-marketplace-pill.platform-own-website{background:#233746;border-color:#233746}
