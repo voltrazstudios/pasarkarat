@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useMemo, useState, type MouseEvent } from 'react';
+import { Search, X } from 'lucide-react';
 import { SellerProfileCard } from '@/components/seller-profile-card';
 import type { Product } from '@/data/products';
 import type { SellerProductMetrics, SellerSummary, StoreSection } from '@/lib/sellers';
@@ -30,6 +31,7 @@ export function SellerStorefrontShell({
   customizing:boolean;
 }){
   const [active,setActive]=useState(initialActive);
+  const [searchQuery,setSearchQuery]=useState('');
 
   useEffect(()=>{
     if(customizing)return;
@@ -66,6 +68,19 @@ export function SellerStorefrontShell({
     </form>;
 
   return <>
+    {!customizing?<div className="seller-store-search">
+      <label className="filter-search">
+        <Search size={19}/>
+        <input
+          value={searchQuery}
+          onChange={event=>setSearchQuery(event.target.value)}
+          aria-label="Search in this shop"
+          placeholder="Search In This Shop"
+        />
+        {searchQuery?<button type="button" onClick={()=>setSearchQuery('')} aria-label="Clear shop search"><X size={18}/></button>:null}
+      </label>
+    </div>:null}
+
     <section className="seller-store-panel">
       <SellerProfileCard seller={seller} actions={storeAction}/>
 
@@ -99,6 +114,7 @@ export function SellerStorefrontShell({
         products={products}
         metrics={metrics}
         section={customSection}
+        searchQuery={searchQuery}
         homeLimit={active==='home'?4:undefined}
       />
     </section>:null}

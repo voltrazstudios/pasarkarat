@@ -18,11 +18,13 @@ export function StoreProductsView({
   products,
   metrics,
   section,
+  searchQuery='',
   homeLimit,
 }:{
   products:Product[];
   metrics:SellerProductMetrics;
   section?:StoreSection|null;
+  searchQuery?:string;
   homeLimit?:number;
 }){
   const [sort,setSort]=useState<SortMode>('popular');
@@ -30,10 +32,16 @@ export function StoreProductsView({
   const [page,setPage]=useState(1);
 
   const apply=useMemo(()=>{
+    const normalizedQuery=searchQuery.trim().toLowerCase();
+
     return (items:Product[])=>{
-      const filtered=platform
-        ? items.filter(product=>product.links.some(link=>link.platform===platform))
+      const searched=normalizedQuery
+        ? items.filter(product=>`${product.name} ${product.nameMs} ${product.category} ${product.description} ${product.descriptionMs} ${product.links.map(link=>link.platform).join(' ')}`.toLowerCase().includes(normalizedQuery))
         : [...items];
+
+      const filtered=platform
+        ? searched.filter(product=>product.links.some(link=>link.platform===platform))
+        : searched;
 
       filtered.sort((a,b)=>{
         if(sort==='price-low')return (a.price??Number.POSITIVE_INFINITY)-(b.price??Number.POSITIVE_INFINITY);
@@ -49,7 +57,7 @@ export function StoreProductsView({
 
       return filtered;
     };
-  },[metrics,platform,sort]);
+  },[metrics,platform,searchQuery,sort]);
 
   const allSectionProducts=useMemo(()=>{
     if(!section)return apply(products);
@@ -64,7 +72,7 @@ export function StoreProductsView({
 
   useEffect(()=>{
     setPage(1);
-  },[sort,platform,section?.name,homeLimit]);
+  },[sort,platform,searchQuery,section?.name,homeLimit]);
 
   useEffect(()=>{
     if(page>totalPages)setPage(totalPages);
@@ -145,6 +153,6 @@ export function StoreProductsView({
       {!allSectionProducts.length?<p className="seller-section-block-empty">No products match these filters.</p>:null}
     </div>:standardProducts.length
       ? <div className="product-grid">{standardProducts.map(product=><ProductCard key={product.id} product={product}/>)}</div>
-      : <div className="empty-state seller-section-empty-state"><h2>No products found</h2><p>Try another sort or platform filter.</p></div>}
+      : <div className="empty-state seller-section-empty-state"><h2>No products found</h2><p>Try another search, sort or platform filter.</p></div>}
   </>;
 }

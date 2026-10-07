@@ -1335,3 +1335,18 @@ body .save-button[aria-pressed=true]:hover{
   max-height:none!important;
   object-fit:contain!important
 }
+
+
+/* Store search matches the Collection search field. */
+.seller-store-search{
+  margin:0 0 16px
+}
+.seller-store-search .filter-search{
+  width:100%;
+  margin:0
+}
+@media(max-width:700px){
+  .seller-store-search{
+    margin-bottom:12px
+  }
+}
