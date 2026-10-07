@@ -36,7 +36,7 @@ function storedBlockIndex(blocks:EditableBlock[],blockIndex:number){
   return rawIndex;
 }
 
-function editableBlocks(blocks:StoreSectionBlock[]):EditableBlock[]{
+function editableBlocks(blocks:StoreSectionBlock[],allowedProductIds:Set<string>):EditableBlock[]{
   const result:EditableBlock[]=[];
 
   for(let index=0;index<blocks.length;index++){
@@ -49,7 +49,7 @@ function editableBlocks(blocks:StoreSectionBlock[]):EditableBlock[]{
           key:`saved-subcategory-${index}`,
           type:'subcategory',
           title:block.title,
-          productIds:next.productIds,
+          productIds:next.productIds.filter(id=>allowedProductIds.has(id)),
         });
         index++;
       }else{
@@ -68,7 +68,7 @@ function editableBlocks(blocks:StoreSectionBlock[]):EditableBlock[]{
         key:`saved-products-${index}`,
         type:'subcategory',
         title:'Products',
-        productIds:block.productIds,
+        productIds:block.productIds.filter(id=>allowedProductIds.has(id)),
       });
       continue;
     }
@@ -113,11 +113,12 @@ export function StoreCustomizer({
   const [state,action,pending]=useActionState<StoreCustomizationResult,FormData>(saveStoreCustomization,{});
   const [bannerPreview,setBannerPreview]=useState(bannerUrl);
   const [removeBanner,setRemoveBanner]=useState(false);
+  const allowedProductIds=new Set(products.map(product=>product.id));
   const [accentColor,setAccentColor]=useState(theme.accentColor);
   const [pageBackground,setPageBackground]=useState(theme.pageBackground);
   const [cardColor,setCardColor]=useState(theme.cardColor);
   const [storeFont,setStoreFont]=useState<StoreFont>(theme.font);
-  const [featured,setFeatured]=useState<string[]>(featuredProductIds);
+  const [featured,setFeatured]=useState<string[]>(featuredProductIds.filter(id=>allowedProductIds.has(id)));
   const [slug,setSlug]=useState(customSlug);
   const [links,setLinks]=useState<Partial<Record<Platform,string>>>(storeLinks);
   const bannerInput=useRef<HTMLInputElement>(null);
@@ -125,7 +126,7 @@ export function StoreCustomizer({
     initialSections.map((section,index)=>({
       key:`saved-${index}-${section.name}`,
       name:section.name,
-      blocks:editableBlocks(section.blocks),
+      blocks:editableBlocks(section.blocks,allowedProductIds),
     }))
   );
 
