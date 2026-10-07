@@ -96,7 +96,7 @@ export async function sellerSections(id:string):Promise<StoreSection[]>{
     });
 
     return [{name:row.name,position:Number(row.position||index+1),blocks}];
-  }).slice(0,3);
+  }).slice(0,5);
 }
 
 

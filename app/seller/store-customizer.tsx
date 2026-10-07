@@ -127,7 +127,7 @@ export function StoreCustomizer({
   }
 
   function addSection(){
-    if(sections.length>=3)return;
+    if(sections.length>=5)return;
     setSections(current=>[...current,{key:newKey('section'),name:'',blocks:[]}]);
   }
 
@@ -228,9 +228,9 @@ export function StoreCustomizer({
         <div className="store-sections-title">
           <div>
             <strong>Store sections</strong>
-            <span>Home and All Products are always included. Add up to 3 custom sections.</span>
+            <span>Home and All Products are always included. Add up to 5 custom sections.</span>
           </div>
-          <button type="button" className="button secondary" disabled={sections.length>=3} onClick={addSection}><Plus size={16}/> Add section</button>
+          <button type="button" className="button secondary" disabled={sections.length>=5} onClick={addSection}><Plus size={16}/> Add section</button>
         </div>
 
         {sections.length?sections.map((section,sectionIndex)=><article className="store-section-editor" key={section.key}>

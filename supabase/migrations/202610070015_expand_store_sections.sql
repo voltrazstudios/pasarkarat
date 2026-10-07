@@ -1,0 +1,185 @@
+begin;
+
+alter table public.marketplace_store_sections
+  drop constraint if exists marketplace_store_sections_position_check;
+
+alter table public.marketplace_store_sections
+  add constraint marketplace_store_sections_position_check
+  check(position between 1 and 5);
+
+create or replace function public.marketplace_save_store_customization_v2(
+  p_banner_path text,
+  p_banner_position_x numeric,
+  p_banner_position_y numeric,
+  p_sections jsonb
+) returns boolean
+language plpgsql
+security definer
+set search_path=''
+as $$
+declare
+  actor uuid := auth.uid();
+  item jsonb;
+  block jsonb;
+  raw_content jsonb;
+  clean_content jsonb;
+  product_ids jsonb;
+  clean_ids jsonb;
+  section_name text;
+  block_type text;
+  block_title text;
+  image_path text;
+  product_text text;
+  new_section_id bigint;
+  section_position smallint := 0;
+  inserted_count integer;
+  seen_names text[] := array[]::text[];
+begin
+  if actor is null then
+    raise exception 'Authentication required' using errcode='42501';
+  end if;
+
+  if p_banner_path is not null and (
+    char_length(p_banner_path)>500
+    or pg_catalog.left(p_banner_path,pg_catalog.length(actor::text || '/banner-')) <> actor::text || '/banner-'
+    or p_banner_path !~ '[.]webp$'
+  ) then
+    raise exception 'Invalid banner path';
+  end if;
+
+  if p_banner_position_x is null or p_banner_position_x<0 or p_banner_position_x>100
+    or p_banner_position_y is null or p_banner_position_y<0 or p_banner_position_y>100
+  then
+    raise exception 'Invalid banner position';
+  end if;
+
+  if p_sections is null then p_sections := '[]'::jsonb; end if;
+  if jsonb_typeof(p_sections)<>'array' or jsonb_array_length(p_sections)>5 then
+    raise exception 'A store can have at most five custom sections';
+  end if;
+
+  update public.marketplace_profiles
+  set banner_path=p_banner_path,
+      banner_position_x=p_banner_position_x,
+      banner_position_y=p_banner_position_y,
+      updated_at=now()
+  where id=actor;
+
+  delete from public.marketplace_store_sections where seller_id=actor;
+
+  for item in select value from jsonb_array_elements(p_sections) loop
+    section_position := section_position+1;
+    section_name := pg_catalog.btrim(coalesce(item->>'name',''));
+
+    if char_length(section_name) not between 2 and 40
+      or pg_catalog.lower(section_name) in ('home','all products')
+      or position('<' in section_name)>0
+      or position('>' in section_name)>0
+      or section_name ~* 'javascript[[:space:]]*:'
+    then
+      raise exception 'Invalid section name';
+    end if;
+
+    if pg_catalog.lower(section_name)=any(seen_names) then
+      raise exception 'Duplicate section name';
+    end if;
+    seen_names := array_append(seen_names,pg_catalog.lower(section_name));
+
+    raw_content := coalesce(item->'content','[]'::jsonb);
+    if jsonb_typeof(raw_content)<>'array' or jsonb_array_length(raw_content)>12 then
+      raise exception 'Invalid section content';
+    end if;
+
+    insert into public.marketplace_store_sections(seller_id,name,position,content)
+    values(actor,section_name,section_position,'[]'::jsonb)
+    returning id into new_section_id;
+
+    clean_content := '[]'::jsonb;
+
+    for block in select value from jsonb_array_elements(raw_content) loop
+      block_type := block->>'type';
+
+      if block_type='subcategory' then
+        block_title := pg_catalog.btrim(coalesce(block->>'title',''));
+        if char_length(block_title) not between 1 and 60
+          or position('<' in block_title)>0
+          or position('>' in block_title)>0
+          or block_title ~* 'javascript[[:space:]]*:'
+        then
+          raise exception 'Invalid subcategory';
+        end if;
+
+        clean_content := clean_content || jsonb_build_array(
+          jsonb_build_object('type','subcategory','title',block_title)
+        );
+
+      elsif block_type='products' then
+        product_ids := coalesce(block->'product_ids','[]'::jsonb);
+        if jsonb_typeof(product_ids)<>'array' or jsonb_array_length(product_ids)>100 then
+          raise exception 'Invalid product block';
+        end if;
+
+        clean_ids := '[]'::jsonb;
+
+        for product_text in select value from jsonb_array_elements_text(product_ids) loop
+          if product_text !~ '^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$' then
+            raise exception 'Invalid product id';
+          end if;
+
+          if not exists(
+            select 1 from public.marketplace_products p
+            where p.id=product_text::uuid
+              and p.submitted_by=actor
+              and p.status='approved'
+          ) then
+            raise exception 'A product block can only contain your approved products';
+          end if;
+
+          clean_ids := clean_ids || jsonb_build_array(product_text);
+
+          insert into public.marketplace_store_section_products(section_id,product_id)
+          values(new_section_id,product_text::uuid)
+          on conflict(section_id,product_id) do nothing;
+
+          get diagnostics inserted_count = row_count;
+        end loop;
+
+        clean_content := clean_content || jsonb_build_array(
+          jsonb_build_object('type','products','product_ids',clean_ids)
+        );
+
+      elsif block_type='image' then
+        image_path := pg_catalog.btrim(coalesce(block->>'image_path',''));
+        if image_path=''
+          or char_length(image_path)>500
+          or pg_catalog.left(image_path,pg_catalog.length(actor::text || '/store-')) <> actor::text || '/store-'
+          or image_path !~ '[.]webp$'
+        then
+          raise exception 'Invalid section image';
+        end if;
+
+        clean_content := clean_content || jsonb_build_array(
+          jsonb_build_object('type','image','image_path',image_path)
+        );
+
+      else
+        raise exception 'Invalid store content block';
+      end if;
+    end loop;
+
+    update public.marketplace_store_sections
+    set content=clean_content
+    where id=new_section_id;
+  end loop;
+
+  return true;
+end
+$$;
+
+revoke all on function public.marketplace_save_store_customization_v2(text,numeric,numeric,jsonb)
+from public,anon,authenticated;
+
+grant execute on function public.marketplace_save_store_customization_v2(text,numeric,numeric,jsonb)
+to authenticated;
+
+commit;

@@ -1249,3 +1249,70 @@ body .save-button[aria-pressed=true]:hover{
     width:100%!important
   }
 }
+
+
+/* Keep seller stats close to the owner actions and add simple visual icons. */
+.seller-profile-card .seller-profile-name{
+  flex:0 1 320px!important
+}
+.seller-profile-card .seller-stats-inline{
+  margin-left:0!important;
+  width:min(100%,500px)!important;
+  max-width:500px!important;
+  gap:10px 20px!important
+}
+.seller-profile-card .seller-stat-item{
+  display:flex!important;
+  align-items:center;
+  gap:6px;
+  min-width:0;
+  padding:0!important;
+  white-space:nowrap
+}
+.seller-profile-card .seller-stat-icon{
+  flex:0 0 auto;
+  color:var(--orange)
+}
+@media(max-width:1050px){
+  .seller-profile-card .seller-profile-name{
+    flex:0 1 320px!important
+  }
+  .seller-profile-card .seller-stats-inline{
+    margin-left:0!important;
+    width:min(100%,500px)!important;
+    max-width:500px!important
+  }
+}
+@media(max-width:700px){
+  .seller-profile-card .seller-stats-inline{
+    width:100%!important;
+    max-width:none!important
+  }
+}
+
+/* Section images keep their source aspect ratio in both preview and final storefront. */
+.store-section-image{
+  display:block;
+  width:100%;
+  overflow:hidden
+}
+.store-section-image img{
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  max-height:none!important;
+  object-fit:initial!important;
+  margin:0 auto
+}
+.store-section-image-preview{
+  min-height:0!important;
+  max-height:none!important;
+  overflow:visible!important
+}
+.store-section-image-preview img{
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  max-height:none!important;
+  object-fit:initial!important
+}

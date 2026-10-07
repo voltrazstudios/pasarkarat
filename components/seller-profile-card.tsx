@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { UserRound } from 'lucide-react';
+import { Star, Store, UserRound, UsersRound } from 'lucide-react';
 import type { ReactNode } from 'react';
 import type { SellerSummary } from '@/lib/sellers';
 
@@ -23,10 +23,10 @@ export function SellerProfileCard({seller,actions}:{seller:SellerSummary;actions
         )}</div>
       </div>
       <div className="seller-stats-inline">
-        <span><strong>Ratings:</strong> <b>{seller.ratings}</b></span>
-        <span><strong>Products:</strong> <b>{seller.products}</b></span>
-        <span><strong>Follower:</strong> <b>{seller.followers}</b></span>
-        <span><strong>Joined:</strong> <b>{joinedLabel(seller.joinedAt)}</b></span>
+        <span className="seller-stat-item"><Star className="seller-stat-icon" size={18} strokeWidth={1.9} aria-hidden="true"/><strong>Ratings:</strong> <b>{seller.ratings}</b></span>
+        <span className="seller-stat-item"><Store className="seller-stat-icon" size={18} strokeWidth={1.9} aria-hidden="true"/><strong>Products:</strong> <b>{seller.products}</b></span>
+        <span className="seller-stat-item"><UsersRound className="seller-stat-icon" size={18} strokeWidth={1.9} aria-hidden="true"/><strong>Follower:</strong> <b>{seller.followers}</b></span>
+        <span className="seller-stat-item"><UserRound className="seller-stat-icon" size={18} strokeWidth={1.9} aria-hidden="true"/><strong>Joined:</strong> <b>{joinedLabel(seller.joinedAt)}</b></span>
       </div>
     </div>
   </section>;

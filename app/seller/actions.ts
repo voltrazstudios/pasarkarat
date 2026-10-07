@@ -76,7 +76,7 @@ export async function saveStoreCustomization(_:StoreCustomizationResult,form:For
   let rawSections:RawSection[]=[];
   try{
     const parsed=JSON.parse(String(form.get('sections_json')||'[]')) as unknown;
-    if(!Array.isArray(parsed)||parsed.length>3)return {error:'A store can have at most 3 custom sections.'};
+    if(!Array.isArray(parsed)||parsed.length>5)return {error:'A store can have at most 5 custom sections.'};
     rawSections=parsed as RawSection[];
   }catch{
     return {error:'Unable to read your store sections. Please try again.'};
