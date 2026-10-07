@@ -1862,7 +1862,6 @@ body:has(.seller-page.seller-store-themed) footer{
 }
 
 @media(max-width:760px){
-  .store-links-grid,
   .store-theme-controls,
   .store-featured-grid,
   .pro-plans,
