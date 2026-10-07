@@ -6,8 +6,7 @@ import { Crown, ImagePlus, Layers3, LockKeyhole, Plus, Trash2, Type, X } from 'l
 import { useRouter } from 'next/navigation';
 import { saveStoreCustomization, type StoreCustomizationResult } from './actions';
 import { StoreBanner } from '@/components/store-banner';
-import { platformDisplayName, platforms, type Platform } from '@/data/products';
-import type { SellerSummary, StoreSection, StoreSectionBlock } from '@/lib/sellers';
+import type { StoreSection, StoreSectionBlock } from '@/lib/sellers';
 import { contrastText, darkenHexColor, defaultStoreTheme, storeFontFamily, type StoreFont, type StoreTheme } from '@/lib/store-theme';
 
 type ProductOption={id:string;name:string};
@@ -94,7 +93,6 @@ export function StoreCustomizer({
   theme,
   featuredProductIds,
   customSlug,
-  storeLinks,
 }:{
   bannerUrl:string;
   initialSections:StoreSection[];
@@ -105,7 +103,6 @@ export function StoreCustomizer({
   theme:StoreTheme;
   featuredProductIds:string[];
   customSlug:string;
-  storeLinks:SellerSummary['storeLinks'];
 }){
   const router=useRouter();
   const [open,setOpen]=useState(initialOpen);
@@ -120,7 +117,6 @@ export function StoreCustomizer({
   const [storeFont,setStoreFont]=useState<StoreFont>(theme.font);
   const [featured,setFeatured]=useState<string[]>(featuredProductIds.filter(id=>allowedProductIds.has(id)));
   const [slug,setSlug]=useState(customSlug);
-  const [links,setLinks]=useState<Partial<Record<Platform,string>>>(storeLinks);
   const bannerInput=useRef<HTMLInputElement>(null);
   const [sections,setSections]=useState<EditableSection[]>(
     initialSections.map((section,index)=>({
@@ -231,7 +227,6 @@ export function StoreCustomizer({
   return <section className="store-customizer" id="customize-store">
     <form action={action} className="store-customizer-panel">
       <input type="hidden" name="sections_json" value={JSON.stringify(sectionsPayload)}/>
-      <input type="hidden" name="store_links_json" value={JSON.stringify(links)}/>
       <input type="hidden" name="accent_color" value={accentColor}/>
       <input type="hidden" name="page_background" value={pageBackground}/>
       <input type="hidden" name="card_color" value={cardColor}/>
@@ -277,26 +272,6 @@ export function StoreCustomizer({
         />
         {removeBanner?<input type="hidden" name="remove_banner" value="1"/>:null}
         <small>PNG, JPG or WebP · maximum 5 MB. Banner is centered automatically.</small>
-      </div>
-
-      <div className="store-links-editor">
-        <div className="store-sections-title">
-          <div>
-            <strong>Marketplace links</strong>
-            <span>Add your main seller/store links. Available on Free and Pro.</span>
-          </div>
-        </div>
-        <div className="store-links-grid">
-          {platforms.map(platform=><label key={platform}>
-            {platformDisplayName(platform)}
-            <input
-              type="url"
-              value={links[platform]||''}
-              onChange={event=>setLinks(current=>({...current,[platform]:event.target.value}))}
-              placeholder="https://..."
-            />
-          </label>)}
-        </div>
       </div>
 
       <div className="store-pro-editor" data-locked={isPro?'false':'true'}>
