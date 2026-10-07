@@ -121,23 +121,8 @@ export async function saveStoreCustomization(_:StoreCustomizationResult,form:For
   if(approvedProducts.error)return {error:'Unable to read your approved products.'};
   const allowedProductIds=new Set((approvedProducts.data||[]).map(row=>String(row.id)).filter(value=>uuid.test(value)));
 
-  let storeLinksRaw:unknown={};
-  try{
-    storeLinksRaw=JSON.parse(String(form.get('store_links_json')||'{}'));
-  }catch{
-    return {error:'Unable to read your marketplace links.'};
-  }
-  if(!storeLinksRaw||typeof storeLinksRaw!=='object'||Array.isArray(storeLinksRaw)){
-    return {error:'Unable to read your marketplace links.'};
-  }
-  const storeLinks:Partial<Record<Platform,string>>={};
-  for(const platform of platforms){
-    const raw=String((storeLinksRaw as Record<string,unknown>)[platform]||'').trim();
-    if(!raw)continue;
-    const valid=validatePlatformUrl(platform,raw);
-    if(!valid)return {error:`Enter a valid HTTPS ${platform==='Own website'?'Seller Website':platform} URL or leave it blank.`};
-    storeLinks[platform]=valid;
-  }
+  // Main seller/store links are no longer edited in Customize Store.
+  // Keep any existing saved links untouched when this form is submitted.
   const bannerPositionX=50;
   const bannerPositionY=50;
   let bannerPath=oldBanner;
@@ -224,11 +209,6 @@ export async function saveStoreCustomization(_:StoreCustomizationResult,form:For
       p_sections:sections,
     });
     if(saved.error||saved.data!==true)throw new Error(saved.error?.message||'Unable to save your store customization.');
-
-    const linksSaved=await client.from('marketplace_profiles')
-      .update({store_links:storeLinks,updated_at:new Date().toISOString()})
-      .eq('id',user.id);
-    if(linksSaved.error)throw new Error('Unable to save your marketplace links.');
 
     if(isPro){
       const accentColor=String(form.get('accent_color')||'').trim().toLowerCase();
