@@ -612,3 +612,23 @@
     height:38px
   }
 }
+
+
+/* Card pricing and platform overflow refinements. */
+.product-card .product-bottom .compare-sellers{
+  font-size:18px;
+  line-height:1.2;
+  font-weight:700
+}
+.product-card .product-card-actions{
+  margin-top:12px
+}
+.product-marketplace-heading{
+  display:none!important
+}
+@media(max-width:600px){
+  .product-card .product-bottom .compare-sellers{
+    font-size:13px;
+    line-height:1.3
+  }
+}

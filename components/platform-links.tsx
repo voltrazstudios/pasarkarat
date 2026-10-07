@@ -61,7 +61,7 @@ export function PlatformQuickLinks({links}:{links:ProductLink[]}){
   const hasMore=unique.length>3;
 
   return <div className="platform-quick-wrap">
-    <div className="platform-quick-icons" aria-label="Marketplace links">
+    {!hasMore?<div className="platform-quick-icons" aria-label="Marketplace links">
       {visible.map(link=><a
         key={link.platform}
         className={`platform-indicator platform-quick-icon platform-${platformClass(link.platform)}`}
@@ -71,7 +71,7 @@ export function PlatformQuickLinks({links}:{links:ProductLink[]}){
         aria-label={`Open ${platformLabel[link.platform]} listing`}
         title={platformLabel[link.platform]}
       ><PlatformLogo platform={link.platform} size={32}/></a>)}
-    </div>
+    </div>:null}
 
     {hasMore?<details className="platform-all">
       <summary aria-label={`View all ${unique.length} platforms`}>
