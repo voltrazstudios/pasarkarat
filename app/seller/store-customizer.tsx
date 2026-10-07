@@ -8,7 +8,7 @@ import { saveStoreCustomization, type StoreCustomizationResult } from './actions
 import { StoreBanner } from '@/components/store-banner';
 import { platformDisplayName, platforms, type Platform } from '@/data/products';
 import type { SellerSummary, StoreSection, StoreSectionBlock } from '@/lib/sellers';
-import { contrastText, storeFontFamily, type StoreFont, type StoreTheme } from '@/lib/store-theme';
+import { contrastText, darkenHexColor, defaultStoreTheme, storeFontFamily, type StoreFont, type StoreTheme } from '@/lib/store-theme';
 
 type ProductOption={id:string;name:string};
 type EditableSubcategory={key:string;type:'subcategory';title:string;productIds:string[]};
@@ -205,6 +205,13 @@ export function StoreCustomizer({
     });
   }
 
+  function resetProTheme(){
+    setAccentColor(defaultStoreTheme.accentColor);
+    setPageBackground(defaultStoreTheme.pageBackground);
+    setCardColor(defaultStoreTheme.cardColor);
+    setStoreFont(defaultStoreTheme.font);
+  }
+
   const sectionsPayload=sections.map(section=>({
     name:section.name,
     blocks:section.blocks.flatMap<StorePayloadBlock>(block=>{
@@ -297,7 +304,7 @@ export function StoreCustomizer({
             <span className="store-pro-title"><Crown size={18}/> Pro storefront</span>
             <span>Colours, fonts, featured products and your custom shop URL.</span>
           </div>
-          {isPro?<span className="store-pro-status">PRO ACTIVE</span>:<Link href="/pro" className="button store-pro-upgrade"><LockKeyhole size={15}/> Upgrade to Pro</Link>}
+          {isPro?<div className="store-pro-heading-actions"><button type="button" className="store-pro-reset" onClick={resetProTheme}>Reset to default</button><span className="store-pro-status">PRO ACTIVE</span></div>:<Link href="/pro" className="button store-pro-upgrade"><LockKeyhole size={15}/> Upgrade to Pro</Link>}
         </div>
 
         <fieldset disabled={!isPro} className="store-pro-fields">
@@ -328,7 +335,7 @@ export function StoreCustomizer({
             style={{background:pageBackground,color:contrastText(pageBackground),fontFamily:storeFontFamily(storeFont)}}
           >
             <span>Store preview</span>
-            <div style={{background:cardColor,color:contrastText(cardColor)}}>
+            <div style={{background:cardColor,color:contrastText(cardColor),borderColor:darkenHexColor(cardColor)}}>
               <strong>Your shop identity</strong>
               <small>Text colour changes automatically for readability.</small>
               <button type="button" style={{background:accentColor,color:contrastText(accentColor)}}>Accent button</button>
