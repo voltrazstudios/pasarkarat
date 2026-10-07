@@ -1316,3 +1316,22 @@ body .save-button[aria-pressed=true]:hover{
   max-height:none!important;
   object-fit:initial!important
 }
+
+
+/* Final storefront section images always follow the source image aspect ratio. */
+.seller-custom-section-content .seller-section-image{
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  aspect-ratio:auto!important;
+  overflow:hidden
+}
+.seller-custom-section-content .seller-section-image img{
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  aspect-ratio:auto!important;
+  max-width:100%!important;
+  max-height:none!important;
+  object-fit:contain!important
+}
