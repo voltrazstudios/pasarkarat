@@ -10,7 +10,7 @@ const EN_TO_MS: Record<string, string> = {
   ...ARCHIVE_TEXT_MS,
   'Old treasures. New discoveries.': 'Khazanah lama. Penemuan baharu.',
   'A little piece of Malaysia, wherever you are.': 'Secebis Malaysia, di mana sahaja anda berada.',
-  'Home': 'Utama', 'Collection': 'Koleksi', 'Archive': 'Arkib', 'Virtual Experience': 'Pengalaman Maya', 'About': 'Tentang', 'Saved': 'Disimpan',
+  'Home': 'Utama', 'Collection': 'Koleksi', 'Archive': 'Arkib', 'Virtual Experience': 'Pengalaman Maya', 'Experience': 'Pengalaman', 'About': 'Tentang', 'Saved': 'Disimpan',
   'Explore Collection': 'Terokai Koleksi', 'Browse all items': 'Lihat semua item', 'Featured finds': 'Pilihan istimewa',
   'Explore the collection': 'Terokai koleksi', 'View all items': 'Lihat semua item', 'More to discover': 'Lebih banyak untuk diterokai',
   'View Item': 'Lihat Item', 'View at Seller': 'Lihat di Penjual', 'Back to collection': 'Kembali ke koleksi',
