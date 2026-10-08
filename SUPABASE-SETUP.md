@@ -96,4 +96,4 @@ For Pro checkout, configure the server-only values shown in `.env.example`.
 - `BILLPLZ_CALLBACK_BASE_URL` must be a public HTTPS origin. Billplz cannot call a localhost callback.
 - Use the Billplz sandbox base URL and sandbox credentials while testing.
 - The current prototype plans are RM9.90 for 30 days and RM99.00 for 365 days.
-- Paid seller promotions reuse the same Billplz configuration: RM0.90 for a 7-day product boost and RM3.90 for a 7-day featured store placement.
+- Paid seller promotions reuse the same Billplz configuration: RM1.00 for a 7-day product boost and RM3.90 for a 7-day featured store placement.
