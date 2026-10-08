@@ -13,7 +13,7 @@ const MAX_PER_WINDOW = 5;
 const GLOBAL_WINDOW_MS = 60 * 60 * 1000;
 const GLOBAL_MAX_PER_WINDOW = 10;
 
-type CommunityMemory = { id: string; name: string; text: string; createdAt: string };
+type CommunityMemory = { id: string; name: string; text: string; createdAt: string; avatarUrl?: string | null };
 type RateRecord = { lastAt: number; timestamps: number[]; lastFingerprint?: string; fingerprints?: string[] };
 
 function json(data: unknown, status = 200) {
@@ -28,6 +28,20 @@ function cleanName(value: unknown) {
 function cleanMemory(value: unknown) {
   if (typeof value !== 'string') return '';
   return value.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '').replace(/\r\n?/g, '\n').trim();
+}
+function cleanAvatarUrl(value: unknown) {
+  if (typeof value !== 'string' || !value.trim()) return null;
+  const base=process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+  if (!base) return null;
+  try {
+    const avatar=new URL(value.trim());
+    const supabase=new URL(base);
+    if (avatar.protocol!=='https:' || avatar.origin!==supabase.origin) return null;
+    if (!avatar.pathname.startsWith('/storage/v1/object/public/marketplace-profile-images/')) return null;
+    return avatar.toString().slice(0,1000);
+  } catch {
+    return null;
+  }
 }
 function containsLink(value: string) { return /(?:https?:\/\/|www\.|\b[a-z0-9-]+\.(?:com|net|org|io|my|co|me|gg|xyz)\b)/i.test(value); }
 function containsEmail(value: string) { return /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i.test(value); }
@@ -110,10 +124,11 @@ export default async (req: Request) => {
     }
 
     if (req.method === 'POST') {
-      const body = await req.json().catch(() => null) as { visitorId?: unknown; name?: unknown; text?: unknown } | null;
+      const body = await req.json().catch(() => null) as { visitorId?: unknown; name?: unknown; text?: unknown; avatarUrl?: unknown } | null;
       const visitorId = typeof body?.visitorId === 'string' ? body.visitorId.trim() : '';
       const name = cleanName(body?.name);
       const text = cleanMemory(body?.text);
+      const avatarUrl = cleanAvatarUrl(body?.avatarUrl);
 
       if (!VISITOR_RE.test(visitorId)) return json({ error: 'Invalid visitor.' }, 400);
       if (text.length < MIN_MEMORY_LENGTH) return json({ error: `Please write at least ${MIN_MEMORY_LENGTH} characters.` }, 400);
@@ -142,7 +157,7 @@ export default async (req: Request) => {
 
       const createdAt = new Date(now).toISOString();
       const memoryId = `${now.toString(36)}-${crypto.randomUUID().replace(/-/g, '').slice(0, 12)}`;
-      const memory: CommunityMemory = { id: memoryId, name, text, createdAt };
+      const memory: CommunityMemory = { id: memoryId, name, text, createdAt, avatarUrl };
 
       await memoriesStore().setJSON(`${id}/${memoryId}`, memory);
       await Promise.all([
