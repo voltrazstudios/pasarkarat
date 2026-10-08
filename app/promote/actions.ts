@@ -8,7 +8,7 @@ import { serviceConfigured, serviceDb } from '@/lib/supabase-service';
 const uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
 
 const promotions={
-  product_boost:{amount:90,durationDays:7,label:'Product Boost — 7 days'},
+  product_boost:{amount:100,durationDays:7,label:'Product Boost — 7 days'},
   featured_store:{amount:390,durationDays:7,label:'Featured Store Placement — 7 days'},
 } as const;
 
@@ -63,7 +63,7 @@ export async function startPromotionCheckout(form:FormData){
       name:profile?.full_name||profile?.display_name||'Pasar Karat Seller',
       description:type==='product_boost'?selected.label+' — '+productName:selected.label,
       callbackPath:'/api/billplz/promotions/callback',
-      redirectPath:'/promote/return',
+      redirectPath:'/promote?payment=processing',
     });
 
     stage='database';
