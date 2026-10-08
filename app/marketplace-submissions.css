@@ -2283,6 +2283,7 @@ body:has(.seller-page.seller-store-themed) footer{
 }
 @media(max-width:600px){
   .item-detail-submitted>.image-placeholder{
-    width:100%
+    width:100%;
+    aspect-ratio:1 / 1
   }
 }
