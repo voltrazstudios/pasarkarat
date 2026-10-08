@@ -29,7 +29,10 @@
 .archive-memory-feed{display:flex;flex-direction:column;gap:13px}
 .archive-memory-card{padding:20px 21px;border:1px solid var(--line);border-radius:8px;background:var(--page)}
 .archive-memory-card-top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:9px}
-.archive-memory-card-top strong{font-size:14px}
+.archive-memory-author{display:flex;align-items:center;gap:10px;min-width:0}
+.archive-memory-avatar{position:relative;width:36px;height:36px;flex:0 0 36px;overflow:hidden;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;background:var(--cream);color:var(--navy);font-size:13px;font-weight:800}
+.archive-memory-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.archive-memory-card-top strong{min-width:0;font-size:14px;overflow-wrap:anywhere}
 .archive-memory-card-top time{flex-shrink:0;color:var(--muted);font-size:12px}
 .archive-memory-card p{color:var(--muted);font-size:15px;line-height:1.75;white-space:pre-wrap;overflow-wrap:anywhere}
 .archive-memory-empty{min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:28px;border:1px dashed var(--line);border-radius:8px;background:var(--page);text-align:center;color:var(--muted)}
@@ -42,7 +45,7 @@
 .archive-memory-card-count:hover{border-color:var(--orange);color:var(--orange)}
 
 @media(max-width:800px){.archive-memories{padding:25px}.archive-memories-layout{grid-template-columns:1fr}.archive-memories-heading{align-items:flex-start;flex-direction:column}.archive-memory-count{align-self:flex-start}}
-@media(max-width:600px){.archive-memories{margin-top:38px;padding:22px 18px}.archive-memories-heading h2{font-size:27px}.archive-memory-form-bottom{align-items:flex-start;flex-direction:column}.archive-memory-form .button{width:auto}.archive-memory-card{padding:18px}.archive-memory-card-top{align-items:flex-start;flex-direction:column;gap:3px}.archive-card-engagement{gap:6px}.archive-memory-card-count{font-size:13px;padding-inline:9px}}
+@media(max-width:600px){.archive-memories{margin-top:38px;padding:22px 18px}.archive-memories-heading h2{font-size:27px}.archive-memory-form-bottom{align-items:flex-start;flex-direction:column}.archive-memory-form .button{width:auto}.archive-memory-card{padding:18px}.archive-memory-card-top{align-items:flex-start;flex-direction:column;gap:7px}.archive-memory-author{width:100%}.archive-memory-avatar{width:34px;height:34px;flex-basis:34px}.archive-memory-card-top time{padding-left:44px}.archive-card-engagement{gap:6px}.archive-memory-card-count{font-size:13px;padding-inline:9px}}
 
 /* V5: disclaimer sits beside the memory count; safety guidance stays with the form prompt. */
 .archive-memory-heading-meta{display:flex;align-items:center;justify-content:flex-end;gap:14px;max-width:560px;margin-left:auto}
