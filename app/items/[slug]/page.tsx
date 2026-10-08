@@ -6,6 +6,7 @@ import { collectionProducts, getProductBySlug } from '@/lib/products';
 import { ProductCard, ProductImage } from '@/components/marketplace';
 import { SellerProfileCard } from '@/components/seller-profile-card';
 import { sellerSummary } from '@/lib/sellers';
+import { productPriceLabel } from '@/lib/product-price';
 import { AvailablePlatformsLabel, CompareSellerPrices, PlatformSummary, ProductDescription, ProductName, PurchaseNote, SellerButtons } from '@/components/platform-links';
 
 export const dynamic='force-dynamic';
@@ -23,7 +24,7 @@ export default async function Page({params}:{params:Promise<{slug:string}>}){
     <div className="item-detail"><ProductImage key={p.image} src={p.image} name={p.name}/><div className="item-info">
       <Link className="eyebrow" href={`/items?category=${encodeURIComponent(p.category)}`}>{p.category}</Link>
       <h1><ProductName product={p}/></h1>
-      {p.price!=null?<strong className="detail-price">{new Intl.NumberFormat('en-MY',{style:'currency',currency:p.currency??'MYR'}).format(p.price)}</strong>:<CompareSellerPrices detail/>}
+      {productPriceLabel(p)?<strong className="detail-price">{productPriceLabel(p)}</strong>:<CompareSellerPrices detail/>}
       <p className="description"><ProductDescription product={p}/></p>
       <div className="seller-box"><Store size={24}/><div><AvailablePlatformsLabel/><PlatformSummary links={p.links}/></div></div>
       <SellerButtons links={p.links}/><SaveButton id={p.id} name={p.name}/><p className="purchase-note"><PurchaseNote/></p>
