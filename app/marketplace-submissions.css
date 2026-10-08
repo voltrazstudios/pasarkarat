@@ -1933,15 +1933,15 @@ body:has(.seller-page.seller-store-themed) footer{
   min-height:46px;
   justify-content:center
 }
-.profile-signout-button{
-  background:transparent;
-  border:1px solid #c72833;
-  color:#c72833
+body .profile-signout-button{
+  background:transparent!important;
+  border:1px solid #c72833!important;
+  color:#c72833!important
 }
-.profile-signout-button:hover{
-  background:#fff3f5;
-  border-color:#a91f29;
-  color:#a91f29
+body .profile-signout-button:hover{
+  background:#fff3f5!important;
+  border-color:#a91f29!important;
+  color:#a91f29!important
 }
 @media(max-width:480px){
   .profile-form-actions{
