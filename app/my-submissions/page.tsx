@@ -1,9 +1,10 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { configured, db } from '@/lib/supabase';
+import { formatPriceRange } from '@/lib/product-price';
 export const metadata={title:'My Submissions'};
 export const dynamic='force-dynamic';
-type Row={id:string;slug:string;name:string;price:number|string;category:string;status:string;pending_image_path:string;public_image_path:string|null;rejection_reason:string|null;submitted_at:string};
+type Row={id:string;slug:string;name:string;price:number|string;min_price:number|string;max_price:number|string;category:string;status:string;pending_image_path:string;public_image_path:string|null;rejection_reason:string|null;submitted_at:string};
 
 export default async function MySubmissionsPage({searchParams}:{searchParams:Promise<{submitted?:string}>}){
   if(!configured())redirect('/auth');
@@ -11,7 +12,7 @@ export default async function MySubmissionsPage({searchParams}:{searchParams:Pro
   const {data:{user}}=await client.auth.getUser();
   if(!user)redirect('/auth?next=/my-submissions');
   const p=await searchParams;
-  const {data}=await client.from('marketplace_products').select('id,slug,name,price,category,status,pending_image_path,public_image_path,rejection_reason,submitted_at').eq('submitted_by',user.id).order('submitted_at',{ascending:false});
+  const {data}=await client.from('marketplace_products').select('id,slug,name,price,min_price,max_price,category,status,pending_image_path,public_image_path,rejection_reason,submitted_at').eq('submitted_by',user.id).order('submitted_at',{ascending:false});
   const rows=(data||[]) as Row[];
   const withImages=await Promise.all(rows.map(async row=>{
     if(row.status==='approved'&&row.public_image_path)return {...row,image:client.storage.from('product-images').getPublicUrl(row.public_image_path).data.publicUrl};
@@ -23,7 +24,7 @@ export default async function MySubmissionsPage({searchParams}:{searchParams:Pro
     {p.submitted==='1'&&<div className="form-notice" role="status">Product submitted. It is private while an administrator reviews it.</div>}
     {withImages.length?<div className="submission-list">{withImages.map(row=><article className="submission-row" key={row.id}>
       <div className="submission-thumb">{row.image?<img src={row.image} alt={row.name}/>:<span>Image unavailable</span>}</div>
-      <div className="submission-copy"><div className="submission-status-line"><span className="status-pill" data-status={row.status}>{row.status}</span><span>{new Date(row.submitted_at).toLocaleDateString('en-MY')}</span></div><h2>{row.name}</h2><p>{row.category} · {new Intl.NumberFormat('en-MY',{style:'currency',currency:'MYR'}).format(Number(row.price))}</p>{row.status==='rejected'&&row.rejection_reason&&<p className="rejection-reason"><strong>Reason:</strong> {row.rejection_reason}</p>}{row.status==='approved'&&<Link className="text-link" href={`/items/${row.slug}`}>View public product</Link>}</div>
+      <div className="submission-copy"><div className="submission-status-line"><span className="status-pill" data-status={row.status}>{row.status}</span><span>{new Date(row.submitted_at).toLocaleDateString('en-MY')}</span></div><h2>{row.name}</h2><p>{row.category} · {formatPriceRange(Number(row.min_price??row.price),Number(row.max_price??row.min_price??row.price))}</p>{row.status==='rejected'&&row.rejection_reason&&<p className="rejection-reason"><strong>Reason:</strong> {row.rejection_reason}</p>}{row.status==='approved'&&<Link className="text-link" href={`/items/${row.slug}`}>View public product</Link>}</div>
     </article>)}</div>:<div className="empty-state"><h2>No submissions yet</h2><p>Your submitted products will appear here.</p><Link href="/submit-product" prefetch={false} className="button">Submit a product</Link></div>}
   </main>;
 }
