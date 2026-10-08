@@ -2016,7 +2016,7 @@ body:has(.seller-page.seller-store-themed) footer{
   min-height:25px;
   padding:4px 8px;
   border:1px solid #f1cf9e;
-  border-radius:999px;
+  border-radius:4px;
   background:#fff5df;
   color:#875718;
   box-shadow:0 2px 8px #182e3a12;
