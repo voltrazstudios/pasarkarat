@@ -5,10 +5,11 @@ import Image from 'next/image';
 import imageAssets from '@/data/image-assets.json';
 import { SaveButton } from './saved-items';
 import { PlatformQuickLinks, PlatformSummary, ProductName, platformClass } from './platform-links';
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 import { useLanguage } from './language-provider';
 import { ArrowUpRight, ArrowRight, Search, Layers, Image as ImageIcon, X } from 'lucide-react';
 import { categories, categoryImages, platformDisplayName, platforms, products, type Platform, type Product } from '@/data/products';
+import { contrastText, darkenHexColor, storeFontFamily, type StoreFont } from '@/lib/store-theme';
 
 export { Header } from './header';
 
@@ -115,6 +116,10 @@ type HomeFeaturedStore={
   avatarUrl:string|null;
   productCount:number;
   featuredUntil:string;
+  isPro:boolean;
+  accentColor:string;
+  cardColor:string;
+  storeFont:StoreFont;
 };
 
 export function Home({items=products,featuredStores=[]}:{items?:Product[];featuredStores?:HomeFeaturedStore[]}){
@@ -147,17 +152,32 @@ export function Home({items=products,featuredStores=[]}:{items?:Product[];featur
         <Link href="/items" className="text-link">Explore the collection <ArrowRight size={17}/></Link>
       </div>
       <div className="featured-store-grid">
-        {featuredStores.map(store=><Link href={`/seller/${store.id}`} className="featured-store-card" key={store.id}>
-          <span className="featured-store-avatar">
-            {store.avatarUrl?<img src={store.avatarUrl} alt=""/>:<span>{store.storeName.slice(0,1).toUpperCase()}</span>}
-          </span>
-          <span className="featured-store-copy">
-            <small>FEATURED STORE</small>
-            <strong>{store.storeName}</strong>
-            <span>{store.description||`${store.productCount} approved ${store.productCount===1?'product':'products'}`}</span>
-          </span>
-          <ArrowUpRight size={18}/>
-        </Link>)}
+        {featuredStores.map(store=>{
+          const themeStyle=store.isPro?{
+            '--featured-card':store.cardColor,
+            '--featured-card-text':contrastText(store.cardColor),
+            '--featured-accent':store.accentColor,
+            '--featured-accent-text':contrastText(store.accentColor),
+            '--featured-card-border':darkenHexColor(store.cardColor,.12),
+            '--featured-font':storeFontFamily(store.storeFont),
+          } as CSSProperties:undefined;
+          return <Link
+            href={`/seller/${store.id}`}
+            className={`featured-store-card${store.isPro?' featured-store-card-pro':''}`}
+            style={themeStyle}
+            key={store.id}
+          >
+            <span className="featured-store-avatar">
+              {store.avatarUrl?<img src={store.avatarUrl} alt=""/>:<span>{store.storeName.slice(0,1).toUpperCase()}</span>}
+            </span>
+            <span className="featured-store-copy">
+              <small>FEATURED STORE</small>
+              <strong>{store.storeName}</strong>
+              <span>{store.description||`${store.productCount} approved ${store.productCount===1?'product':'products'}`}</span>
+            </span>
+            <ArrowUpRight size={18}/>
+          </Link>;
+        })}
       </div>
     </section>:null}
 
