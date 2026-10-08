@@ -10,6 +10,7 @@ import { useLanguage } from './language-provider';
 import { ArrowUpRight, ArrowRight, Search, Layers, Image as ImageIcon, X } from 'lucide-react';
 import { categories, categoryImages, platformDisplayName, platforms, products, type Platform, type Product } from '@/data/products';
 import { contrastText, darkenHexColor, storeFontFamily, type StoreFont } from '@/lib/store-theme';
+import { productPriceLabel } from '@/lib/product-price';
 
 export { Header } from './header';
 
@@ -79,11 +80,7 @@ export function ProductCard({product:p}:{product:Product}){
       <p className="seller"><PlatformSummary links={p.links}/></p>
       <h3><Link href={`/items/${p.slug}`}><ProductName product={p}/></Link></h3>
       <div className="product-bottom">
-        <strong className="compare-sellers">
-          {p.price!=null
-            ? new Intl.NumberFormat('en-MY',{style:'currency',currency:p.currency??'MYR'}).format(p.price)
-            : 'Compare Seller Price'}
-        </strong>
+        <strong className="compare-sellers">{productPriceLabel(p)??'Compare Seller Price'}</strong>
         <Link href={`/items/${p.slug}`} className="view-item">View Item <ArrowUpRight size={15}/></Link>
       </div>
       <div className="product-card-actions">
