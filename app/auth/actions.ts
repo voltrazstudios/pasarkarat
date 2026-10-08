@@ -7,7 +7,7 @@ import { cleanPlainText, containsBlockedContent, containsUnsafeMarkup } from '@/
 
 export type AuthResult={error?:string;ok?:boolean;message?:string};
 const text=(f:FormData,key:string)=>String(f.get(key)||'');
-function safeNext(value:string){return ['/','/submit-product','/my-submissions','/admin','/items','/saved','/profile','/my-store'].includes(value)||/^\/seller\/[a-f0-9-]{36}$/i.test(value)||/^\/items\/[a-z0-9-]{3,100}$/i.test(value)?value:'/submit-product';}
+function safeNext(value:string){return ['/','/submit-product','/my-submissions','/admin','/items','/saved','/profile','/my-store','/promote'].includes(value)||/^\/seller\/[a-f0-9-]{36}$/i.test(value)||/^\/items\/[a-z0-9-]{3,100}$/i.test(value)?value:'/submit-product';}
 
 export async function authenticate(_:AuthResult,f:FormData):Promise<AuthResult>{
   if(!configured())return {error:'Pasar Karat authentication is not configured yet.'};
