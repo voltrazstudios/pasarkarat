@@ -31,6 +31,7 @@ export function ProductSubmissionForm(){
       <div className="submission-price-range">
         <label>Minimum price (RM)<input name="min_price" required inputMode="decimal" pattern="\d{1,10}(\.\d{1,2})?" placeholder="25.00"/></label>
         <label>Maximum price (RM)<input name="max_price" required inputMode="decimal" pattern="\d{1,10}(\.\d{1,2})?" placeholder="40.00"/></label>
+        <small>Use the lowest and highest prices across your selected platforms. If they are the same, enter the same amount twice.</small>
       </div>
     </div>
 
