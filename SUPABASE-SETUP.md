@@ -29,6 +29,7 @@ Run these files in the Supabase SQL editor:
 17. `supabase/migrations/202610070017_fix_pro_payment_service_role.sql`
 18. `supabase/migrations/202610080018_paid_promotions.sql`
 19. `supabase/migrations/202610080019_product_price_ranges.sql`
+20. `supabase/migrations/202610080020_admin_submitter_profiles.sql`
 
 ## 3. Configure local environment
 
