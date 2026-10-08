@@ -70,6 +70,7 @@ export function SellerStorefrontShell({
 
   const storeAction=seller.isOwner?<>
     <Link href={`/seller/${seller.id}?customize=1#customize-store`} className="seller-store-link">Customize Store</Link>
+    <Link href="/promote" prefetch className="seller-store-link">Promote</Link>
     <Link href="/my-submissions" prefetch className="seller-store-link">My Submission</Link>
   </>:
     <form action={setSellerFollow}>
