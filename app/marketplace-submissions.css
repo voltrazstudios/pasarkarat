@@ -2181,6 +2181,32 @@ body:has(.seller-page.seller-store-themed) footer{
   color:var(--orange)
 }
 
+/* Featured placements inherit active Pro storefront identity. */
+.featured-store-card-pro{
+  background:var(--featured-card);
+  border-color:var(--featured-card-border);
+  color:var(--featured-card-text);
+  font-family:var(--featured-font)
+}
+.featured-store-card-pro:hover{
+  border-color:var(--featured-accent)
+}
+.featured-store-card-pro .featured-store-copy small,
+.featured-store-card-pro>svg{
+  color:var(--featured-accent)
+}
+.featured-store-card-pro .featured-store-copy strong{
+  color:var(--featured-card-text)
+}
+.featured-store-card-pro .featured-store-copy>span{
+  color:var(--featured-card-text);
+  opacity:.72
+}
+.featured-store-card-pro .featured-store-avatar{
+  background:var(--featured-accent);
+  color:var(--featured-accent-text)
+}
+
 @media(max-width:1000px){
   .featured-store-grid{
     grid-template-columns:repeat(2,minmax(0,1fr))
