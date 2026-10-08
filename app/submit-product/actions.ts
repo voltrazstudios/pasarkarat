@@ -21,16 +21,21 @@ export async function submitProduct(_:SubmissionResult,f:FormData):Promise<Submi
   const name=cleanPlainText(text(f,'name'));
   const description=cleanPlainText(text(f,'description'));
   const category=text(f,'category');
-  const rawPrice=text(f,'price').trim();
+  const rawMinPrice=text(f,'min_price').trim();
+  const rawMaxPrice=text(f,'max_price').trim();
 
   if(name.length<2||name.length>100)return {error:'Product name must be between 2 and 100 characters.'};
   if(description.length<10||description.length>2000)return {error:'Description must be between 10 and 2,000 characters.'};
   if(containsUnsafeMarkup(name)||containsUnsafeMarkup(description)||containsBlockedContent(name)||containsBlockedContent(description))
     return {error:'Please remove unsafe markup or harmful technical content before submitting.'};
   if(!categories.includes(category as (typeof categories)[number]))return {error:'Choose a valid category.'};
-  if(!/^\d{1,10}(?:\.\d{1,2})?$/.test(rawPrice))return {error:'Enter a valid price with up to two decimal places.'};
-  const price=Number(rawPrice);
-  if(!Number.isFinite(price)||price<=0||price>9999999999.99)return {error:'Enter a valid product price.'};
+  const pricePattern=/^\d{1,10}(?:\.\d{1,2})?$/;
+  if(!pricePattern.test(rawMinPrice)||!pricePattern.test(rawMaxPrice))return {error:'Enter valid minimum and maximum prices with up to two decimal places.'};
+  const minPrice=Number(rawMinPrice);
+  const maxPrice=Number(rawMaxPrice);
+  if(!Number.isFinite(minPrice)||minPrice<=0||minPrice>9999999999.99)return {error:'Enter a valid minimum price.'};
+  if(!Number.isFinite(maxPrice)||maxPrice<=0||maxPrice>9999999999.99)return {error:'Enter a valid maximum price.'};
+  if(maxPrice<minPrice)return {error:'Maximum price must be the same as or higher than minimum price.'};
 
   const selected=[...new Set(f.getAll('platform').map(String).filter(isPlatform))];
   if(selected.length<1||selected.length>platforms.length)return {error:'Choose at least one selling platform.'};
@@ -71,7 +76,7 @@ export async function submitProduct(_:SubmissionResult,f:FormData):Promise<Submi
   if(upload.error)return {error:'Unable to upload the product image.'};
 
   const slug=`${slugifyProductName(name)}-${crypto.randomUUID().slice(0,8)}`;
-  const submitted=await client.rpc('submit_marketplace_product',{p_slug:slug,p_name:name,p_description:description,p_price:price,p_category:category,p_image_path:imagePath,p_links:links});
+  const submitted=await client.rpc('submit_marketplace_product',{p_slug:slug,p_name:name,p_description:description,p_min_price:minPrice,p_max_price:maxPrice,p_category:category,p_image_path:imagePath,p_links:links});
   if(submitted.error){
     await client.storage.from('product-submission-images').remove([imagePath]);
     return {error:'Unable to submit this product. Please check the details and try again.'};
