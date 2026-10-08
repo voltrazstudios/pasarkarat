@@ -173,3 +173,36 @@ export function sellerStoreLinkLabels(links:Partial<Record<Platform,string>>){
     : []
   );
 }
+
+
+export type FeaturedStore={
+  id:string;
+  storeName:string;
+  description:string|null;
+  avatarUrl:string|null;
+  productCount:number;
+  featuredUntil:string;
+};
+
+export async function featuredStores():Promise<FeaturedStore[]>{
+  if(!configured())return [];
+  const client=await db();
+  const {data,error}=await client.rpc('marketplace_featured_stores');
+  if(error||!Array.isArray(data))return [];
+
+  return data.flatMap(entry=>{
+    if(!entry||typeof entry!=='object')return [];
+    const row=entry as Record<string,unknown>;
+    if(typeof row.id!=='string'||!uuid.test(row.id)||typeof row.store_name!=='string'||typeof row.featured_until!=='string')return [];
+    return [{
+      id:row.id,
+      storeName:row.store_name,
+      description:typeof row.description==='string'&&row.description.trim()?row.description:null,
+      avatarUrl:typeof row.avatar_path==='string'&&row.avatar_path
+        ? client.storage.from('marketplace-profile-images').getPublicUrl(row.avatar_path).data.publicUrl
+        : null,
+      productCount:Number(row.products||0),
+      featuredUntil:row.featured_until,
+    }];
+  });
+}
