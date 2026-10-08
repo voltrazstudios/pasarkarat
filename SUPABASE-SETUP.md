@@ -26,6 +26,8 @@ Run these files in the Supabase SQL editor:
 14. `supabase/migrations/202610070014_seller_product_metrics.sql`
 15. `supabase/migrations/202610070015_expand_store_sections.sql`
 16. `supabase/migrations/202610070016_store_pro_and_billplz.sql`
+17. `supabase/migrations/202610070017_fix_pro_payment_service_role.sql`
+18. `supabase/migrations/202610080018_paid_promotions.sql`
 
 ## 3. Configure local environment
 
@@ -75,6 +77,7 @@ Useful routes:
 - `/my-submissions` — submission status
 - `/admin` — admin-only moderation
 - `/auth` — sign in
+- `/promote` — seller Product Boosting and Featured Store Placement
 
 ## Security behavior
 
@@ -93,3 +96,4 @@ For Pro checkout, configure the server-only values shown in `.env.example`.
 - `BILLPLZ_CALLBACK_BASE_URL` must be a public HTTPS origin. Billplz cannot call a localhost callback.
 - Use the Billplz sandbox base URL and sandbox credentials while testing.
 - The current prototype plans are RM9.90 for 30 days and RM99.00 for 365 days.
+- Paid seller promotions reuse the same Billplz configuration: RM0.90 for a 7-day product boost and RM3.90 for a 7-day featured store placement.
