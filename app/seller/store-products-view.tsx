@@ -44,8 +44,8 @@ export function StoreProductsView({
         : searched;
 
       filtered.sort((a,b)=>{
-        if(sort==='price-low')return (a.price??Number.POSITIVE_INFINITY)-(b.price??Number.POSITIVE_INFINITY);
-        if(sort==='price-high')return (b.price??Number.NEGATIVE_INFINITY)-(a.price??Number.NEGATIVE_INFINITY);
+        if(sort==='price-low')return (a.minPrice??a.price??Number.POSITIVE_INFINITY)-(b.minPrice??b.price??Number.POSITIVE_INFINITY);
+        if(sort==='price-high')return (b.maxPrice??b.price??Number.NEGATIVE_INFINITY)-(a.maxPrice??a.price??Number.NEGATIVE_INFINITY);
         if(sort==='latest'){
           return metricDate(metrics[b.id]?.approvedAt||'')-metricDate(metrics[a.id]?.approvedAt||'');
         }
