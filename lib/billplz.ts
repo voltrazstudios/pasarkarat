@@ -36,16 +36,20 @@ export async function createBillplzBill({
   email,
   name,
   description,
+  callbackPath='/api/billplz/callback',
+  redirectPath='/pro/return',
 }:{
   amount:number;
   email:string;
   name:string;
   description:string;
+  callbackPath?:string;
+  redirectPath?:string;
 }):Promise<BillplzBill>{
   if(!billplzConfigured())throw new Error('Billplz is not configured yet.');
 
-  const callbackUrl=new URL('/api/billplz/callback',process.env.BILLPLZ_CALLBACK_BASE_URL!).toString();
-  const redirectUrl=new URL('/pro/return',process.env.NEXT_PUBLIC_SITE_URL!).toString();
+  const callbackUrl=new URL(callbackPath,process.env.BILLPLZ_CALLBACK_BASE_URL!).toString();
+  const redirectUrl=new URL(redirectPath,process.env.NEXT_PUBLIC_SITE_URL!).toString();
   const body=new URLSearchParams({
     collection_id:process.env.BILLPLZ_COLLECTION_ID!,
     email,
