@@ -1927,18 +1927,21 @@ body:has(.seller-page.seller-store-themed) footer{
   gap:10px;
   width:100%
 }
-.profile-save-button{
-  flex:1 1 auto
+.profile-save-button,
+.profile-signout-button{
+  flex:1 1 0;
+  min-height:46px;
+  justify-content:center
 }
 .profile-signout-button{
-  flex:0 0 auto;
-  background:#c72833;
-  border-color:#c72833;
-  color:#fff
+  background:transparent;
+  border:1px solid #c72833;
+  color:#c72833
 }
 .profile-signout-button:hover{
-  background:#a91f29;
-  border-color:#a91f29
+  background:#fff3f5;
+  border-color:#a91f29;
+  color:#a91f29
 }
 @media(max-width:480px){
   .profile-form-actions{
