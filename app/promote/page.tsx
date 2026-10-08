@@ -75,7 +75,7 @@ export default async function PromotePage({searchParams}:{searchParams:Promise<{
       <article className="promotion-card">
         <span className="promotion-card-icon"><Package size={22}/></span>
         <p className="pro-plan-kicker">02 — PRODUCT BOOSTING</p>
-        <h2>RM0.90</h2>
+        <h2>RM1.00</h2>
         <p>Boost one approved product for 7 days. Active boosts are prioritised in collection and search results.</p>
         <form action={startPromotionCheckout} className="promotion-form">
           <input type="hidden" name="promotion_type" value="product_boost"/>
@@ -89,7 +89,7 @@ export default async function PromotePage({searchParams}:{searchParams:Promise<{
               })}
             </select>
           </label>
-          <button className="button" disabled={!paymentReady||!products.length}>Boost for RM0.90</button>
+          <button className="button" disabled={!paymentReady||!products.length}>Boost for RM1.00</button>
         </form>
       </article>
 
