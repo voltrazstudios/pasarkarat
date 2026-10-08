@@ -6,7 +6,7 @@ import { formatPriceRange } from '@/lib/product-price';
 
 type AdminRow={
   id:string;name:string;description:string;price:number|string;min_price:number|string;max_price:number|string;category:string;pending_image_path:string;submitted_at:string;
-  submitter:{id:string;email:string|null;display_name:string|null};
+  submitter:{id:string;email:string|null;display_name:string|null;avatar_path:string|null;approved_products:number};
   links:{platform:string;seller_url:string;affiliate_url:string|null}[];
 };
 
@@ -31,7 +31,10 @@ export default async function AdminPage({searchParams}:{searchParams:Promise<{up
   const rows=(pendingResult.data||[]) as AdminRow[];
   const reviews=await Promise.all(rows.map(async row=>{
     const signed=await client.storage.from('product-submission-images').createSignedUrl(row.pending_image_path,60*30);
-    return {...row,image:signed.data?.signedUrl||null};
+    const avatar=row.submitter.avatar_path
+      ? client.storage.from('marketplace-profile-images').getPublicUrl(row.submitter.avatar_path).data.publicUrl
+      : null;
+    return {...row,image:signed.data?.signedUrl||null,submitter:{...row.submitter,avatar}};
   }));
 
   const published=((publishedResult.data||[]) as PublishedRow[]).map(row=>({
@@ -63,7 +66,19 @@ export default async function AdminPage({searchParams}:{searchParams:Promise<{up
           <h2>{row.name}</h2>
           <strong className="moderation-price">{formatPriceRange(Number(row.min_price??row.price),Number(row.max_price??row.min_price??row.price))}</strong>
           <p className="moderation-description">{row.description}</p>
-          <div className="submitter-box"><strong>Submitter</strong><span>{row.submitter.display_name||'Marketplace member'}</span><span>{row.submitter.email||row.submitter.id}</span></div>
+          <div className="submitter-box admin-submitter-box">
+            <div className="admin-submitter-avatar">
+              {row.submitter.avatar?<img src={row.submitter.avatar} alt=""/>:<span>{(row.submitter.display_name||'M').slice(0,1).toUpperCase()}</span>}
+            </div>
+            <div className="admin-submitter-copy">
+              <strong>Submitter</strong>
+              <span>{row.submitter.display_name||'Marketplace member'}</span>
+              <span>{row.submitter.email||row.submitter.id}</span>
+            </div>
+            {row.submitter.approved_products>0
+              ? <Link href={`/seller/${row.submitter.id}`} className="button secondary admin-view-store">View Store</Link>
+              : <span className="admin-store-not-live">Store not live yet</span>}
+          </div>
           <div className="admin-links"><strong>Seller links</strong>{row.links.map(link=><div key={link.platform}><span>{link.platform}</span><a href={link.seller_url} target="_blank" rel="noopener noreferrer nofollow">{link.seller_url}</a>{link.affiliate_url&&<a href={link.affiliate_url} target="_blank" rel="noopener noreferrer sponsored">Affiliate: {link.affiliate_url}</a>}</div>)}</div>
           <form className="moderation-actions">
             <input type="hidden" name="id" value={row.id}/>
