@@ -2243,3 +2243,34 @@ body:has(.seller-page.seller-store-themed) footer{
   }
 }
 
+
+
+/* Community-submitted product detail images are intentionally more compact. */
+.item-detail-submitted{
+  grid-template-columns:minmax(240px,.5fr) minmax(0,1.5fr);
+  align-items:start
+}
+.item-detail-submitted>.image-placeholder{
+  width:100%;
+  max-width:330px;
+  justify-self:start;
+  background:var(--surface)
+}
+.item-detail-submitted>.image-placeholder img{
+  object-fit:contain!important
+}
+@media(max-width:900px){
+  .item-detail-submitted{
+    grid-template-columns:1fr
+  }
+  .item-detail-submitted>.image-placeholder{
+    width:min(100%,360px);
+    max-width:360px;
+    justify-self:center
+  }
+}
+@media(max-width:600px){
+  .item-detail-submitted>.image-placeholder{
+    width:min(82vw,330px)
+  }
+}
