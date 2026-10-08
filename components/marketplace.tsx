@@ -63,6 +63,7 @@ export function ProductImage({
 export function ProductCard({product:p}:{product:Product}){
   const {language}=useLanguage();
   const displayName=language==='ms'?p.nameMs:p.name;
+  const boosted=Boolean(p.boostedUntil&&new Date(p.boostedUntil).getTime()>Date.now());
   return <article className="product-card">
     <Link href={`/items/${p.slug}`} className="product-image-link" aria-label={`View ${displayName}`}>
       <ProductImage
@@ -71,6 +72,7 @@ export function ProductCard({product:p}:{product:Product}){
         category={p.category}
         sizes="(max-width: 379px) 100vw, (max-width: 900px) 50vw, (max-width: 1100px) 33vw, 25vw"
       />
+      {boosted?<span className="product-boost-badge">Boosted</span>:null}
     </Link>
     <div className="product-content">
       <p className="seller"><PlatformSummary links={p.links}/></p>
@@ -106,8 +108,22 @@ export function CategoryLinks(){
   </section>;
 }
 
-export function Home(){
+type HomeFeaturedStore={
+  id:string;
+  storeName:string;
+  description:string|null;
+  avatarUrl:string|null;
+  productCount:number;
+  featuredUntil:string;
+};
+
+export function Home({items=products,featuredStores=[]}:{items?:Product[];featuredStores?:HomeFeaturedStore[]}){
   const {language}=useLanguage();
+  const now=Date.now();
+  const activeBoosts=items.filter(item=>item.boostedUntil&&new Date(item.boostedUntil).getTime()>now);
+  const staticFeatured=products.filter(item=>item.featured);
+  const featuredFinds=[...activeBoosts,...staticFeatured.filter(item=>!activeBoosts.some(boost=>boost.id===item.id))].slice(0,4);
+  const moreToDiscover=items.filter(item=>!featuredFinds.some(feature=>feature.id===item.id)).slice(0,4);
   return <main id="main">
     <section className="hero container">
       <div className="hero-copy">
@@ -125,13 +141,33 @@ export function Home(){
 
     <CategoryLinks/>
 
+    {featuredStores.length?<section className="container featured-store-section">
+      <div className="section-heading">
+        <div><p className="eyebrow">FEATURED SELLERS</p><h2>Stores worth discovering</h2></div>
+        <Link href="/items" className="text-link">Explore the collection <ArrowRight size={17}/></Link>
+      </div>
+      <div className="featured-store-grid">
+        {featuredStores.map(store=><Link href={`/seller/${store.id}`} className="featured-store-card" key={store.id}>
+          <span className="featured-store-avatar">
+            {store.avatarUrl?<img src={store.avatarUrl} alt=""/>:<span>{store.storeName.slice(0,1).toUpperCase()}</span>}
+          </span>
+          <span className="featured-store-copy">
+            <small>FEATURED STORE</small>
+            <strong>{store.storeName}</strong>
+            <span>{store.description||`${store.productCount} approved ${store.productCount===1?'product':'products'}`}</span>
+          </span>
+          <ArrowUpRight size={18}/>
+        </Link>)}
+      </div>
+    </section>:null}
+
     <section className="container collection">
       <div className="section-heading">
         <div><p className="eyebrow">WORTH A CLOSER LOOK</p><h2>Featured finds</h2></div>
         <Link href="/items" className="text-link">Explore the collection <ArrowRight size={17}/></Link>
       </div>
       <p className="demo-note">{language==='ms'?'Pautan penjual luar · Harga dan ketersediaan mungkin berubah.':'External seller links · Prices and availability may change.'}</p>
-      <div className="product-grid">{products.filter(p=>p.featured).map(p=><ProductCard key={p.id} product={p}/>)}</div>
+      <div className="product-grid">{featuredFinds.map(p=><ProductCard key={p.id} product={p}/>)}</div>
     </section>
 
     <section className="container story">
@@ -144,7 +180,7 @@ export function Home(){
         <div><p className="eyebrow">KEEP EXPLORING</p><h2>More to discover</h2></div>
         <Link href="/items" className="text-link">View all items <ArrowRight size={17}/></Link>
       </div>
-      <div className="product-grid">{products.filter(p=>!p.featured).slice(0,4).map(p=><ProductCard key={p.id} product={p}/>)}</div>
+      <div className="product-grid">{moreToDiscover.map(p=><ProductCard key={p.id} product={p}/>)}</div>
     </section>
   </main>;
 }
