@@ -3,11 +3,12 @@
 import { MessageCircle } from 'lucide-react';
 import { FormEvent, useCallback, useEffect, useState } from 'react';
 import { useLanguage } from './language-provider';
+import { getCommunityMemoryProfile, type CommunityMemoryProfile } from '@/app/marketplace-actions';
 
 const VISITOR_KEY = 'pasar-karat-archive-visitor-id';
 const MAX_MEMORY_LENGTH = 500;
 
-type CommunityMemory = { id: string; name: string; text: string; createdAt: string };
+type CommunityMemory = { id: string; name: string; text: string; createdAt: string; avatarUrl?: string | null };
 type MemoryResponse = { count?: number; memories?: CommunityMemory[]; memory?: CommunityMemory; error?: string };
 
 function getVisitorId() {
@@ -17,6 +18,14 @@ function getVisitorId() {
     localStorage.setItem(VISITOR_KEY, id);
   }
   return id;
+}
+
+function MemoryAvatar({ name, src }: { name: string; src?: string | null }) {
+  const initial=(name.trim().charAt(0)||'?').toUpperCase();
+  return <span className="archive-memory-avatar" aria-hidden="true">
+    <span>{initial}</span>
+    {src?<img src={src} alt="" onError={event=>event.currentTarget.remove()}/>:null}
+  </span>;
 }
 
 function formatDate(value: string, language: 'en' | 'ms') {
@@ -60,6 +69,7 @@ export function ArchiveMemories({ id, name }: { id: string; name: string }) {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [memoryProfile, setMemoryProfile] = useState<CommunityMemoryProfile | null>(null);
 
   const refresh = useCallback(async () => {
     try {
@@ -75,6 +85,18 @@ export function ArchiveMemories({ id, name }: { id: string; name: string }) {
 
   useEffect(() => { void refresh(); }, [refresh]);
 
+  useEffect(() => {
+    let active=true;
+    void getCommunityMemoryProfile().then(profile=>{
+      if(!active)return;
+      setMemoryProfile(profile);
+      if(profile.signedIn&&profile.displayName){
+        setAuthorName(current=>current||profile.displayName);
+      }
+    }).catch(()=>{});
+    return()=>{active=false;};
+  }, []);
+
   async function submitMemory(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const memoryText = text.trim();
@@ -83,7 +105,7 @@ export function ArchiveMemories({ id, name }: { id: string; name: string }) {
     try {
       const response = await fetch(`/api/archive-memories?id=${encodeURIComponent(id)}`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ visitorId: getVisitorId(), name: authorName.trim(), text: memoryText }),
+        body: JSON.stringify({ visitorId: getVisitorId(), name: authorName.trim(), text: memoryText, avatarUrl: memoryProfile?.avatarUrl||null }),
       });
       const data = await response.json().catch(() => ({})) as MemoryResponse;
       if (!response.ok) throw new Error(data.error || 'Your memory could not be shared.');
@@ -128,9 +150,17 @@ export function ArchiveMemories({ id, name }: { id: string; name: string }) {
       </form>
 
       <div className="archive-memory-feed" aria-live="polite">
-        {loading ? <div className="archive-memory-empty">Loading community memories…</div> : memories.length ? memories.map(memory => <article className="archive-memory-card" key={memory.id}>
-          <div className="archive-memory-card-top"><strong data-no-translate>{memory.name || (language === 'ms' ? 'Pelawat tanpa nama' : 'Anonymous visitor')}</strong><time dateTime={memory.createdAt}>{formatDate(memory.createdAt, language)}</time></div><p data-no-translate>{memory.text}</p>
-        </article>) : <div className="archive-memory-empty"><MessageCircle size={28} strokeWidth={1.4} aria-hidden="true" /><strong>Be the first to share a memory.</strong><span>Personal stories help this archive grow beyond facts and objects.</span></div>}
+        {loading ? <div className="archive-memory-empty">Loading community memories…</div> : memories.length ? memories.map(memory => {
+          const displayName=memory.name || (language === 'ms' ? 'Pelawat tanpa nama' : 'Anonymous visitor');
+          const avatarUrl=memory.avatarUrl || (memoryProfile?.avatarUrl&&memoryProfile.displayName===memory.name?memoryProfile.avatarUrl:null);
+          return <article className="archive-memory-card" key={memory.id}>
+            <div className="archive-memory-card-top">
+              <div className="archive-memory-author"><MemoryAvatar name={displayName} src={avatarUrl}/><strong data-no-translate>{displayName}</strong></div>
+              <time dateTime={memory.createdAt}>{formatDate(memory.createdAt, language)}</time>
+            </div>
+            <p data-no-translate>{memory.text}</p>
+          </article>;
+        }) : <div className="archive-memory-empty"><MessageCircle size={28} strokeWidth={1.4} aria-hidden="true" /><strong>Be the first to share a memory.</strong><span>Personal stories help this archive grow beyond facts and objects.</span></div>}
       </div>
     </div>
   </section>;
