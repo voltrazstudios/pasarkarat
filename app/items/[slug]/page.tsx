@@ -21,7 +21,7 @@ export default async function Page({params}:{params:Promise<{slug:string}>}){
   const related=[...allProducts.filter(x=>x.id!==p.id&&x.category===p.category),...allProducts.filter(x=>x.id!==p.id&&x.category!==p.category)].slice(0,4);
   return <main id="main" className="container item-page">
     <Link href="/items" className="text-link back"><ArrowLeft size={16}/> Back to collection</Link>
-    <div className={`item-detail${p.submitted?' item-detail-submitted':''}`}><ProductImage key={p.image} src={p.image} name={p.name}/><div className="item-info">
+    <div className="item-detail item-detail-submitted"><ProductImage key={p.image} src={p.image} name={p.name}/><div className="item-info">
       <Link className="eyebrow" href={`/items?category=${encodeURIComponent(p.category)}`}>{p.category}</Link>
       <h1><ProductName product={p}/></h1>
       {productPriceLabel(p)?<strong className="detail-price">{productPriceLabel(p)}</strong>:<CompareSellerPrices detail/>}
