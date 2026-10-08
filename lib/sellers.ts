@@ -182,6 +182,10 @@ export type FeaturedStore={
   avatarUrl:string|null;
   productCount:number;
   featuredUntil:string;
+  isPro:boolean;
+  accentColor:string;
+  cardColor:string;
+  storeFont:StoreFont;
 };
 
 export async function featuredStores():Promise<FeaturedStore[]>{
@@ -190,7 +194,7 @@ export async function featuredStores():Promise<FeaturedStore[]>{
   const {data,error}=await client.rpc('marketplace_featured_stores');
   if(error||!Array.isArray(data))return [];
 
-  return data.flatMap(entry=>{
+  const stores=data.flatMap(entry=>{
     if(!entry||typeof entry!=='object')return [];
     const row=entry as Record<string,unknown>;
     if(typeof row.id!=='string'||!uuid.test(row.id)||typeof row.store_name!=='string'||typeof row.featured_until!=='string')return [];
@@ -205,4 +209,17 @@ export async function featuredStores():Promise<FeaturedStore[]>{
       featuredUntil:row.featured_until,
     }];
   });
+
+  const themed=await Promise.all(stores.map(async store=>{
+    const summary=await sellerSummary(store.id);
+    return {
+      ...store,
+      isPro:summary?.isPro===true,
+      accentColor:summary?.isPro?summary.accentColor:defaultStoreTheme.accentColor,
+      cardColor:summary?.isPro?summary.cardColor:'#ffffff',
+      storeFont:summary?.isPro?summary.storeFont:defaultStoreTheme.font,
+    };
+  }));
+
+  return themed;
 }
