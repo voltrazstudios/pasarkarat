@@ -2,15 +2,16 @@ import Link from 'next/link';
 import { requireAdmin } from '@/lib/admin';
 import { approveProduct, rejectProduct } from './actions';
 import { DeleteProductButton } from './delete-product-button';
+import { formatPriceRange } from '@/lib/product-price';
 
 type AdminRow={
-  id:string;name:string;description:string;price:number|string;category:string;pending_image_path:string;submitted_at:string;
+  id:string;name:string;description:string;price:number|string;min_price:number|string;max_price:number|string;category:string;pending_image_path:string;submitted_at:string;
   submitter:{id:string;email:string|null;display_name:string|null};
   links:{platform:string;seller_url:string;affiliate_url:string|null}[];
 };
 
 type PublishedRow={
-  id:string;slug:string;name:string;price:number|string;category:string;public_image_path:string|null;approved_at:string|null;
+  id:string;slug:string;name:string;price:number|string;min_price:number|string;max_price:number|string;category:string;public_image_path:string|null;approved_at:string|null;
 };
 
 export default async function AdminPage({searchParams}:{searchParams:Promise<{updated?:string;error?:string}>}){
@@ -20,7 +21,7 @@ export default async function AdminPage({searchParams}:{searchParams:Promise<{up
   const [pendingResult,publishedResult]=await Promise.all([
     client.rpc('marketplace_admin_pending'),
     client.from('marketplace_products')
-      .select('id,slug,name,price,category,public_image_path,approved_at')
+      .select('id,slug,name,price,min_price,max_price,category,public_image_path,approved_at')
       .eq('status','approved')
       .order('approved_at',{ascending:false}),
   ]);
@@ -60,7 +61,7 @@ export default async function AdminPage({searchParams}:{searchParams:Promise<{up
         <div className="moderation-content">
           <div className="submission-status-line"><span>{row.category}</span><span>{new Date(row.submitted_at).toLocaleString('en-MY')}</span></div>
           <h2>{row.name}</h2>
-          <strong className="moderation-price">{new Intl.NumberFormat('en-MY',{style:'currency',currency:'MYR'}).format(Number(row.price))}</strong>
+          <strong className="moderation-price">{formatPriceRange(Number(row.min_price??row.price),Number(row.max_price??row.min_price??row.price))}</strong>
           <p className="moderation-description">{row.description}</p>
           <div className="submitter-box"><strong>Submitter</strong><span>{row.submitter.display_name||'Marketplace member'}</span><span>{row.submitter.email||row.submitter.id}</span></div>
           <div className="admin-links"><strong>Seller links</strong>{row.links.map(link=><div key={link.platform}><span>{link.platform}</span><a href={link.seller_url} target="_blank" rel="noopener noreferrer nofollow">{link.seller_url}</a>{link.affiliate_url&&<a href={link.affiliate_url} target="_blank" rel="noopener noreferrer sponsored">Affiliate: {link.affiliate_url}</a>}</div>)}</div>
@@ -84,7 +85,7 @@ export default async function AdminPage({searchParams}:{searchParams:Promise<{up
         <div className="published-product-copy">
           <div className="submission-status-line"><span>{row.category}</span><span>{row.approved_at?new Date(row.approved_at).toLocaleDateString('en-MY'):''}</span></div>
           <h3>{row.name}</h3>
-          <p>{new Intl.NumberFormat('en-MY',{style:'currency',currency:'MYR'}).format(Number(row.price))}</p>
+          <p>{formatPriceRange(Number(row.min_price??row.price),Number(row.max_price??row.min_price??row.price))}</p>
           <Link href={`/items/${row.slug}`} className="text-link">View product</Link>
         </div>
         <DeleteProductButton id={row.id} name={row.name}/>
