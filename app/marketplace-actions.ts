@@ -25,3 +25,33 @@ export async function toggleAccountSavedProduct(productKey:string):Promise<{sign
   if(result.error)return {signedIn:true,saved:false,error:'save'};
   return {signedIn:true,saved:result.data===true};
 }
+
+
+export type CommunityMemoryProfile={
+  signedIn:boolean;
+  displayName:string;
+  avatarUrl:string|null;
+};
+
+export async function getCommunityMemoryProfile():Promise<CommunityMemoryProfile>{
+  if(!configured())return {signedIn:false,displayName:'',avatarUrl:null};
+
+  const client=await db();
+  const {data:{user}}=await client.auth.getUser();
+  if(!user)return {signedIn:false,displayName:'',avatarUrl:null};
+
+  const {data}=await client.from('marketplace_profiles')
+    .select('display_name,avatar_path')
+    .eq('id',user.id)
+    .maybeSingle();
+
+  const displayName=typeof data?.display_name==='string'&&data.display_name.trim()
+    ? data.display_name.trim()
+    : String(user.user_metadata?.display_name||'').trim();
+
+  const avatarUrl=typeof data?.avatar_path==='string'&&data.avatar_path
+    ? client.storage.from('marketplace-profile-images').getPublicUrl(data.avatar_path).data.publicUrl
+    : null;
+
+  return {signedIn:true,displayName,avatarUrl};
+}
