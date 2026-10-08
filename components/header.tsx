@@ -12,7 +12,7 @@ const links=[
   ['Collection','/items'],
   ['Archive','/archive'],
   ['Experience','/experience'],
-  ['SEN','https://sen-development-voltrazstudios.netlify.app/store'],
+  ['SEN','https://mysen.netlify.app/store'],
   ['About','/about'],
   ['My Store','/my-store'],
   ['Saved','/saved']
