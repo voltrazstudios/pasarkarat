@@ -28,7 +28,10 @@ export function ProductSubmissionForm(){
   return <form onSubmit={submit} className="market-form submission-form">
     <div className="form-grid">
       <label>Product name<input name="name" required minLength={2} maxLength={100} placeholder="e.g. Vintage enamel tray"/></label>
-      <label>Price (RM)<input name="price" required inputMode="decimal" pattern="\d{1,10}(\.\d{1,2})?" placeholder="45.00"/></label>
+      <div className="submission-price-range">
+        <label>Minimum price (RM)<input name="min_price" required inputMode="decimal" pattern="\d{1,10}(\.\d{1,2})?" placeholder="25.00"/></label>
+        <label>Maximum price (RM)<input name="max_price" required inputMode="decimal" pattern="\d{1,10}(\.\d{1,2})?" placeholder="40.00"/></label>
+      </div>
     </div>
 
     <label>Category
