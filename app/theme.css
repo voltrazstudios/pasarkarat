@@ -68,6 +68,13 @@ body .story, body .seller-box, body .item-detail>.image-placeholder {
 }
 body .experience-cta { background-color: var(--navy); color: var(--surface); }
 body > main { flex: 1 0 auto; }
+body > .site-content{
+  flex:1 0 auto;
+  min-width:0;
+  display:flex;
+  flex-direction:column
+}
+body > .site-content > main{flex:1 0 auto}
 body > .topline, body > .header, body > footer { flex-shrink: 0; }
 body footer {
   background: var(--cream);
@@ -225,4 +232,23 @@ body .footer-bottom { display: block; padding-block: 22px; }
 .header-right-controls{display:flex;align-items:center;gap:8px;flex-shrink:0}
 @media(max-width:900px){
   .header-right-controls{margin-left:auto}
+}
+
+
+/* Featured Items is a highlighted collection filter, separate from normal categories. */
+body .filter-pills .featured-filter-button{
+  background:#f4e4ad;
+  border-color:#ddc474;
+  color:#5f4b16;
+  font-weight:700
+}
+body .filter-pills .featured-filter-button:hover{
+  background:#edd58b;
+  border-color:#c9ab4e;
+  color:#4f3d10
+}
+body .filter-pills .featured-filter-button.selected{
+  background:#d9b954;
+  border-color:#c59f31;
+  color:#332a0d
 }
