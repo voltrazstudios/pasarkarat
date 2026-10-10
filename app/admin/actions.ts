@@ -74,12 +74,20 @@ export async function deletePublishedProduct(f:FormData){
   const deleted=await client.rpc('marketplace_admin_delete_product',{p_id:id});
   if(deleted.error)redirect(destination('error','Unable to delete this product.'));
 
-  const result=deleted.data as {public_image_path?:string|null;pending_image_path?:string|null}|null;
+  const result=deleted.data as {
+    public_image_path?:string|null;
+    pending_image_path?:string|null;
+    edit_image_paths?:unknown;
+  }|null;
   if(result?.public_image_path){
     await client.storage.from('product-images').remove([result.public_image_path]);
   }
-  if(result?.pending_image_path){
-    await client.storage.from('product-submission-images').remove([result.pending_image_path]);
+  const privatePaths=[
+    result?.pending_image_path,
+    ...(Array.isArray(result?.edit_image_paths)?result!.edit_image_paths:[]),
+  ].filter((value):value is string=>typeof value==='string'&&Boolean(value));
+  if(privatePaths.length){
+    await client.storage.from('product-submission-images').remove([...new Set(privatePaths)]);
   }
 
   revalidatePath('/admin');
