@@ -20,7 +20,7 @@ import { Header, Footer } from '@/components/marketplace';
 export const metadata: Metadata = {
   title: { default:'Pasar Karat — Digital Marketplace', template:'%s | Pasar Karat' },
   description:'Discover vintage items, traditional crafts and collectibles from independent sellers.',
-  icons:{icon:'/favicon.svg'}
+  icons:{icon:'/favicon.png'}
 };
 
 export default async function RootLayout({children}:{children:React.ReactNode}) {
