@@ -358,7 +358,7 @@ begin
     'edit_image_paths',edit_paths
   );
 end
-$;
+$$;
 
 create or replace function public.marketplace_admin_delete_product(p_id uuid)
 returns jsonb
@@ -398,7 +398,7 @@ begin
     'edit_image_paths',edit_paths
   );
 end
-$;
+$$;
 
 create table if not exists public.marketplace_product_views (
   product_id uuid not null references public.marketplace_products(id) on delete cascade,
