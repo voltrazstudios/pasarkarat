@@ -202,7 +202,7 @@ export function Home({
     <section className="container collection">
       <div className="section-heading">
         <div><p className="eyebrow">WORTH A CLOSER LOOK</p><h2>Featured finds</h2></div>
-        <Link href="/items" className="text-link">Explore the collection <ArrowRight size={17}/></Link>
+        <Link href="/items?featured=1" className="text-link">Explore the collection <ArrowRight size={17}/></Link>
       </div>
       <p className="demo-note">{language==='ms'?'Pautan penjual luar · Harga dan ketersediaan mungkin berubah.':'External seller links · Prices and availability may change.'}</p>
       <div className="product-grid">{featuredFinds.map(p=><ProductCard key={p.id} product={p}/>)}</div>
