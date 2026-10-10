@@ -294,9 +294,24 @@ end
 $$;
 
 -- Keep historical promotion payments valid if their product is later deleted.
--- The FK already uses ON DELETE SET NULL; this relaxed target check allows that archival state.
-alter table public.marketplace_promotion_payments
-  drop constraint if exists marketplace_promotion_payments_check;
+-- The FK already uses ON DELETE SET NULL; remove only the old target check that
+-- required every product-boost payment to retain a product_id forever.
+do $do$
+declare constraint_row record;
+begin
+  for constraint_row in
+    select conname,pg_catalog.pg_get_constraintdef(oid) as definition
+    from pg_catalog.pg_constraint
+    where conrelid='public.marketplace_promotion_payments'::regclass
+      and contype='c'
+  loop
+    if constraint_row.definition like '%promotion_type%'
+      and constraint_row.definition like '%product_id%' then
+      execute format('alter table public.marketplace_promotion_payments drop constraint %I',constraint_row.conname);
+    end if;
+  end loop;
+end
+$do$;
 
 alter table public.marketplace_promotion_payments
   drop constraint if exists marketplace_promotion_payments_target_check;
