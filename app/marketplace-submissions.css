@@ -2290,3 +2290,203 @@ body .profile-signout-button:hover{
     aspect-ratio:1 / 1
   }
 }
+
+
+/* Seller submission management, edit review and analytics. */
+.submission-search-wrap{
+  display:grid;
+  gap:8px;
+  margin:0 0 22px
+}
+.submission-search-wrap .filter-search{
+  width:100%;
+  margin:0
+}
+.submission-search-wrap>.results-meta{
+  justify-self:end;
+  color:var(--muted);
+  font-size:13px
+}
+.submission-product-actions{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:14px
+}
+.submission-action-button,
+.submission-delete-button{
+  min-height:40px;
+  padding:8px 12px;
+  justify-content:center;
+  font-size:13px
+}
+.submission-action-disabled{
+  opacity:.55;
+  cursor:not-allowed;
+  pointer-events:none
+}
+.submission-delete-control{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap
+}
+.submission-delete-control small{
+  width:100%;
+  color:#8b2f1e
+}
+body .submission-delete-button{
+  background:transparent!important;
+  border-color:#c72833!important;
+  color:#c72833!important
+}
+body .submission-delete-button:hover:not(:disabled){
+  background:#fff3f5!important;
+  border-color:#a91f29!important;
+  color:#a91f29!important
+}
+.submission-edit-status{
+  padding:10px 12px;
+  border:1px solid #d8cda6;
+  border-radius:7px;
+  background:#fff9df;
+  color:#64572d!important
+}
+.edit-product-current-image{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:12px;
+  border:1px solid var(--line);
+  border-radius:9px;
+  background:var(--cream)
+}
+.edit-product-current-image img{
+  width:84px;
+  height:84px;
+  flex:0 0 84px;
+  object-fit:contain;
+  border-radius:7px;
+  background:var(--surface)
+}
+.edit-product-current-image>div{
+  display:grid;
+  gap:3px
+}
+.edit-product-current-image span{
+  color:var(--muted);
+  font-size:13px
+}
+.admin-edit-request-label{
+  color:var(--orange);
+  font-weight:800
+}
+.admin-edit-current{
+  margin:10px 0 0!important;
+  color:var(--muted)
+}
+.admin-edit-current a{
+  color:var(--orange);
+  font-weight:700
+}
+.submission-analytics-page{
+  padding-top:34px
+}
+.analytics-summary-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+  margin-top:8px
+}
+.analytics-summary-grid article{
+  display:grid;
+  gap:7px;
+  min-height:150px;
+  padding:20px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:var(--surface)
+}
+.analytics-summary-grid article>svg{
+  color:var(--orange)
+}
+.analytics-summary-grid article>span{
+  color:var(--muted);
+  font-size:13px;
+  font-weight:700
+}
+.analytics-summary-grid article>strong{
+  margin-top:auto;
+  color:var(--navy);
+  font-size:34px
+}
+.analytics-platform-section{
+  margin-top:36px
+}
+.analytics-platform-list{
+  display:grid;
+  gap:10px
+}
+.analytics-platform-list article{
+  display:grid;
+  grid-template-columns:minmax(180px,1fr) 120px 120px;
+  align-items:center;
+  gap:16px;
+  padding:15px 18px;
+  border:1px solid var(--line);
+  border-radius:9px;
+  background:var(--surface)
+}
+.analytics-platform-name{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  min-width:0
+}
+.analytics-platform-name svg{
+  color:var(--orange)
+}
+.analytics-platform-list article>div:not(.analytics-platform-name){
+  display:grid;
+  gap:2px
+}
+.analytics-platform-list article>div>span{
+  color:var(--muted);
+  font-size:12px
+}
+.analytics-platform-list article>div>strong{
+  color:var(--navy);
+  font-size:18px
+}
+.analytics-note{
+  margin-top:16px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.6
+}
+@media(max-width:700px){
+  .submission-product-actions{
+    align-items:stretch
+  }
+  .submission-action-button,
+  .submission-delete-control,
+  .submission-delete-button{
+    width:100%
+  }
+  .submission-delete-control{
+    display:grid
+  }
+  .edit-product-current-image{
+    align-items:flex-start
+  }
+  .analytics-summary-grid{
+    grid-template-columns:1fr
+  }
+  .analytics-platform-list article{
+    grid-template-columns:1fr 1fr
+  }
+  .analytics-platform-name{
+    grid-column:1 / -1
+  }
+}
