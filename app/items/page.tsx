@@ -1,6 +1,5 @@
 import { Catalogue } from '@/components/marketplace';
 import { collectionProducts } from '@/lib/products';
-import { featureRotationSlot } from '@/lib/featured-products';
 
 export const metadata={title:'All Items'};
 export const dynamic='force-dynamic';
@@ -13,7 +12,7 @@ export default async function Page({searchParams}:{searchParams:Promise<{q?:stri
     initialQuery={p.q}
     initialCategory={p.category}
     initialFeatured={featured}
-    initialRotationSlot={featureRotationSlot()}
+    initialFeaturedTime={Date.now()}
     items={items}
   />;
 }
