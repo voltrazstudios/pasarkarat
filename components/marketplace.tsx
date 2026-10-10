@@ -11,21 +11,21 @@ import { ArrowUpRight, ArrowRight, Search, Layers, Image as ImageIcon, X } from 
 import { categories, categoryImages, platformDisplayName, platforms, products, type Platform, type Product } from '@/data/products';
 import { contrastText, darkenHexColor, storeFontFamily, type StoreFont } from '@/lib/store-theme';
 import { productPriceLabel } from '@/lib/product-price';
-import { featuredProductsForSlot, featureRotationSlot } from '@/lib/featured-products';
+import { featuredProductsForTime } from '@/lib/featured-products';
 
 export { Header } from './header';
 
-function useFeaturedRotation(initialRotationSlot:number){
-  const [rotationSlot,setRotationSlot]=useState(initialRotationSlot);
+function useFeaturedTime(initialTime:number){
+  const [nowMs,setNowMs]=useState(initialTime);
 
   useEffect(()=>{
-    const update=()=>setRotationSlot(featureRotationSlot());
+    const update=()=>setNowMs(Date.now());
     update();
     const timer=window.setInterval(update,60_000);
     return()=>window.clearInterval(timer);
   },[]);
 
-  return rotationSlot;
+  return nowMs;
 }
 
 export function ProductImage({
@@ -136,15 +136,15 @@ type HomeFeaturedStore={
 export function Home({
   items=products,
   featuredStores=[],
-  initialRotationSlot=0,
+  initialFeaturedTime=0,
 }:{
   items?:Product[];
   featuredStores?:HomeFeaturedStore[];
-  initialRotationSlot?:number;
+  initialFeaturedTime?:number;
 }){
   const {language}=useLanguage();
-  const rotationSlot=useFeaturedRotation(initialRotationSlot);
-  const featuredFinds=useMemo(()=>featuredProductsForSlot(items,rotationSlot),[items,rotationSlot]);
+  const featuredTime=useFeaturedTime(initialFeaturedTime);
+  const featuredFinds=useMemo(()=>featuredProductsForTime(items,featuredTime),[items,featuredTime]);
   const featuredIds=useMemo(()=>new Set(featuredFinds.map(item=>item.id)),[featuredFinds]);
   const moreToDiscover=items.filter(item=>!featuredIds.has(item.id)).slice(0,4);
   return <main id="main">
@@ -227,13 +227,13 @@ export function Catalogue({
   initialQuery='',
   initialCategory='',
   initialFeatured=false,
-  initialRotationSlot=0,
+  initialFeaturedTime=0,
   items=products,
 }:{
   initialQuery?:string;
   initialCategory?:string;
   initialFeatured?:boolean;
-  initialRotationSlot?:number;
+  initialFeaturedTime?:number;
   items?:Product[];
 }){
   const {language}=useLanguage();
@@ -241,10 +241,10 @@ export function Catalogue({
   const [category,setCategory]=useState(initialCategory);
   const [featuredOnly,setFeaturedOnly]=useState(initialFeatured);
   const [platform,setPlatform]=useState<Platform | ''>('');
-  const rotationSlot=useFeaturedRotation(initialRotationSlot);
+  const featuredTime=useFeaturedTime(initialFeaturedTime);
   const featuredIds=useMemo(
-    ()=>new Set(featuredProductsForSlot(items,rotationSlot).map(item=>item.id)),
-    [items,rotationSlot]
+    ()=>new Set(featuredProductsForTime(items,featuredTime).map(item=>item.id)),
+    [items,featuredTime]
   );
   const platformFilters: Platform[]=[...platforms];
   const filtered=items.filter(p=>
