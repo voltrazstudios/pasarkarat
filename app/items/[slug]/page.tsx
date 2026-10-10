@@ -8,6 +8,7 @@ import { SellerProfileCard } from '@/components/seller-profile-card';
 import { sellerSummary } from '@/lib/sellers';
 import { productPriceLabel } from '@/lib/product-price';
 import { AvailablePlatformsLabel, CompareSellerPrices, PlatformSummary, ProductDescription, ProductName, PurchaseNote, SellerButtons } from '@/components/platform-links';
+import { ProductViewTracker } from '@/components/product-analytics';
 
 export const dynamic='force-dynamic';
 export async function generateMetadata({params}:{params:Promise<{slug:string}>}){
@@ -20,6 +21,7 @@ export default async function Page({params}:{params:Promise<{slug:string}>}){
   const [allProducts,seller]=await Promise.all([collectionProducts(),p.sellerId?sellerSummary(p.sellerId):Promise.resolve(null)]);
   const related=[...allProducts.filter(x=>x.id!==p.id&&x.category===p.category),...allProducts.filter(x=>x.id!==p.id&&x.category!==p.category)].slice(0,4);
   return <main id="main" className="container item-page">
+    <ProductViewTracker productId={p.submitted?p.id:null}/>
     <Link href="/items" className="text-link back"><ArrowLeft size={16}/> Back to collection</Link>
     <div className="item-detail item-detail-submitted"><ProductImage key={p.image} src={p.image} name={p.name}/><div className="item-info">
       <Link className="eyebrow" href={`/items?category=${encodeURIComponent(p.category)}`}>{p.category}</Link>
@@ -27,7 +29,7 @@ export default async function Page({params}:{params:Promise<{slug:string}>}){
       {productPriceLabel(p)?<strong className="detail-price">{productPriceLabel(p)}</strong>:<CompareSellerPrices detail/>}
       <p className="description"><ProductDescription product={p}/></p>
       <div className="seller-box"><Store size={24}/><div><AvailablePlatformsLabel/><PlatformSummary links={p.links}/></div></div>
-      <SellerButtons links={p.links}/><SaveButton id={p.id} name={p.name}/><p className="purchase-note"><PurchaseNote/></p>
+      <SellerButtons links={p.links} productId={p.submitted?p.id:undefined}/><SaveButton id={p.id} name={p.name}/><p className="purchase-note"><PurchaseNote/></p>
     </div></div>
     {seller?<SellerProfileCard seller={seller}/>:null}
     <section className="collection"><div className="section-heading"><div><p className="eyebrow">CONTINUE YOUR DISCOVERY</p><h2>You might also like</h2></div></div><div className="product-grid">{related.map(product=><ProductCard key={product.id} product={product}/>)}</div></section>
