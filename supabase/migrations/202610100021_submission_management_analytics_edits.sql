@@ -348,6 +348,7 @@ begin
   from public.marketplace_product_edits
   where product_id=p_id;
 
+  delete from public.marketplace_account_saves where product_key=p_id::text;
   delete from public.marketplace_products where id=p_id;
 
   return jsonb_build_object(
@@ -357,7 +358,47 @@ begin
     'edit_image_paths',edit_paths
   );
 end
-$$;
+$;
+
+create or replace function public.marketplace_admin_delete_product(p_id uuid)
+returns jsonb
+language plpgsql
+security definer
+set search_path=''
+as $
+declare
+  product public.marketplace_products;
+  edit_paths jsonb;
+begin
+  if auth.uid() is null or not public.is_marketplace_admin() then
+    raise exception 'Admin access required' using errcode='42501';
+  end if;
+
+  select * into product
+  from public.marketplace_products
+  where id=p_id
+  for update;
+
+  if not found then raise exception 'Product not found'; end if;
+  if product.status<>'approved' then raise exception 'Only published products can be deleted here'; end if;
+
+  select coalesce(jsonb_agg(pending_image_path) filter(where pending_image_path is not null),'[]'::jsonb)
+  into edit_paths
+  from public.marketplace_product_edits
+  where product_id=p_id;
+
+  delete from public.marketplace_account_saves where product_key=p_id::text;
+  delete from public.marketplace_products where id=p_id;
+
+  return jsonb_build_object(
+    'id',product.id,
+    'name',product.name,
+    'public_image_path',product.public_image_path,
+    'pending_image_path',product.pending_image_path,
+    'edit_image_paths',edit_paths
+  );
+end
+$;
 
 create table if not exists public.marketplace_product_views (
   product_id uuid not null references public.marketplace_products(id) on delete cascade,
@@ -468,6 +509,7 @@ revoke all on function public.submit_marketplace_product_edit(uuid,text,text,num
 revoke all on function public.marketplace_admin_pending_edits() from public,anon,authenticated;
 revoke all on function public.marketplace_admin_decide_edit(uuid,text,text,text) from public,anon,authenticated;
 revoke all on function public.marketplace_owner_delete_product(uuid) from public,anon,authenticated;
+revoke all on function public.marketplace_admin_delete_product(uuid) from public,anon,authenticated;
 revoke all on function public.marketplace_record_product_view(uuid,text) from public,anon,authenticated;
 revoke all on function public.marketplace_record_platform_click(uuid,text,text) from public,anon,authenticated;
 revoke all on function public.marketplace_my_product_analytics(uuid) from public,anon,authenticated;
@@ -476,6 +518,7 @@ grant execute on function public.submit_marketplace_product_edit(uuid,text,text,
 grant execute on function public.marketplace_admin_pending_edits() to authenticated;
 grant execute on function public.marketplace_admin_decide_edit(uuid,text,text,text) to authenticated;
 grant execute on function public.marketplace_owner_delete_product(uuid) to authenticated;
+grant execute on function public.marketplace_admin_delete_product(uuid) to authenticated;
 grant execute on function public.marketplace_record_product_view(uuid,text) to anon,authenticated;
 grant execute on function public.marketplace_record_platform_click(uuid,text,text) to anon,authenticated;
 grant execute on function public.marketplace_my_product_analytics(uuid) to authenticated;
