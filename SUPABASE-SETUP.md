@@ -31,6 +31,7 @@ Run these files in the Supabase SQL editor:
 19. `supabase/migrations/202610080019_product_price_ranges.sql`
 20. `supabase/migrations/202610080020_admin_submitter_profiles.sql`
 21. `supabase/migrations/202610100021_submission_management_analytics_edits.sql`
+22. `supabase/migrations/202610100022_boost_featured_rotation.sql`
 
 ## 3. Configure local environment
 
@@ -102,3 +103,4 @@ For Pro checkout, configure the server-only values shown in `.env.example`.
 - Use the Billplz sandbox base URL and sandbox credentials while testing.
 - The current prototype plans are RM9.90 for 30 days and RM99.00 for 365 days.
 - Paid seller promotions reuse the same Billplz configuration: RM1.00 for a 7-day product boost and RM3.90 for a 7-day featured store placement.
+- Paid Product Boosts are the only products shown in Featured Items. A newly activated boost stays at the front for 30 minutes (newest boost first); after that protected period it joins the older active boosts, whose order rotates once per hour.
