@@ -85,7 +85,7 @@ export function ProductCard({product:p}:{product:Product}){
       </div>
       <div className="product-card-actions">
         <SaveButton id={p.id} name={displayName}/>
-        <PlatformQuickLinks links={p.links}/>
+        <PlatformQuickLinks links={p.links} productId={p.submitted?p.id:undefined}/>
       </div>
     </div>
   </article>;
