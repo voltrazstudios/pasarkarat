@@ -30,6 +30,7 @@ Run these files in the Supabase SQL editor:
 18. `supabase/migrations/202610080018_paid_promotions.sql`
 19. `supabase/migrations/202610080019_product_price_ranges.sql`
 20. `supabase/migrations/202610080020_admin_submitter_profiles.sql`
+21. `supabase/migrations/202610100021_submission_management_analytics_edits.sql`
 
 ## 3. Configure local environment
 
@@ -88,6 +89,8 @@ New submissions are always pending. Pending and rejected products are excluded b
 Uploaded PNG/JPG/WebP files are decoded with Sharp, checked against their declared MIME type and extension, resized when needed, stripped through WebP re-encoding, and stored in a private bucket. Approval performs a second decode/re-encode before the image is copied to the public approved-product bucket.
 
 Seller and affiliate links must use HTTPS and match the selected platform's allowed domains. The database repeats those platform/domain checks so bypassing the form does not bypass validation.
+
+Approved sellers can submit edits without taking the existing product offline. Each product can have only one pending edit at a time; admin approval atomically replaces the live product details and links. Seller analytics use a random browser identifier to count unique viewers and platform clickers without storing visitor names, emails or profile details.
 
 
 ## Pasar Karat Pro / Billplz
