@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { ArrowUpRight, ChevronDown, Grid2X2 } from 'lucide-react';
 import { useLanguage } from './language-provider';
 import { platformDisplayNames, type Platform, type Product, type ProductLink } from '@/data/products';
+import { trackProductPlatformClick } from './product-analytics';
 
 const platformLabel=platformDisplayNames;
 
@@ -57,7 +58,7 @@ export function PlatformSummary({links}:{links:ProductLink[]}){
   </span>;
 }
 
-export function PlatformQuickLinks({links}:{links:ProductLink[]}){
+export function PlatformQuickLinks({links,productId}:{links:ProductLink[];productId?:string}){
   const unique=links.filter((link,index,all)=>all.findIndex(item=>item.platform===link.platform)===index);
   const visible=unique.slice(0,3);
   const hasMore=unique.length>3;
@@ -72,6 +73,7 @@ export function PlatformQuickLinks({links}:{links:ProductLink[]}){
         rel="noopener noreferrer sponsored"
         aria-label={`Open ${platformLabel[link.platform]} listing`}
         title={platformLabel[link.platform]}
+        onClick={()=>trackProductPlatformClick(productId,link.platform)}
       ><PlatformLogo platform={link.platform} size={32}/></a>)}
     </div>:null}
 
@@ -90,6 +92,7 @@ export function PlatformQuickLinks({links}:{links:ProductLink[]}){
             target="_blank"
             rel="noopener noreferrer sponsored"
             aria-label={`Open ${platformLabel[link.platform]} listing`}
+            onClick={()=>trackProductPlatformClick(productId,link.platform)}
           >
             <span className={`platform-all-icon platform-${platformClass(link.platform)}`}><PlatformLogo platform={link.platform} size={30}/></span>
             <span>{platformLabel[link.platform]}</span>
@@ -125,7 +128,7 @@ export function PurchaseNote(){
   return <>{language==='ms'?'Harga, ketersediaan dan pembelian dikendalikan oleh penjual atau platform luar.':'Prices, availability and purchases are handled by the external seller or marketplace.'}</>;
 }
 
-export function SellerButtons({links}:{links:ProductLink[]}){
+export function SellerButtons({links,productId}:{links:ProductLink[];productId?:string}){
   const {language}=useLanguage();
   const totals=links.reduce<Record<string,number>>((acc,link)=>{acc[link.platform]=(acc[link.platform]??0)+1;return acc;},{});
   const seen:Record<string,number>={};
@@ -134,7 +137,7 @@ export function SellerButtons({links}:{links:ProductLink[]}){
       seen[link.platform]=(seen[link.platform]??0)+1;
       const suffix=(totals[link.platform]??0)>1?` ${seen[link.platform]}`:'';
       const label=language==='ms'?`Lihat di ${link.platform}${suffix}`:`View on ${link.platform}${suffix}`;
-      return <a key={`${link.platform}-${index}`} className={`seller-platform-button platform-${platformClass(link.platform)}`} href={link.url} target="_blank" rel="noopener noreferrer sponsored"><span><PlatformLogo platform={link.platform}/>{label}</span><ArrowUpRight size={19}/></a>;
+      return <a key={`${link.platform}-${index}`} className={`seller-platform-button platform-${platformClass(link.platform)}`} href={link.url} target="_blank" rel="noopener noreferrer sponsored" onClick={()=>trackProductPlatformClick(productId,link.platform)}><span><PlatformLogo platform={link.platform}/>{label}</span><ArrowUpRight size={19}/></a>;
     })}
   </div>;
 }
