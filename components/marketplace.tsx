@@ -5,14 +5,28 @@ import Image from 'next/image';
 import imageAssets from '@/data/image-assets.json';
 import { SaveButton } from './saved-items';
 import { PlatformQuickLinks, PlatformSummary, ProductName, platformClass } from './platform-links';
-import { useState, type CSSProperties } from 'react';
+import { useEffect, useMemo, useState, type CSSProperties } from 'react';
 import { useLanguage } from './language-provider';
 import { ArrowUpRight, ArrowRight, Search, Layers, Image as ImageIcon, X } from 'lucide-react';
 import { categories, categoryImages, platformDisplayName, platforms, products, type Platform, type Product } from '@/data/products';
 import { contrastText, darkenHexColor, storeFontFamily, type StoreFont } from '@/lib/store-theme';
 import { productPriceLabel } from '@/lib/product-price';
+import { featuredProductsForSlot, featureRotationSlot } from '@/lib/featured-products';
 
 export { Header } from './header';
+
+function useFeaturedRotation(initialRotationSlot:number){
+  const [rotationSlot,setRotationSlot]=useState(initialRotationSlot);
+
+  useEffect(()=>{
+    const update=()=>setRotationSlot(featureRotationSlot());
+    update();
+    const timer=window.setInterval(update,60_000);
+    return()=>window.clearInterval(timer);
+  },[]);
+
+  return rotationSlot;
+}
 
 export function ProductImage({
   src,
@@ -119,20 +133,27 @@ type HomeFeaturedStore={
   storeFont:StoreFont;
 };
 
-export function Home({items=products,featuredStores=[]}:{items?:Product[];featuredStores?:HomeFeaturedStore[]}){
+export function Home({
+  items=products,
+  featuredStores=[],
+  initialRotationSlot=0,
+}:{
+  items?:Product[];
+  featuredStores?:HomeFeaturedStore[];
+  initialRotationSlot?:number;
+}){
   const {language}=useLanguage();
-  const now=Date.now();
-  const activeBoosts=items.filter(item=>item.boostedUntil&&new Date(item.boostedUntil).getTime()>now);
-  const staticFeatured=products.filter(item=>item.featured);
-  const featuredFinds=[...activeBoosts,...staticFeatured.filter(item=>!activeBoosts.some(boost=>boost.id===item.id))].slice(0,4);
-  const moreToDiscover=items.filter(item=>!featuredFinds.some(feature=>feature.id===item.id)).slice(0,4);
+  const rotationSlot=useFeaturedRotation(initialRotationSlot);
+  const featuredFinds=useMemo(()=>featuredProductsForSlot(items,rotationSlot),[items,rotationSlot]);
+  const featuredIds=useMemo(()=>new Set(featuredFinds.map(item=>item.id)),[featuredFinds]);
+  const moreToDiscover=items.filter(item=>!featuredIds.has(item.id)).slice(0,4);
   return <main id="main">
     <section className="hero container">
       <div className="hero-copy">
         <p className="eyebrow"><span className="small-line"/> THE SPIRIT OF PASAR KARAT, ONLINE</p>
         <h1>Discover Unique Finds<br/>from <em>Pasar Karat</em></h1>
         <p>Explore vintage items, antiques, traditional crafts and collectibles from independent sellers.</p>
-        <Link href="/items" className="button">Explore Collection <ArrowUpRight size={19}/></Link>
+        <Link href="/items?featured=1" className="button">Explore Collection <ArrowUpRight size={19}/></Link>
         <div className="hero-foot"><span>Vintage charm</span><i/><span>Local heritage</span><i/><span>Everyday discoveries</span></div>
       </div>
       <div className="hero-visual">
@@ -146,7 +167,7 @@ export function Home({items=products,featuredStores=[]}:{items?:Product[];featur
     {featuredStores.length?<section className="container featured-store-section">
       <div className="section-heading">
         <div><p className="eyebrow">FEATURED SELLERS</p><h2>Stores worth discovering</h2></div>
-        <Link href="/items" className="text-link">Explore the collection <ArrowRight size={17}/></Link>
+        <Link href="/items?featured=1" className="text-link">Explore the collection <ArrowRight size={17}/></Link>
       </div>
       <div className="featured-store-grid">
         {featuredStores.map(store=>{
@@ -202,13 +223,36 @@ export function Home({items=products,featuredStores=[]}:{items?:Product[];featur
   </main>;
 }
 
-export function Catalogue({initialQuery='',initialCategory='',items=products}:{initialQuery?:string;initialCategory?:string;items?:Product[]}){
+export function Catalogue({
+  initialQuery='',
+  initialCategory='',
+  initialFeatured=false,
+  initialRotationSlot=0,
+  items=products,
+}:{
+  initialQuery?:string;
+  initialCategory?:string;
+  initialFeatured?:boolean;
+  initialRotationSlot?:number;
+  items?:Product[];
+}){
   const {language}=useLanguage();
   const [query,setQuery]=useState(initialQuery);
   const [category,setCategory]=useState(initialCategory);
+  const [featuredOnly,setFeaturedOnly]=useState(initialFeatured);
   const [platform,setPlatform]=useState<Platform | ''>('');
+  const rotationSlot=useFeaturedRotation(initialRotationSlot);
+  const featuredIds=useMemo(
+    ()=>new Set(featuredProductsForSlot(items,rotationSlot).map(item=>item.id)),
+    [items,rotationSlot]
+  );
   const platformFilters: Platform[]=[...platforms];
-  const filtered=items.filter(p=>(!category||p.category===category)&&(!platform||p.links.some(link=>link.platform===platform))&&`${p.name} ${p.category} ${p.description} ${p.links.map(link=>link.platform).join(' ')}`.toLowerCase().includes(query.toLowerCase().trim()));
+  const filtered=items.filter(p=>
+    (!featuredOnly||featuredIds.has(p.id))
+    &&(!category||p.category===category)
+    &&(!platform||p.links.some(link=>link.platform===platform))
+    &&`${p.name} ${p.category} ${p.description} ${p.links.map(link=>link.platform).join(' ')}`.toLowerCase().includes(query.toLowerCase().trim())
+  );
 
   return <main id="main" className="container catalogue">
     <p className="eyebrow">THE DIGITAL PASAR KARAT</p>
@@ -232,8 +276,12 @@ export function Catalogue({initialQuery='',initialCategory='',items=products}:{i
     <div className="filter-group">
       <p className="filter-label">{language==='ms'?'Kategori':'Category'}</p>
       <div className="filter-pills">
-        <button className={!category?'selected':''} onClick={()=>setCategory('')}>{language==='ms'?'Semua item':'All items'}</button>
-        {categories.map(c=><button key={c} className={category===c?'selected':''} onClick={()=>setCategory(c)}>{c}</button>)}
+        <button
+          className={`featured-filter-button${featuredOnly?' selected':''}`}
+          onClick={()=>{setFeaturedOnly(true);setCategory('');}}
+        >{language==='ms'?'Item Pilihan':'Featured Items'}</button>
+        <button className={!featuredOnly&&!category?'selected':''} onClick={()=>{setFeaturedOnly(false);setCategory('');}}>{language==='ms'?'Semua item':'All items'}</button>
+        {categories.map(c=><button key={c} className={!featuredOnly&&category===c?'selected':''} onClick={()=>{setFeaturedOnly(false);setCategory(c);}}>{c}</button>)}
       </div>
     </div>
     <div className="filter-group platform-filter-group">
@@ -243,10 +291,10 @@ export function Catalogue({initialQuery='',initialCategory='',items=products}:{i
         {platformFilters.map(p=><button key={p} className={`${platform===p?'selected ':''}platform-filter-${platformClass(p)}`} onClick={()=>setPlatform(p)}>{platformDisplayName(p)}</button>)}
       </div>
     </div>
-    <div className="results-meta"><span role="status">{filtered.length} {filtered.length===1?'item':'items'}{category?` in ${category}`:''}</span><span>{language==='ms'?'Senarai penjual luar':'External seller listings'}</span></div>
+    <div className="results-meta"><span role="status">{filtered.length} {filtered.length===1?'item':'items'}{featuredOnly?' in Featured Items':category?` in ${category}`:''}</span><span>{language==='ms'?'Senarai penjual luar':'External seller listings'}</span></div>
     {filtered.length?
       <div className="product-grid">{filtered.map(p=><ProductCard key={p.id} product={p}/>)}</div>:
-      <div className="empty-state"><Search size={32}/><h2>No treasures found just yet</h2><p>Try another search or explore a different category.</p><button className="button" onClick={()=>{setQuery('');setCategory('');setPlatform('');}}>Reset filters <ArrowRight size={18}/></button></div>
+      <div className="empty-state"><Search size={32}/><h2>No treasures found just yet</h2><p>Try another search or explore a different category.</p><button className="button" onClick={()=>{setQuery('');setCategory('');setFeaturedOnly(false);setPlatform('');}}>Reset filters <ArrowRight size={18}/></button></div>
     }
   </main>;
 }
