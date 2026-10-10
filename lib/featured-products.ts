@@ -33,8 +33,13 @@ function rotatedBoosts(items:Product[],slot:number){
     const bTime=Date.parse(b.boostedAt||'')||0;
     return bTime-aTime||a.id.localeCompare(b.id);
   });
-  const offset=((slot%ordered.length)+ordered.length)%ordered.length;
-  return [...ordered.slice(offset),...ordered.slice(0,offset)];
+
+  // Guarantee that a different eligible boost gets the lead position each hour,
+  // then deterministically shuffle the remaining paid boosts for that hour.
+  const firstIndex=((slot%ordered.length)+ordered.length)%ordered.length;
+  const first=ordered[firstIndex];
+  const rest=ordered.filter((_,index)=>index!==firstIndex);
+  return [first,...shuffled(rest,slot+ordered.length*7919)];
 }
 
 export function featuredProductsForTime(
