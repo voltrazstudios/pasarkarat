@@ -248,7 +248,8 @@ body .filter-pills .featured-filter-button:hover{
   color:#4f3d10
 }
 body .filter-pills .featured-filter-button.selected{
-  background:#d9b954;
-  border-color:#c59f31;
-  color:#332a0d
+  background:#f0d98e;
+  border-color:#c9aa49;
+  color:#4b3a0d;
+  box-shadow:inset 0 0 0 1px #c9aa49
 }
