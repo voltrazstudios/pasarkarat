@@ -293,6 +293,21 @@ begin
 end
 $$;
 
+-- Keep historical promotion payments valid if their product is later deleted.
+-- The FK already uses ON DELETE SET NULL; this relaxed target check allows that archival state.
+alter table public.marketplace_promotion_payments
+  drop constraint if exists marketplace_promotion_payments_check;
+
+alter table public.marketplace_promotion_payments
+  drop constraint if exists marketplace_promotion_payments_target_check;
+
+alter table public.marketplace_promotion_payments
+  add constraint marketplace_promotion_payments_target_check
+  check(
+    promotion_type='product_boost'
+    or (promotion_type='featured_store' and product_id is null)
+  );
+
 create or replace function public.marketplace_owner_delete_product(p_id uuid)
 returns jsonb
 language plpgsql
