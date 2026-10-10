@@ -141,7 +141,7 @@ export function SellerStorefrontShell({
         metrics={metrics}
         section={customSection}
         searchQuery={searchQuery}
-        homeLimit={active==='home'?4:undefined}
+        homeLimit={active==='home'?12:undefined}
       />
     </section>
     </>:null}
