@@ -32,7 +32,7 @@ export default async function RootLayout({children}:{children:React.ReactNode}) 
       <LanguageProvider>
         <SavedItemsProvider>
           <Header isAdmin={isAdmin}/>
-          {children}
+          <div className="site-content">{children}</div>
           <Footer/>
         </SavedItemsProvider>
       </LanguageProvider>
