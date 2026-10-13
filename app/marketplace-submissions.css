@@ -2490,3 +2490,103 @@ body .submission-delete-button:hover:not(:disabled){
     grid-column:1 / -1
   }
 }
+
+
+/* Rare & Limited listings: storytelling, provenance and auctions. */
+.listing-type-fieldset{margin:0;padding:0;border:0}
+.listing-type-fieldset>p{margin:0;color:var(--muted);font-weight:400}
+.listing-type-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.listing-type-card{position:relative;display:grid!important;grid-template-columns:auto 1fr;gap:3px 10px!important;padding:16px;border:1px solid var(--line);border-radius:10px;background:#fff;cursor:pointer}
+.listing-type-card input{grid-row:1 / 3;width:18px!important;min-height:18px!important;margin-top:3px}
+.listing-type-card strong{font-size:15px}
+.listing-type-card span{color:var(--muted);font-size:12px;font-weight:400;line-height:1.45}
+.listing-type-card.selected{border-color:#c99a68;box-shadow:0 0 0 1px #c99a68}
+.listing-type-card.rare{background:#faf6ff;border-color:#d8c7ef}
+.listing-type-card.rare.selected{border-color:#7d4db1;box-shadow:0 0 0 1px #7d4db1}
+.rare-submission-builder{display:grid;gap:18px;padding:22px;border:1px solid #d8c7ef;border-radius:12px;background:#fbf8ff}
+.rare-builder-heading{display:flex;align-items:flex-start;gap:14px}
+.rare-builder-heading>div{display:grid;gap:4px}
+.rare-builder-heading h2{font-size:22px}
+.rare-builder-heading p{color:var(--muted);font-size:13px}
+.rare-limited-badge{display:inline-flex;align-items:center;justify-content:center;width:max-content;min-height:27px;padding:5px 9px;border:1px solid #7d4db1;border-radius:999px;background:#6f3aa5;color:#fff!important;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.rare-certificate-fields,.auction-builder{display:grid;gap:14px;padding:17px;border:1px solid #ddd3e8;border-radius:9px;background:#fff}
+.rare-certificate-fields h3{margin:0;font-size:17px}
+.rare-certificate-fields h3 span{color:var(--muted);font-size:12px;font-weight:500}
+.auction-enable-row{display:flex!important;align-items:flex-start;gap:11px!important;cursor:pointer}
+.auction-enable-row input{width:18px!important;min-height:18px!important;margin-top:3px}
+.auction-enable-row>span{display:grid;gap:2px}
+.auction-enable-row small{display:block}
+.auction-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.auction-timing-note{grid-column:1 / -1;color:var(--muted);font-size:12px;font-weight:400}
+.item-eyebrow-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.product-card-badges{position:absolute;right:10px;bottom:10px;z-index:5;display:flex;align-items:flex-end;gap:6px;flex-wrap:wrap;justify-content:flex-end;pointer-events:none}
+.product-card-badges .product-boost-badge{position:static}
+.product-rare-badge{display:inline-flex;align-items:center;min-height:25px;padding:4px 8px;border:1px solid #7d4db1;border-radius:4px;background:#6f3aa5;color:#fff;box-shadow:0 2px 8px #182e3a12;font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+body .filter-pills .rare-filter-button{background:#f1e8fb;border-color:#c9afe6;color:#5e3588;font-weight:700}
+body .filter-pills .rare-filter-button:hover{background:#e5d5f7;border-color:#9c76c5;color:#4f2878}
+body .filter-pills .rare-filter-button.selected{background:#6f3aa5;border-color:#6f3aa5;color:#fff;box-shadow:inset 0 0 0 1px #5d2e90}
+
+.rare-story-section{width:min(100%,1040px);margin:42px auto 0;padding:34px;border:1px solid #dacbea;border-radius:15px;background:linear-gradient(180deg,#fcf9ff 0%,#fffaf2 100%);box-shadow:0 12px 32px #3f23540a}
+.rare-story-intro{max-width:780px;margin-inline:auto}
+.rare-story-intro>.rare-limited-badge{margin-bottom:18px}
+.rare-story-intro .eyebrow{margin-bottom:10px}
+.rare-story-intro h2{font-size:clamp(30px,4vw,46px);line-height:1.12}
+.rare-story-copy{margin-top:22px;color:#443c47;font-family:var(--font-body),sans-serif;font-size:16px;line-height:1.9;white-space:pre-line}
+.rare-story-media,.rare-story-video,.rare-certificate-card{margin-top:34px}
+.rare-story-media-label{display:flex;align-items:center;gap:8px;margin-bottom:12px;color:#5e3588}
+.rare-story-gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.rare-story-gallery figure{margin:0;overflow:hidden;border:1px solid var(--line);border-radius:11px;background:#fff}
+.rare-story-gallery img{display:block;width:100%;height:auto;max-height:620px;object-fit:contain}
+.rare-story-video-frame{position:relative;overflow:hidden;border-radius:12px;background:#111;aspect-ratio:16 / 9}
+.rare-story-video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.rare-certificate-card{padding:22px;border:1px solid #dfcaa4;border-radius:12px;background:#fff9ed}
+.rare-certificate-heading{display:flex;align-items:flex-start;gap:12px}
+.rare-certificate-heading>svg{color:#9b7429;flex:0 0 auto}
+.rare-certificate-heading h3{margin-top:3px;font-size:22px}
+.rare-certificate-card>p{margin-top:14px;color:#5f5647;line-height:1.75;white-space:pre-line}
+.rare-certificate-image{display:block;width:min(100%,620px);margin-top:18px;overflow:hidden;border:1px solid #dbc9a8;border-radius:9px;background:#fff}
+.rare-certificate-image img{display:block;width:100%;height:auto;max-height:720px;object-fit:contain}
+
+.product-auction{margin-top:24px;padding:20px;border:1px solid #cdb7df;border-radius:12px;background:#faf6ff}
+.auction-live-heading{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:11px}
+.auction-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:10px;background:#6f3aa5;color:#fff}
+.auction-live-heading h2{margin-top:2px;font-size:21px}
+.auction-live-pill{padding:5px 8px;border-radius:999px;background:#b3273b;color:#fff;font-size:10px;font-weight:900;letter-spacing:.08em}
+.auction-stat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:16px}
+.auction-stat-grid>div{display:grid;gap:4px;padding:11px;border:1px solid #ded2e8;border-radius:8px;background:#fff}
+.auction-stat-grid span{color:var(--muted);font-size:11px;font-weight:700}
+.auction-stat-grid strong{display:flex;align-items:center;gap:6px;font-size:15px}
+.auction-bid-form{display:grid;gap:10px;margin-top:17px}
+.auction-bid-form label{display:grid;gap:6px;font-weight:700}
+.auction-amount-input{display:flex;align-items:center;overflow:hidden;border:1px solid #cdb7df;border-radius:8px;background:#fff}
+.auction-amount-input span{padding:10px 12px;background:#f1e8fb;color:#5e3588;font-weight:800}
+.auction-amount-input input{min-height:45px;padding:10px 12px;border:0;background:#fff}
+.auction-bid-form>small{color:var(--muted)}
+.auction-bid-form>.button{width:100%}
+.auction-winner{display:flex;align-items:center;gap:12px;margin-top:16px;padding:14px;border:1px solid #dec886;border-radius:9px;background:#fff8dc;color:#5a4611}
+.auction-winner>svg{flex:0 0 auto}
+.auction-winner>div{display:grid;gap:2px}
+.auction-winner span,.auction-winner small{font-size:12px}
+.auction-seller-note{margin-top:14px;color:var(--muted);font-size:12px}
+
+.admin-rare-review{display:grid;gap:12px;margin-top:18px;padding:16px;border:1px solid #d8c7ef;border-radius:10px;background:#fbf8ff}
+.admin-rare-review h3{font-size:21px}
+.admin-rare-story{color:#4e4650;line-height:1.7;white-space:pre-line}
+.admin-story-images{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.admin-story-images img{width:100%;aspect-ratio:1;object-fit:contain;border:1px solid var(--line);border-radius:7px;background:#fff}
+.admin-certificate-review,.admin-auction-review{display:grid;gap:6px;padding:12px;border:1px solid #ded6c4;border-radius:8px;background:#fff}
+.admin-certificate-review img{width:min(100%,420px);height:auto;max-height:420px;object-fit:contain}
+.admin-auction-review span{color:var(--muted);font-size:13px}
+
+@media(max-width:700px){
+  .listing-type-options,.auction-fields,.auction-stat-grid{grid-template-columns:1fr}
+  .rare-submission-builder{padding:17px}
+  .rare-builder-heading{flex-direction:column}
+  .rare-story-section{padding:24px 18px}
+  .rare-story-gallery{grid-template-columns:1fr}
+  .auction-live-heading{grid-template-columns:auto 1fr}
+  .auction-live-pill{grid-column:1 / -1;width:max-content}
+  .admin-story-images{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .product-card-badges{right:7px;bottom:7px;gap:4px}
+  .product-rare-badge{min-height:22px;padding:3px 6px;font-size:7px}
+}
