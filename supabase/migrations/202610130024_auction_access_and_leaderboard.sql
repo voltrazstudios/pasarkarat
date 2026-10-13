@@ -143,7 +143,6 @@ begin
   end if;
 
   select coalesce(jsonb_agg(jsonb_build_object(
-    'user_id',ranked.bidder_id,
     'display_name',coalesce(nullif(profile.display_name,''),'Marketplace bidder'),
     'avatar_path',profile.avatar_path,
     'amount',ranked.amount
