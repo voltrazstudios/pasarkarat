@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { requireAdmin } from '@/lib/admin';
-import { approveProduct, rejectProduct, approveProductEdit, rejectProductEdit, approveAd, rejectAd } from './actions';
+import { approveProduct, rejectProduct, approveProductEdit, rejectProductEdit, approveAd, rejectAd, approveArchiveAd, rejectArchiveAd } from './actions';
 import { DeleteProductButton } from './delete-product-button';
 import { formatPriceRange } from '@/lib/product-price';
 
@@ -54,6 +54,14 @@ type AdminAdRow={
   submitter:{id:string;email:string|null;display_name:string|null};
 };
 
+type AdminArchiveAdRow={
+  id:string;
+  archive_slug:string;
+  submitted_at:string;
+  product:{id:string;slug:string;name:string;public_image_path:string|null;category:string};
+  submitter:{id:string;email:string|null;display_name:string|null};
+};
+
 type PublishedRow={
   id:string;slug:string;name:string;price:number|string;min_price:number|string;max_price:number|string;category:string;public_image_path:string|null;approved_at:string|null;
 };
@@ -62,17 +70,18 @@ export default async function AdminPage({searchParams}:{searchParams:Promise<{up
   const client=await requireAdmin();
   const params=await searchParams;
 
-  const [pendingResult,pendingEditsResult,pendingAdsResult,publishedResult]=await Promise.all([
+  const [pendingResult,pendingEditsResult,pendingAdsResult,pendingArchiveAdsResult,publishedResult]=await Promise.all([
     client.rpc('marketplace_admin_pending'),
     client.rpc('marketplace_admin_pending_edits'),
     client.rpc('marketplace_admin_pending_ads'),
+    client.rpc('marketplace_admin_pending_archive_ads'),
     client.from('marketplace_products')
       .select('id,slug,name,price,min_price,max_price,category,public_image_path,approved_at')
       .eq('status','approved')
       .order('approved_at',{ascending:false}),
   ]);
 
-  if(pendingResult.error||pendingEditsResult.error||pendingAdsResult.error||publishedResult.error)throw new Error('Admin moderation data is unavailable.');
+  if(pendingResult.error||pendingEditsResult.error||pendingAdsResult.error||pendingArchiveAdsResult.error||publishedResult.error)throw new Error('Admin moderation data is unavailable.');
 
   const rows=(pendingResult.data||[]) as AdminRow[];
   const reviews=await Promise.all(rows.map(async row=>{
@@ -120,6 +129,14 @@ export default async function AdminPage({searchParams}:{searchParams:Promise<{up
     };
   }));
 
+  const archiveAdRows=(pendingArchiveAdsResult.data||[]) as AdminArchiveAdRow[];
+  const archiveAdReviews=archiveAdRows.map(row=>({
+    ...row,
+    image:row.product.public_image_path
+      ? client.storage.from('product-images').getPublicUrl(row.product.public_image_path).data.publicUrl
+      : null,
+  }));
+
   const published=((publishedResult.data||[]) as PublishedRow[]).map(row=>({
     ...row,
     image:row.public_image_path?client.storage.from('product-images').getPublicUrl(row.public_image_path).data.publicUrl:null,
@@ -130,9 +147,9 @@ export default async function AdminPage({searchParams}:{searchParams:Promise<{up
       <div>
         <p className="eyebrow">PRIVATE MODERATION</p>
         <h1>Marketplace moderation</h1>
-        <p className="intro">Review banner ads, new products, seller edits and community products already published in the Collection.</p>
+        <p className="intro">Review banner ads, Archive Ads, new products, seller edits and community products already published in the Collection.</p>
       </div>
-      <span className="pending-count">{reviews.length+editReviews.length+adReviews.length} pending</span>
+      <span className="pending-count">{reviews.length+editReviews.length+adReviews.length+archiveAdReviews.length} pending</span>
     </div>
 
     {params.updated&&<div className="form-notice" role="status">Moderation update: {params.updated}.</div>}
@@ -164,6 +181,35 @@ export default async function AdminPage({searchParams}:{searchParams:Promise<{up
           </form>
         </div>
       </article>)}</div>:<div className="empty-state"><h2>No ads waiting for review</h2><p>New banner submissions will appear here.</p></div>}
+    </section>
+
+    <section className="admin-product-section admin-archive-ad-section">
+      <div className="admin-section-heading">
+        <div><p className="eyebrow">TARGETED ARCHIVE PLACEMENTS</p><h2>Pending Archive Ads</h2></div>
+        <span>{archiveAdReviews.length} pending</span>
+      </div>
+      {archiveAdReviews.length?<div className="published-product-list">{archiveAdReviews.map(ad=><article className="published-product-row admin-archive-ad-row" key={ad.id}>
+        <div className="published-product-image">{ad.image?<img src={ad.image} alt={ad.product.name}/>:<span>Image unavailable</span>}</div>
+        <div className="published-product-copy">
+          <div className="submission-status-line"><span>{ad.product.category}</span><span>{new Date(ad.submitted_at).toLocaleString('en-MY')}</span></div>
+          <h3>{ad.product.name}</h3>
+          <p>Target Archive: <strong>{ad.archive_slug}</strong></p>
+          <div className="archive-ad-links">
+            <Link href={'/items/'+ad.product.slug}>View product</Link>
+            <Link href={'/archive/'+ad.archive_slug}>View Archive entry</Link>
+          </div>
+          <div className="submitter-box">
+            <strong>Seller</strong>
+            <span>{ad.submitter.display_name||'Marketplace member'}</span>
+            <span>{ad.submitter.email||ad.submitter.id}</span>
+          </div>
+          <form className="moderation-actions">
+            <input type="hidden" name="archive_ad_id" value={ad.id}/>
+            <label>Rejection reason<textarea name="reason" maxLength={500} rows={3} placeholder="Required only when rejecting"/></label>
+            <div><button className="button approve-button" formAction={approveArchiveAd}>Approve Archive Ad</button><button className="button secondary reject-button" formAction={rejectArchiveAd}>Reject Archive Ad</button></div>
+          </form>
+        </div>
+      </article>)}</div>:<div className="empty-state"><h2>No Archive Ads waiting for review</h2><p>Seller product-to-Archive matches will appear here.</p></div>}
     </section>
 
     <section className="admin-product-section">
