@@ -341,8 +341,9 @@ stable
 security definer
 set search_path=''
 as $fn$
-declare actor uuid:=auth.uid();
-declare result jsonb;
+declare
+  actor uuid:=auth.uid();
+  result jsonb;
 begin
   if actor is null then raise exception 'Authentication required' using errcode='42501'; end if;
 
