@@ -117,3 +117,29 @@ body .archive-like.liked svg{fill:currentColor}.archive-like:disabled{cursor:def
     height:16px
   }
 }
+
+
+/* Prototype average prices for purchasable Archive entries. */
+.archive-average-price{
+  display:flex;
+  align-items:baseline;
+  gap:7px;
+  margin:-2px 0 10px;
+  font-size:12px
+}
+.archive-average-price span{color:var(--muted)}
+.archive-average-price strong{color:var(--navy);font-size:14px}
+.archive-detail-price{
+  display:flex;
+  align-items:baseline;
+  gap:9px;
+  width:max-content;
+  max-width:100%;
+  margin:-5px 0 12px;
+  padding:8px 11px;
+  border:1px solid #ead8a0;
+  border-radius:7px;
+  background:#fff8df
+}
+.archive-detail-price span{color:#7b692f;font-size:12px;font-weight:700}
+.archive-detail-price strong{color:#5f4b16;font-size:17px}
