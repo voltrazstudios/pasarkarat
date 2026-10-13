@@ -2590,3 +2590,80 @@ body .filter-pills .rare-filter-button.selected{background:#6f3aa5;border-color:
   .product-card-badges{right:7px;bottom:7px;gap:4px}
   .product-rare-badge{min-height:22px;padding:3px 6px;font-size:7px}
 }
+
+
+/* Keep radios/checkboxes compact: global text-input focus styles must not box them. */
+.market-form input[type=radio],
+.market-form input[type=checkbox]{
+  appearance:auto;
+  -webkit-appearance:auto;
+  width:18px!important;
+  height:18px!important;
+  min-height:18px!important;
+  padding:0!important;
+  margin:0;
+  border:0!important;
+  border-radius:0;
+  background:transparent!important;
+  box-shadow:none!important;
+  flex:0 0 18px;
+  cursor:pointer;
+  accent-color:var(--orange)
+}
+.market-form input[type=radio]{
+  border-radius:50%
+}
+.market-form input[type=radio]:focus,
+.market-form input[type=checkbox]:focus{
+  outline:none!important;
+  outline-offset:0!important;
+  border:0!important;
+  box-shadow:none!important
+}
+.listing-type-card:has(input:focus-visible){
+  outline:2px solid #c34e2366;
+  outline-offset:2px
+}
+.listing-type-card.rare input[type=radio]{
+  accent-color:#6f3aa5
+}
+.listing-type-card.rare:has(input:focus-visible),
+.auction-enable-row:has(input:focus-visible){
+  outline:2px solid #7d4db166;
+  outline-offset:3px;
+  border-radius:8px
+}
+
+/* Cleaner auction toggle alignment. */
+.auction-enable-row{
+  display:grid!important;
+  grid-template-columns:20px minmax(0,1fr);
+  align-items:start!important;
+  column-gap:12px!important;
+  row-gap:0!important;
+  width:100%;
+  padding:3px 2px;
+  cursor:pointer
+}
+.auction-enable-row input[type=checkbox]{
+  width:18px!important;
+  height:18px!important;
+  margin-top:2px!important;
+  accent-color:#6f3aa5
+}
+.auction-enable-row>span{
+  display:grid!important;
+  gap:3px!important;
+  min-width:0
+}
+.auction-enable-row>span>strong{
+  line-height:1.25
+}
+.auction-enable-row>span>small{
+  display:block;
+  margin:0;
+  color:var(--muted);
+  font-size:13px;
+  font-weight:400;
+  line-height:1.45
+}
