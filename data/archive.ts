@@ -1,6 +1,6 @@
 export const archiveCategories = ['Traditional Food','Kuih-Muih','Traditional Clothing & Textiles','Traditional Games','Traditional Music & Instruments','Arts & Crafts','Heritage Objects','Architecture & Landmarks','Places & Communities','Nature & Wildlife','Festivals & Traditions','Local Brands & Products','Transport & Mobility','Stories & Folklore','Other'] as const;
 export type ArchiveEntry={
- id:string;slug:string;name:string;category:typeof archiveCategories[number];image:string;shortDescription:string;
+ id:string;slug:string;name:string;category:typeof archiveCategories[number];image:string;shortDescription:string;averagePriceRM?:number;
  overview?:string;origin?:string;culturalSignificance?:string;characteristics?:string[];facts?:string[];
  sources?:{label:string;url:string}[];
  // Optional future relationships. These do not unlock discoveries or add commerce UI.
@@ -1389,3 +1389,84 @@ export const archiveEntries:ArchiveEntry[]=[
   }
 
 ];
+
+
+/*
+ * Prototype average-market estimates in Malaysian Ringgit.
+ * Intangible heritage, places, wildlife, festivals, folklore and entries without a sensible
+ * single-item market value are intentionally omitted.
+ */
+const archiveAveragePriceRM:Record<string,number>={
+  'labu-sayong':45,
+  'congkak':55,
+  'lesung-batu':35,
+  'radio-lama':180,
+  'songket':350,
+
+  'nasi-lemak':8,
+  'rendang-tok':18,
+  'nasi-kerabu':10,
+  'nasi-dagang':10,
+  'asam-pedas':18,
+  'manok-pansoh':25,
+  'hinava':20,
+
+  'kuih-lapis':2,
+  'seri-muka':2.5,
+  'kuih-ketayap':2,
+  'kuih-bahulu':8,
+  'kuih-keria':2,
+  'akok':2.5,
+  'kuih-kapit':18,
+
+  'baju-kurung':120,
+  'baju-melayu':140,
+  'kebaya':180,
+  'malaysian-batik':80,
+  'pua-kumbu':600,
+  'tenun-pahang-diraja':450,
+  'kain-limar':500,
+
+  'batu-seremban':15,
+  'gasing':25,
+  'wau-bulan':120,
+  'sepak-raga':25,
+
+  'kompang':120,
+  'rebana':100,
+  'gambus':650,
+  'sape':900,
+  'gamelan-melayu':5000,
+  'serunai':180,
+  'sompoton':250,
+
+  'anyaman-mengkuang':60,
+  'ukiran-kayu-melayu':250,
+  'tekat-emas':300,
+  'tembikar-terenang':120,
+  'keringkam-embroidery':450,
+  'orang-ulu-beadwork':180,
+  'batik-block-printing':80,
+
+  'tepak-sirih':350,
+  'kendi':70,
+  'kukur-kelapa':120,
+  'pelita-minyak':35,
+  'seterika-arang':150,
+  'mesin-jahit-kaki':450,
+  'tempayan':180,
+
+  'boh-tea':15,
+  'royal-selangor':250,
+  'mamee':4,
+  'ramly':10,
+  'julies-biscuits':10,
+  'kluang-rail-coffee':15,
+
+  'proton-saga':38000
+};
+
+for(const entry of archiveEntries){
+  const average=archiveAveragePriceRM[entry.id];
+  if(typeof average==='number')entry.averagePriceRM=average;
+}
