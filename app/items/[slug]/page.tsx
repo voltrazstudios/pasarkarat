@@ -15,10 +15,10 @@ import { configured, db } from '@/lib/supabase';
 
 export const dynamic='force-dynamic';
 export async function generateMetadata({params}:{params:Promise<{slug:string}>}){
-  const [{slug},query]=await Promise.all([params,searchParams]);const p=await getProductBySlug(slug);return {title:p?.name??'Item not found',description:p?.description};
+  const {slug}=await params;const p=await getProductBySlug(slug);return {title:p?.name??'Item not found',description:p?.description};
 }
 export default async function Page({params,searchParams}:{params:Promise<{slug:string}>;searchParams:Promise<{auction_payment?:string}>}){
-  const {slug}=await params;
+  const [{slug},query]=await Promise.all([params,searchParams]);
   const p=await getProductBySlug(slug);
   if(!p)notFound();
   const [allProducts,seller]=await Promise.all([collectionProducts(),p.sellerId?sellerSummary(p.sellerId):Promise.resolve(null)]);
