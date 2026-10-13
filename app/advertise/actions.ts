@@ -137,7 +137,7 @@ export async function startAdCheckout(form:FormData){
     .eq('id',user.id)
     .maybeSingle();
 
-  const plan=adPlans[duration];
+  const plan=duration===3?adPlans[3]:duration===7?adPlans[7]:adPlans[14];
   const amount=plan.amount*slots;
   let checkoutUrl='';
   let stage:'billplz'|'database'='billplz';
