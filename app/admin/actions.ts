@@ -388,3 +388,53 @@ export async function approveAd(f:FormData){
 export async function rejectAd(f:FormData){
   return moderateAd('reject',f);
 }
+
+
+async function moderateArchiveAd(decision:'approve'|'reject',f:FormData){
+  const client=await requireAdmin();
+  const id=String(f.get('archive_ad_id')||'');
+  const reason=String(f.get('reason')||'').trim().slice(0,500);
+
+  if(!/^[a-f0-9-]{36}$/i.test(id))redirect(destination('error','Invalid Archive Ad.'));
+  if(decision==='reject'&&!reason)redirect(destination('error','Add a rejection reason before rejecting this Archive Ad.'));
+
+  const {data:{user}}=await client.auth.getUser();
+  if(!user)redirect(destination('error','Admin session expired.'));
+
+  const lookup=await client.from('marketplace_archive_ads')
+    .select('id,submitted_by,status')
+    .eq('id',id)
+    .maybeSingle();
+
+  if(lookup.error||!lookup.data||lookup.data.status!=='pending'){
+    redirect(destination('error','This Archive Ad is no longer pending.'));
+  }
+
+  if(decision==='approve'&&lookup.data.submitted_by===user.id){
+    redirect(destination('error','Administrators cannot approve their own Archive Ads.'));
+  }
+
+  const result=await client.rpc('marketplace_admin_decide_archive_ad',{
+    p_id:id,
+    p_decision:decision==='approve'?'approved':'rejected',
+    p_reason:decision==='reject'?reason:null,
+  });
+
+  if(result.error){
+    redirect(destination('error',decision==='approve'?'Unable to approve this Archive Ad.':'Unable to reject this Archive Ad.'));
+  }
+
+  revalidatePath('/admin');
+  revalidatePath('/archive-ads');
+  revalidatePath('/archive');
+  revalidatePath('/');
+  redirect(destination('updated',decision==='approve'?'archive ad approved':'archive ad rejected'));
+}
+
+export async function approveArchiveAd(f:FormData){
+  return moderateArchiveAd('approve',f);
+}
+
+export async function rejectArchiveAd(f:FormData){
+  return moderateArchiveAd('reject',f);
+}
