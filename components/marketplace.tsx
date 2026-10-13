@@ -88,7 +88,10 @@ export function ProductCard({product:p}:{product:Product}){
         category={p.category}
         sizes="(max-width: 379px) 100vw, (max-width: 900px) 50vw, (max-width: 1100px) 33vw, 25vw"
       />
-      {boosted?<span className="product-boost-badge">Boosted</span>:null}
+      <div className="product-card-badges">
+        {boosted?<span className="product-boost-badge">Boosted</span>:null}
+        {p.listingType==='rare_limited'?<span className="product-rare-badge">Rare &amp; Limited</span>:null}
+      </div>
     </Link>
     <div className="product-content">
       <p className="seller"><PlatformSummary links={p.links}/></p>
@@ -227,12 +230,14 @@ export function Catalogue({
   initialQuery='',
   initialCategory='',
   initialFeatured=false,
+  initialRare=false,
   initialFeaturedTime=0,
   items=products,
 }:{
   initialQuery?:string;
   initialCategory?:string;
   initialFeatured?:boolean;
+  initialRare?:boolean;
   initialFeaturedTime?:number;
   items?:Product[];
 }){
@@ -240,6 +245,7 @@ export function Catalogue({
   const [query,setQuery]=useState(initialQuery);
   const [category,setCategory]=useState(initialCategory);
   const [featuredOnly,setFeaturedOnly]=useState(initialFeatured);
+  const [rareOnly,setRareOnly]=useState(initialRare);
   const [platform,setPlatform]=useState<Platform | ''>('');
   const featuredTime=useFeaturedTime(initialFeaturedTime);
   const featuredIds=useMemo(
@@ -249,6 +255,7 @@ export function Catalogue({
   const platformFilters: Platform[]=[...platforms];
   const filtered=items.filter(p=>
     (!featuredOnly||featuredIds.has(p.id))
+    &&(!rareOnly||p.listingType==='rare_limited')
     &&(!category||p.category===category)
     &&(!platform||p.links.some(link=>link.platform===platform))
     &&`${p.name} ${p.category} ${p.description} ${p.links.map(link=>link.platform).join(' ')}`.toLowerCase().includes(query.toLowerCase().trim())
@@ -278,10 +285,14 @@ export function Catalogue({
       <div className="filter-pills">
         <button
           className={`featured-filter-button${featuredOnly?' selected':''}`}
-          onClick={()=>{setFeaturedOnly(true);setCategory('');}}
+          onClick={()=>{setFeaturedOnly(true);setRareOnly(false);setCategory('');}}
         >{language==='ms'?'Item Pilihan':'Featured Items'}</button>
-        <button className={!featuredOnly&&!category?'selected':''} onClick={()=>{setFeaturedOnly(false);setCategory('');}}>{language==='ms'?'Semua item':'All items'}</button>
-        {categories.map(c=><button key={c} className={!featuredOnly&&category===c?'selected':''} onClick={()=>{setFeaturedOnly(false);setCategory(c);}}>{c}</button>)}
+        <button
+          className={`rare-filter-button${rareOnly?' selected':''}`}
+          onClick={()=>{setRareOnly(true);setFeaturedOnly(false);setCategory('');}}
+        >{language==='ms'?'Jarang & Terhad':'Rare & Limited'}</button>
+        <button className={!featuredOnly&&!rareOnly&&!category?'selected':''} onClick={()=>{setFeaturedOnly(false);setRareOnly(false);setCategory('');}}>{language==='ms'?'Semua item':'All items'}</button>
+        {categories.map(c=><button key={c} className={!featuredOnly&&!rareOnly&&category===c?'selected':''} onClick={()=>{setFeaturedOnly(false);setRareOnly(false);setCategory(c);}}>{c}</button>)}
       </div>
     </div>
     <div className="filter-group platform-filter-group">
@@ -291,10 +302,10 @@ export function Catalogue({
         {platformFilters.map(p=><button key={p} className={`${platform===p?'selected ':''}platform-filter-${platformClass(p)}`} onClick={()=>setPlatform(p)}>{platformDisplayName(p)}</button>)}
       </div>
     </div>
-    <div className="results-meta"><span role="status">{filtered.length} {filtered.length===1?'item':'items'}{featuredOnly?' in Featured Items':category?` in ${category}`:''}</span><span>{language==='ms'?'Senarai penjual luar':'External seller listings'}</span></div>
+    <div className="results-meta"><span role="status">{filtered.length} {filtered.length===1?'item':'items'}{featuredOnly?' in Featured Items':rareOnly?' in Rare & Limited':category?` in ${category}`:''}</span><span>{language==='ms'?'Senarai penjual luar':'External seller listings'}</span></div>
     {filtered.length?
       <div className="product-grid">{filtered.map(p=><ProductCard key={p.id} product={p}/>)}</div>:
-      <div className="empty-state"><Search size={32}/><h2>No treasures found just yet</h2><p>Try another search or explore a different category.</p><button className="button" onClick={()=>{setQuery('');setCategory('');setFeaturedOnly(false);setPlatform('');}}>Reset filters <ArrowRight size={18}/></button></div>
+      <div className="empty-state"><Search size={32}/><h2>No treasures found just yet</h2><p>Try another search or explore a different category.</p><button className="button" onClick={()=>{setQuery('');setCategory('');setFeaturedOnly(false);setRareOnly(false);setPlatform('');}}>Reset filters <ArrowRight size={18}/></button></div>
     }
   </main>;
 }
