@@ -33,6 +33,7 @@ Run these files in the Supabase SQL editor:
 21. `supabase/migrations/202610100021_submission_management_analytics_edits.sql`
 22. `supabase/migrations/202610100022_boost_featured_rotation.sql`
 23. `supabase/migrations/202610130023_rare_limited_story_auctions.sql`
+24. `supabase/migrations/202610130024_auction_access_and_leaderboard.sql`
 
 ## 3. Configure local environment
 
@@ -107,3 +108,5 @@ For Pro checkout, configure the server-only values shown in `.env.example`.
 - The current prototype plans are RM9.90 for 30 days and RM99.00 for 365 days.
 - Paid seller promotions reuse the same Billplz configuration: RM1.00 for a 7-day product boost and RM3.90 for a 7-day featured store placement.
 - Paid Product Boosts are the only products shown in Featured Items. A newly activated boost stays at the front for 30 minutes (newest boost first); after that protected period it joins the older active boosts, whose order rotates once per hour.
+
+- Rare & Limited auctions use a RM1.00 one-time Billplz access payment per auction. A paid bidder can place multiple bids on that auction until it ends; seller accounts cannot bid on their own listings. Public auction pages show the top three bidders using their marketplace display name, public profile image when available, and highest bid.
