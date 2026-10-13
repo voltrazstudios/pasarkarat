@@ -35,14 +35,14 @@ export default async function Page({params}:{params:Promise<{slug:string}>}){
       </div>
     </div>
 
+    <ArchiveProductAd archiveName={entry.name} ads={ads}/>
+
     <div className="archive-reading">
       {[['Overview',entry.overview],['Origin',entry.origin],['Cultural Significance',entry.culturalSignificance]].map(([title,text])=>text?.trim()?<section key={title}><h2>{title}</h2><p>{text}</p></section>:null)}
       {!!entry.characteristics?.length&&<section><h2>Materials / Characteristics</h2><ul>{entry.characteristics.map(f=><li key={f}>{f}</li>)}</ul></section>}
       {!!entry.facts?.length&&<section><h2>Interesting Facts</h2><ul>{entry.facts.map(f=><li key={f}>{f}</li>)}</ul></section>}
       {!!entry.sources?.length&&<section><h2>Further Reading</h2><ul>{entry.sources.map(s=><li key={s.url}><a href={s.url} target="_blank" rel="noopener noreferrer">{s.label} ↗</a></li>)}</ul></section>}
     </div>
-
-    <ArchiveProductAd archiveName={entry.name} ads={ads}/>
 
     <ArchiveMemories id={entry.id} name={entry.name}/>
 
