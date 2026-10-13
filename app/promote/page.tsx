@@ -49,6 +49,8 @@ export default async function PromotePage({searchParams}:{searchParams:Promise<{
       ? 'Your account needs an email address before checkout can start.'
       : query.error==='choose-product'
         ? 'Choose one of your approved products to boost.'
+        : query.error==='invalid-duration'
+          ? 'Choose either the 3-day or 7-day Product Boost plan.'
         : query.error==='no-approved-products'
           ? 'You need at least one approved product before featuring your store.'
           : query.error==='payment-database'
@@ -75,8 +77,8 @@ export default async function PromotePage({searchParams}:{searchParams:Promise<{
       <article className="promotion-card">
         <span className="promotion-card-icon"><Package size={22}/></span>
         <p className="pro-plan-kicker">02 — PRODUCT BOOSTING</p>
-        <h2>RM1.00</h2>
-        <p>Boost one approved product for 7 days. Active boosts are prioritised in collection and search results.</p>
+        <h2>From RM2.90</h2>
+        <p>Boost one approved product into Featured Items. Choose a shorter 3-day push or better-value 7-day visibility.</p>
         <form action={startPromotionCheckout} className="promotion-form">
           <input type="hidden" name="promotion_type" value="product_boost"/>
           <label>
@@ -89,19 +91,30 @@ export default async function PromotePage({searchParams}:{searchParams:Promise<{
               })}
             </select>
           </label>
-          <button className="button" disabled={!paymentReady||!products.length}>Boost for RM1.00</button>
+          <fieldset className="promotion-duration-options">
+            <legend>Choose duration</legend>
+            <label>
+              <input type="radio" name="duration_days" value="3" defaultChecked/>
+              <span><strong>3 days</strong><b>RM2.90</b></span>
+            </label>
+            <label>
+              <input type="radio" name="duration_days" value="7"/>
+              <span><strong>7 days</strong><b>RM5.90</b><small>Better value</small></span>
+            </label>
+          </fieldset>
+          <button className="button" disabled={!paymentReady||!products.length}>Continue to Billplz</button>
         </form>
       </article>
 
       <article className="promotion-card promotion-card-featured">
         <span className="promotion-card-icon"><Store size={22}/></span>
         <p className="pro-plan-kicker">03 — FEATURED STORE PLACEMENT</p>
-        <h2>RM3.90</h2>
+        <h2>RM7.90</h2>
         <p>Feature your storefront on the Pasar Karat homepage for 7 days.</p>
         {featuredActive?<div className="promotion-active">Currently featured until {dateLabel(featuredUntil)}</div>:null}
         <form action={startPromotionCheckout} className="promotion-form">
           <input type="hidden" name="promotion_type" value="featured_store"/>
-          <button className="button" disabled={!paymentReady||!products.length}>Feature Store for RM3.90</button>
+          <button className="button" disabled={!paymentReady||!products.length}>Feature Store for RM7.90</button>
         </form>
       </article>
     </section>
