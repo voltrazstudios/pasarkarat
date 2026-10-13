@@ -117,6 +117,14 @@ export default async function PromotePage({searchParams}:{searchParams:Promise<{
           <button className="button" disabled={!paymentReady||!products.length}>Feature Store for RM7.90</button>
         </form>
       </article>
+
+      <article className="promotion-card promotion-card-advertising">
+        <span className="promotion-card-icon"><Megaphone size={22}/></span>
+        <p className="pro-plan-kicker">04 — BANNER ADVERTISING</p>
+        <h2>From RM6.90</h2>
+        <p>Run a responsive banner on the homepage and Collection. Buy extra rotation slots when you want the same ad to appear more often.</p>
+        <Link href="/advertise" className="button">Submit or manage ads</Link>
+      </article>
     </section>
 
     {!products.length?<p className="pro-config-note">Submit a product and wait for approval before purchasing a promotion. <Link href="/submit-product" className="text-link">Submit Product</Link></p>:null}
