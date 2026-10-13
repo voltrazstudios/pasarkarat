@@ -32,6 +32,7 @@ Run these files in the Supabase SQL editor:
 20. `supabase/migrations/202610080020_admin_submitter_profiles.sql`
 21. `supabase/migrations/202610100021_submission_management_analytics_edits.sql`
 22. `supabase/migrations/202610100022_boost_featured_rotation.sql`
+23. `supabase/migrations/202610130023_rare_limited_story_auctions.sql`
 
 ## 3. Configure local environment
 
@@ -92,6 +93,8 @@ Uploaded PNG/JPG/WebP files are decoded with Sharp, checked against their declar
 Seller and affiliate links must use HTTPS and match the selected platform's allowed domains. The database repeats those platform/domain checks so bypassing the form does not bypass validation.
 
 Approved sellers can submit edits without taking the existing product offline. Each product can have only one pending edit at a time; admin approval atomically replaces the live product details and links. Seller analytics use a random browser identifier to count unique viewers and platform clickers without storing visitor names, emails or profile details.
+
+Rare & Limited listings are moderated with their long-form story, story images, certificate/provenance image, and optional auction configuration. Story images and certificate images stay in the private submission bucket until admin approval. Auction bids are inserted only through a security-definer RPC that serializes bids per auction, prevents sellers from bidding on their own products, and enforces the current minimum bid.
 
 
 ## Pasar Karat Pro / Billplz
