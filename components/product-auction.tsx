@@ -7,7 +7,6 @@ import { placeProductBid } from '@/app/items/[slug]/auction-actions';
 import { startAuctionAccessCheckout } from '@/app/items/[slug]/auction-checkout-actions';
 
 export type AuctionBidder={
-  user_id:string;
   display_name:string;
   avatar_path:string|null;
   avatar_url?:string|null;
@@ -122,7 +121,7 @@ export function ProductAuction({
     {auction.bidders?.length?<div className="auction-leaderboard">
       <div className="auction-leaderboard-heading"><strong>Top bidders</strong><span>Highest bid per bidder</span></div>
       <div className="auction-bidder-list">
-        {auction.bidders.slice(0,3).map((bidder,index)=><div className={`auction-bidder-row rank-${index+1}`} key={bidder.user_id}>
+        {auction.bidders.slice(0,3).map((bidder,index)=><div className={`auction-bidder-row rank-${index+1}`} key={`${bidder.display_name}-${index}`}>
           <span className="auction-rank">#{index+1}</span>
           <span className="auction-bidder-avatar">{bidder.avatar_url?<img src={bidder.avatar_url} alt=""/>:<span>{bidder.display_name.slice(0,1).toUpperCase()}</span>}</span>
           <strong>{bidder.display_name}</strong>
