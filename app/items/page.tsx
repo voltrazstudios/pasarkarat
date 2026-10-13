@@ -1,11 +1,12 @@
 import { Catalogue } from '@/components/marketplace';
 import { collectionProducts } from '@/lib/products';
+import { activeAds } from '@/lib/ads';
 
 export const metadata={title:'All Items'};
 export const dynamic='force-dynamic';
 
 export default async function Page({searchParams}:{searchParams:Promise<{q?:string;category?:string;featured?:string;rare?:string}>}){
-  const [p,items]=await Promise.all([searchParams,collectionProducts()]);
+  const [p,items,ads]=await Promise.all([searchParams,collectionProducts(),activeAds()]);
   const featured=p.featured==='1';
   const rare=p.rare==='1';
   return <Catalogue
@@ -16,5 +17,6 @@ export default async function Page({searchParams}:{searchParams:Promise<{q?:stri
     initialRare={rare}
     initialFeaturedTime={Date.now()}
     items={items}
+    ads={ads}
   />;
 }
