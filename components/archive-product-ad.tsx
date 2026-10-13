@@ -46,7 +46,20 @@ export function ArchiveProductAd({
     return()=>window.clearInterval(timer);
   },[schedule.length]);
 
-  if(!schedule.length)return null;
+  if(!schedule.length){
+    return <section className="archive-sponsored-empty" aria-label={`Sponsored Archive space for ${archiveName}`}>
+      <div className="marketplace-ad-label-row">
+        <span>Sponsored Archive space</span>
+        <Link href="/archive-ads">Promote here</Link>
+      </div>
+      <Link href="/archive-ads" className="marketplace-ad-placeholder archive-ad-placeholder">
+        <span className="marketplace-ad-placeholder-kicker">YOUR PRODUCT COULD BE HERE</span>
+        <strong>Reach people already exploring {archiveName}.</strong>
+        <small>Archive Ads · from RM3.90</small>
+        <span className="marketplace-ad-placeholder-button">Promote here</span>
+      </Link>
+    </section>;
+  }
   const ad=schedule[turn%schedule.length]||schedule[0];
 
   return <section className="archive-sponsored-section" aria-label={`Sponsored products for ${archiveName}`}>
