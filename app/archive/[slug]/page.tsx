@@ -5,9 +5,12 @@ import { ArchiveCard } from '@/components/archive';
 import { ArchiveLike } from '@/components/archive-like';
 import { ArchiveMemories } from '@/components/archive-memories';
 import { ProductImage } from '@/components/marketplace';
+import { ArchiveProductAd } from '@/components/archive-product-ad';
+import { activeArchiveAds } from '@/lib/archive-ads';
 import '../archive.css';
 import '../archive-memories.css';
 
+export const dynamic='force-dynamic';
 export function generateStaticParams(){return archiveEntries.map(e=>({slug:e.slug}));}
 export async function generateMetadata({params}:{params:Promise<{slug:string}>}){const {slug}=await params;const entry=archiveEntries.find(e=>e.slug===slug);return {title:entry?.name??'Archive entry not found',description:entry?.shortDescription};}
 
@@ -15,6 +18,7 @@ export default async function Page({params}:{params:Promise<{slug:string}>}){
   const {slug}=await params;
   const entry=archiveEntries.find(e=>e.slug===slug);
   if(!entry)notFound();
+  const [ads]=await Promise.all([activeArchiveAds(entry.slug)]);
   const related=[...archiveEntries.filter(e=>e.id!==entry.id&&entry.relatedArchiveIds?.includes(e.id)),...archiveEntries.filter(e=>e.id!==entry.id&&!entry.relatedArchiveIds?.includes(e.id)&&e.category===entry.category)].slice(0,3);
 
   return <main id="main" className="container archive-detail">
@@ -37,6 +41,8 @@ export default async function Page({params}:{params:Promise<{slug:string}>}){
       {!!entry.facts?.length&&<section><h2>Interesting Facts</h2><ul>{entry.facts.map(f=><li key={f}>{f}</li>)}</ul></section>}
       {!!entry.sources?.length&&<section><h2>Further Reading</h2><ul>{entry.sources.map(s=><li key={s.url}><a href={s.url} target="_blank" rel="noopener noreferrer">{s.label} ↗</a></li>)}</ul></section>}
     </div>
+
+    <ArchiveProductAd archiveName={entry.name} ads={ads}/>
 
     <ArchiveMemories id={entry.id} name={entry.name}/>
 
