@@ -69,7 +69,7 @@ export async function startArchiveAdCheckout(form:FormData){
   if(!billplzConfigured()||!serviceConfigured())redirect('/archive-ads?error=payment-not-configured');
 
   const ad=await client.from('marketplace_archive_ads')
-    .select('id,archive_slug,status,product_id,marketplace_products(name)')
+    .select('id,archive_slug,status,product_id')
     .eq('id',archiveAdId)
     .eq('submitted_by',user.id)
     .eq('status','approved')
@@ -80,16 +80,20 @@ export async function startArchiveAdCheckout(form:FormData){
   const archiveEntry=archiveEntries.find(entry=>entry.slug===ad.data.archive_slug);
   if(!archiveEntry)redirect('/archive-ads?error=archive');
 
-  const {data:profile}=await client.from('marketplace_profiles')
-    .select('display_name,full_name')
-    .eq('id',user.id)
-    .maybeSingle();
+  const [{data:profile},{data:product}]=await Promise.all([
+    client.from('marketplace_profiles')
+      .select('display_name,full_name')
+      .eq('id',user.id)
+      .maybeSingle(),
+    client.from('marketplace_products')
+      .select('name')
+      .eq('id',ad.data.product_id)
+      .maybeSingle(),
+  ]);
 
   const plan=duration===3?plans[3]:duration===7?plans[7]:plans[14];
   const amount=plan.amount*slots;
-  const productName=Array.isArray(ad.data.marketplace_products)
-    ? ad.data.marketplace_products[0]?.name
-    : (ad.data.marketplace_products as {name?:string}|null)?.name;
+  const productName=product?.name||'Product';
 
   let checkoutUrl='';
   let stage:'billplz'|'database'='billplz';
@@ -99,7 +103,7 @@ export async function startArchiveAdCheckout(form:FormData){
       amount,
       email:user.email,
       name:profile?.full_name||profile?.display_name||'Pasar Karat Seller',
-      description:`${plan.label} · ${archiveEntry.name} · ${slots} rotation ${slots===1?'slot':'slots'} · ${productName||'Product'}`,
+      description:`${plan.label} · ${archiveEntry.name} · ${slots} rotation ${slots===1?'slot':'slots'} · ${productName}`,
       callbackPath:'/api/billplz/archive-ads/callback',
       redirectPath:'/archive-ads?payment=processing',
     });
