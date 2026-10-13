@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { requireAdmin } from '@/lib/admin';
-import { approveProduct, rejectProduct, approveProductEdit, rejectProductEdit } from './actions';
+import { approveProduct, rejectProduct, approveProductEdit, rejectProductEdit, approveAd, rejectAd } from './actions';
 import { DeleteProductButton } from './delete-product-button';
 import { formatPriceRange } from '@/lib/product-price';
 
@@ -44,6 +44,16 @@ type AdminEditRow={
   links:{platform:string;seller_url:string;affiliate_url:string|null}[];
 };
 
+type AdminAdRow={
+  id:string;
+  title:string;
+  destination_url:string;
+  pending_desktop_path:string;
+  pending_mobile_path:string;
+  submitted_at:string;
+  submitter:{id:string;email:string|null;display_name:string|null};
+};
+
 type PublishedRow={
   id:string;slug:string;name:string;price:number|string;min_price:number|string;max_price:number|string;category:string;public_image_path:string|null;approved_at:string|null;
 };
@@ -52,16 +62,17 @@ export default async function AdminPage({searchParams}:{searchParams:Promise<{up
   const client=await requireAdmin();
   const params=await searchParams;
 
-  const [pendingResult,pendingEditsResult,publishedResult]=await Promise.all([
+  const [pendingResult,pendingEditsResult,pendingAdsResult,publishedResult]=await Promise.all([
     client.rpc('marketplace_admin_pending'),
     client.rpc('marketplace_admin_pending_edits'),
+    client.rpc('marketplace_admin_pending_ads'),
     client.from('marketplace_products')
       .select('id,slug,name,price,min_price,max_price,category,public_image_path,approved_at')
       .eq('status','approved')
       .order('approved_at',{ascending:false}),
   ]);
 
-  if(pendingResult.error||pendingEditsResult.error||publishedResult.error)throw new Error('Admin products are unavailable.');
+  if(pendingResult.error||pendingEditsResult.error||pendingAdsResult.error||publishedResult.error)throw new Error('Admin moderation data is unavailable.');
 
   const rows=(pendingResult.data||[]) as AdminRow[];
   const reviews=await Promise.all(rows.map(async row=>{
@@ -96,6 +107,19 @@ export default async function AdminPage({searchParams}:{searchParams:Promise<{up
     return {...row,image,submitter:{...row.submitter,avatar}};
   }));
 
+  const adRows=(pendingAdsResult.data||[]) as AdminAdRow[];
+  const adReviews=await Promise.all(adRows.map(async row=>{
+    const [desktop,mobile]=await Promise.all([
+      client.storage.from('marketplace-ad-submissions').createSignedUrl(row.pending_desktop_path,60*30),
+      client.storage.from('marketplace-ad-submissions').createSignedUrl(row.pending_mobile_path,60*30),
+    ]);
+    return {
+      ...row,
+      desktop:desktop.data?.signedUrl||null,
+      mobile:mobile.data?.signedUrl||null,
+    };
+  }));
+
   const published=((publishedResult.data||[]) as PublishedRow[]).map(row=>({
     ...row,
     image:row.public_image_path?client.storage.from('product-images').getPublicUrl(row.public_image_path).data.publicUrl:null,
@@ -105,14 +129,42 @@ export default async function AdminPage({searchParams}:{searchParams:Promise<{up
     <div className="submission-heading">
       <div>
         <p className="eyebrow">PRIVATE MODERATION</p>
-        <h1>Product submissions</h1>
-        <p className="intro">Review new products, seller edits and community products already published in the Collection.</p>
+        <h1>Marketplace moderation</h1>
+        <p className="intro">Review banner ads, new products, seller edits and community products already published in the Collection.</p>
       </div>
-      <span className="pending-count">{reviews.length+editReviews.length} pending</span>
+      <span className="pending-count">{reviews.length+editReviews.length+adReviews.length} pending</span>
     </div>
 
-    {params.updated&&<div className="form-notice" role="status">Product {params.updated}.</div>}
+    {params.updated&&<div className="form-notice" role="status">Moderation update: {params.updated}.</div>}
     {params.error&&<div className="form-notice error" role="alert">{params.error}</div>}
+
+    <section className="admin-product-section admin-ad-section">
+      <div className="admin-section-heading">
+        <div><p className="eyebrow">SPONSORED PLACEMENTS</p><h2>Pending banner ads</h2></div>
+        <span>{adReviews.length} pending</span>
+      </div>
+      {adReviews.length?<div className="admin-ad-list">{adReviews.map(ad=><article className="admin-ad-card" key={ad.id}>
+        <div className="admin-ad-previews">
+          <div><span>Desktop</span>{ad.desktop?<img src={ad.desktop} alt={ad.title+' desktop banner'}/>:<em>Unavailable</em>}</div>
+          <div className="admin-ad-mobile-preview"><span>Mobile</span>{ad.mobile?<img src={ad.mobile} alt={ad.title+' mobile banner'}/>:<em>Unavailable</em>}</div>
+        </div>
+        <div className="admin-ad-copy">
+          <div className="submission-status-line"><span>Banner advertisement</span><span>{new Date(ad.submitted_at).toLocaleString('en-MY')}</span></div>
+          <h3>{ad.title}</h3>
+          <a href={ad.destination_url} target="_blank" rel="noopener noreferrer nofollow">{ad.destination_url}</a>
+          <div className="submitter-box">
+            <strong>Advertiser</strong>
+            <span>{ad.submitter.display_name||'Marketplace member'}</span>
+            <span>{ad.submitter.email||ad.submitter.id}</span>
+          </div>
+          <form className="moderation-actions">
+            <input type="hidden" name="ad_id" value={ad.id}/>
+            <label>Rejection reason<textarea name="reason" maxLength={500} rows={3} placeholder="Required only when rejecting"/></label>
+            <div><button className="button approve-button" formAction={approveAd}>Approve ad</button><button className="button secondary reject-button" formAction={rejectAd}>Reject ad</button></div>
+          </form>
+        </div>
+      </article>)}</div>:<div className="empty-state"><h2>No ads waiting for review</h2><p>New banner submissions will appear here.</p></div>}
+    </section>
 
     <section className="admin-product-section">
       <div className="admin-section-heading">
