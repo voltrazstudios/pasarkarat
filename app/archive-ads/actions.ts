@@ -31,7 +31,7 @@ export async function submitArchiveAd(form:FormData){
   const product=await client.from('marketplace_products')
     .select('id')
     .eq('id',productId)
-    .eq('submitted_by',user.id)
+    .eq('submitted_by',userId)
     .eq('status','approved')
     .maybeSingle();
 
@@ -66,6 +66,8 @@ export async function startArchiveAdCheckout(form:FormData){
   const {data:{user}}=await client.auth.getUser();
   if(!user)redirect('/auth?next=/archive-ads');
   if(!user.email)redirect('/archive-ads?error=email-required');
+  const userId=user.id;
+  const userEmail=user.email;
   if(!billplzConfigured()||!serviceConfigured())redirect('/archive-ads?error=payment-not-configured');
 
   const ad=await client.from('marketplace_archive_ads')
@@ -76,18 +78,19 @@ export async function startArchiveAdCheckout(form:FormData){
     .maybeSingle();
 
   if(ad.error||!ad.data)redirect('/archive-ads?error=invalid-ad');
+  const adData=ad.data;
 
-  const archiveEntry=archiveEntries.find(entry=>entry.slug===ad.data.archive_slug);
+  const archiveEntry=archiveEntries.find(entry=>entry.slug===adData.archive_slug);
   if(!archiveEntry)redirect('/archive-ads?error=archive');
 
   const [{data:profile},{data:product}]=await Promise.all([
     client.from('marketplace_profiles')
       .select('display_name,full_name')
-      .eq('id',user.id)
+      .eq('id',userId)
       .maybeSingle(),
     client.from('marketplace_products')
       .select('name')
-      .eq('id',ad.data.product_id)
+      .eq('id',adData.product_id)
       .maybeSingle(),
   ]);
 
@@ -101,7 +104,7 @@ export async function startArchiveAdCheckout(form:FormData){
   try{
     const bill=await createBillplzBill({
       amount,
-      email:user.email,
+      email:userEmail,
       name:profile?.full_name||profile?.display_name||'Pasar Karat Seller',
       description:`${plan.label} · ${archiveEntry.name} · ${slots} rotation ${slots===1?'slot':'slots'} · ${productName}`,
       callbackPath:'/api/billplz/archive-ads/callback',
@@ -113,7 +116,7 @@ export async function startArchiveAdCheckout(form:FormData){
     const registered=await admin.from('marketplace_archive_ad_placements').insert({
       bill_id:bill.id,
       archive_ad_id:archiveAdId,
-      user_id:user.id,
+      user_id:userId,
       amount,
       duration_days:duration,
       weight_units:slots,
