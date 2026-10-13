@@ -12,6 +12,8 @@ import { ProductViewTracker } from '@/components/product-analytics';
 import { ProductAuction, type PublicAuction } from '@/components/product-auction';
 import { RareProductStory } from '@/components/rare-product-story';
 import { configured, db } from '@/lib/supabase';
+import { activeAds } from '@/lib/ads';
+import { AdBannerRotator } from '@/components/ad-banner';
 
 export const dynamic='force-dynamic';
 export async function generateMetadata({params}:{params:Promise<{slug:string}>}){
@@ -21,7 +23,7 @@ export default async function Page({params,searchParams}:{params:Promise<{slug:s
   const [{slug},query]=await Promise.all([params,searchParams]);
   const p=await getProductBySlug(slug);
   if(!p)notFound();
-  const [allProducts,seller]=await Promise.all([collectionProducts(),p.sellerId?sellerSummary(p.sellerId):Promise.resolve(null)]);
+  const [allProducts,seller,ads]=await Promise.all([collectionProducts(),p.sellerId?sellerSummary(p.sellerId):Promise.resolve(null),activeAds()]);
   let auction:PublicAuction|null=null;
   if(p.submitted&&p.listingType==='rare_limited'&&configured()){
     const client=await db();
@@ -58,5 +60,6 @@ export default async function Page({params,searchParams}:{params:Promise<{slug:s
     <RareProductStory product={p}/>
     {seller?<SellerProfileCard seller={seller}/>:null}
     <section className="collection"><div className="section-heading"><div><p className="eyebrow">CONTINUE YOUR DISCOVERY</p><h2>You might also like</h2></div></div><div className="product-grid">{related.map(product=><ProductCard key={product.id} product={product}/>)}</div></section>
+    <AdBannerRotator ads={ads}/>
   </main>;
 }
