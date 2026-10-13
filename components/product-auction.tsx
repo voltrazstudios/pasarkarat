@@ -84,6 +84,12 @@ export function ProductAuction({
     if(state.success)router.refresh();
   },[router,state.success]);
 
+  useEffect(()=>{
+    if(!paymentProcessing||auction.has_bid_access)return;
+    const timer=window.setInterval(()=>router.refresh(),3000);
+    return()=>window.clearInterval(timer);
+  },[auction.has_bid_access,paymentProcessing,router]);
+
   const countdown=useMemo(()=>timeLeft(auction.ends_at,now),[auction.ends_at,now]);
   const hasBids=Number(auction.bid_count)>0;
   const accessFee=Number(auction.access_fee_sen||100)/100;
