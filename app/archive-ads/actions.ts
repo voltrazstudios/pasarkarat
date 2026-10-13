@@ -27,6 +27,7 @@ export async function submitArchiveAd(form:FormData){
   const client=await db();
   const {data:{user}}=await client.auth.getUser();
   if(!user)redirect('/auth?next=/archive-ads');
+  const userId=user.id;
 
   const product=await client.from('marketplace_products')
     .select('id')
@@ -73,7 +74,7 @@ export async function startArchiveAdCheckout(form:FormData){
   const ad=await client.from('marketplace_archive_ads')
     .select('id,archive_slug,status,product_id')
     .eq('id',archiveAdId)
-    .eq('submitted_by',user.id)
+    .eq('submitted_by',userId)
     .eq('status','approved')
     .maybeSingle();
 
