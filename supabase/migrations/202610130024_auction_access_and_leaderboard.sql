@@ -3,9 +3,9 @@ begin;
 create table if not exists public.marketplace_auction_access_payments (
   bill_id text primary key check(char_length(bill_id) between 3 and 100),
   product_id uuid not null references public.marketplace_product_auctions(product_id) on delete cascade,
-  user_id uuid not null references public.marketplace_profiles(id) on delete cascade,
+  user_id uuid not null references auth.users(id) on delete cascade,
   amount integer not null default 100 check(amount=100),
-  status text not null default 'due' check(status in ('due','paid','deleted','failed')),
+  status text not null default 'due' check(status in ('due','paid','duplicate','deleted','failed')),
   paid_at timestamptz,
   created_at timestamptz not null default now()
 );
@@ -62,7 +62,7 @@ begin
       and existing.bill_id<>payment.bill_id
   ) then
     update public.marketplace_auction_access_payments
-    set status='paid',paid_at=coalesce(p_paid_at,now())
+    set status='duplicate',paid_at=coalesce(p_paid_at,now())
     where bill_id=p_bill_id;
     return true;
   end if;
