@@ -18,41 +18,106 @@ async function moderateProduct(decision:'approve'|'reject',f:FormData){
   const {data:{user}}=await client.auth.getUser();
   if(!user)redirect(destination('error','Admin session expired.'));
 
-  const lookup=await client.from('marketplace_products').select('id,submitted_by,status,pending_image_path').eq('id',id).maybeSingle();
-  if(lookup.error||!lookup.data||lookup.data.status!=='pending')redirect(destination('error','This submission is no longer pending.'));
+  const lookup=await client.from('marketplace_products')
+    .select('id,submitted_by,status,pending_image_path,pending_story_image_paths,pending_certificate_image_path')
+    .eq('id',id)
+    .maybeSingle();
+
+  if(lookup.error||!lookup.data||lookup.data.status!=='pending'){
+    redirect(destination('error','This submission is no longer pending.'));
+  }
 
   if(decision==='reject'){
-    const result=await client.rpc('marketplace_admin_decide',{p_id:id,p_decision:'rejected',p_reason:reason,p_public_image_path:null});
+    const result=await client.rpc('marketplace_admin_decide_rich',{
+      p_id:id,
+      p_decision:'rejected',
+      p_reason:reason,
+      p_public_image_path:null,
+      p_public_story_image_paths:[],
+      p_public_certificate_image_path:null,
+    });
     if(result.error)redirect(destination('error','Unable to reject this submission.'));
-    revalidatePath('/admin');revalidatePath('/my-submissions');
+    revalidatePath('/admin');
+    revalidatePath('/my-submissions');
     redirect(destination('updated','rejected'));
   }
 
-  if(lookup.data.submitted_by===user.id)redirect(destination('error','Administrators cannot approve their own submissions.'));
+  if(lookup.data.submitted_by===user.id){
+    redirect(destination('error','Administrators cannot approve their own submissions.'));
+  }
 
-  const downloaded=await client.storage.from('product-submission-images').download(lookup.data.pending_image_path);
-  if(downloaded.error||!downloaded.data)redirect(destination('error','Unable to read the pending image.'));
+  const publishedPaths:string[]=[];
 
-  let safeImage:Buffer;
-  try{
+  async function publishPendingImage(privatePath:string){
+    const downloaded=await client.storage.from('product-submission-images').download(privatePath);
+    if(downloaded.error||!downloaded.data)throw new Error('Unable to read one of the pending images.');
+
     const input=Buffer.from(await downloaded.data.arrayBuffer());
-    safeImage=await sharp(input,{failOn:'error',limitInputPixels:40000000}).rotate().resize({width:1800,height:1800,fit:'inside',withoutEnlargement:true}).webp({quality:88}).toBuffer();
-  }catch{
-    redirect(destination('error','The pending image failed the final safety check.'));
+    const safeImage=await sharp(input,{failOn:'error',limitInputPixels:40000000})
+      .rotate()
+      .resize({width:1800,height:1800,fit:'inside',withoutEnlargement:true})
+      .webp({quality:88})
+      .toBuffer();
+
+    const publicPath=`approved/${id}-${crypto.randomUUID()}.webp`;
+    const upload=await client.storage.from('product-images')
+      .upload(publicPath,safeImage,{contentType:'image/webp',upsert:false,cacheControl:'31536000'});
+
+    if(upload.error)throw new Error('Unable to publish one of the approved images.');
+    publishedPaths.push(publicPath);
+    return publicPath;
   }
 
-  const publicPath=`approved/${id}-${crypto.randomUUID()}.webp`;
-  const upload=await client.storage.from('product-images').upload(publicPath,safeImage,{contentType:'image/webp',upsert:false,cacheControl:'31536000'});
-  if(upload.error)redirect(destination('error','Unable to publish the approved image.'));
+  let publicPath:string;
+  let publicStoryPaths:string[]=[];
+  let publicCertificatePath:string|null=null;
 
-  const decided=await client.rpc('marketplace_admin_decide',{p_id:id,p_decision:'approved',p_reason:null,p_public_image_path:publicPath});
+  try{
+    publicPath=await publishPendingImage(lookup.data.pending_image_path);
+
+    for(const privatePath of lookup.data.pending_story_image_paths||[]){
+      publicStoryPaths.push(await publishPendingImage(privatePath));
+    }
+
+    if(lookup.data.pending_certificate_image_path){
+      publicCertificatePath=await publishPendingImage(lookup.data.pending_certificate_image_path);
+    }
+  }catch(error){
+    if(publishedPaths.length)await client.storage.from('product-images').remove(publishedPaths);
+    redirect(destination('error',error instanceof Error?error.message:'The pending media failed the final safety check.'));
+  }
+
+  const decided=await client.rpc('marketplace_admin_decide_rich',{
+    p_id:id,
+    p_decision:'approved',
+    p_reason:null,
+    p_public_image_path:publicPath,
+    p_public_story_image_paths:publicStoryPaths,
+    p_public_certificate_image_path:publicCertificatePath,
+  });
+
   if(decided.error){
-    await client.storage.from('product-images').remove([publicPath]);
-    redirect(destination('error',decided.error.message.includes('own submission')?'Administrators cannot approve their own submissions.':'Unable to approve this submission.'));
+    if(publishedPaths.length)await client.storage.from('product-images').remove(publishedPaths);
+    redirect(destination('error',decided.error.message.includes('own submission')
+      ?'Administrators cannot approve their own submissions.'
+      :'Unable to approve this submission.'));
   }
 
-  await client.storage.from('product-submission-images').remove([lookup.data.pending_image_path]);
-  revalidatePath('/admin');revalidatePath('/items');revalidatePath('/saved');revalidatePath('/my-submissions');
+  const privatePaths=[
+    lookup.data.pending_image_path,
+    ...(lookup.data.pending_story_image_paths||[]),
+    lookup.data.pending_certificate_image_path,
+  ].filter((value):value is string=>typeof value==='string'&&Boolean(value));
+
+  if(privatePaths.length){
+    await client.storage.from('product-submission-images').remove([...new Set(privatePaths)]);
+  }
+
+  revalidatePath('/admin');
+  revalidatePath('/items');
+  revalidatePath('/saved');
+  revalidatePath('/my-submissions');
+  revalidatePath('/');
   redirect(destination('updated','approved'));
 }
 
@@ -78,14 +143,29 @@ export async function deletePublishedProduct(f:FormData){
     public_image_path?:string|null;
     pending_image_path?:string|null;
     edit_image_paths?:unknown;
+    public_story_image_paths?:unknown;
+    pending_story_image_paths?:unknown;
+    public_certificate_image_path?:string|null;
+    pending_certificate_image_path?:string|null;
   }|null;
-  if(result?.public_image_path){
-    await client.storage.from('product-images').remove([result.public_image_path]);
+
+  const publicPaths=[
+    result?.public_image_path,
+    ...(Array.isArray(result?.public_story_image_paths)?result!.public_story_image_paths:[]),
+    result?.public_certificate_image_path,
+  ].filter((value):value is string=>typeof value==='string'&&Boolean(value));
+
+  if(publicPaths.length){
+    await client.storage.from('product-images').remove([...new Set(publicPaths)]);
   }
+
   const privatePaths=[
     result?.pending_image_path,
     ...(Array.isArray(result?.edit_image_paths)?result!.edit_image_paths:[]),
+    ...(Array.isArray(result?.pending_story_image_paths)?result!.pending_story_image_paths:[]),
+    result?.pending_certificate_image_path,
   ].filter((value):value is string=>typeof value==='string'&&Boolean(value));
+
   if(privatePaths.length){
     await client.storage.from('product-submission-images').remove([...new Set(privatePaths)]);
   }
