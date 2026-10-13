@@ -35,6 +35,7 @@ Run these files in the Supabase SQL editor:
 23. `supabase/migrations/202610130023_rare_limited_story_auctions.sql`
 24. `supabase/migrations/202610130024_auction_access_and_leaderboard.sql`
 25. `supabase/migrations/202610130025_promotion_plan_pricing.sql`
+26. `supabase/migrations/202610130026_banner_advertising.sql`
 
 ## 3. Configure local environment
 
@@ -111,3 +112,5 @@ For Pro checkout, configure the server-only values shown in `.env.example`.
 - Paid Product Boosts are the only products shown in Featured Items. A newly activated boost stays at the front for 30 minutes (newest boost first); after that protected period it joins the older active boosts, whose order rotates once per hour.
 
 - Rare & Limited auctions use a RM1.00 one-time Billplz access payment per auction. A paid bidder can place multiple bids on that auction until it ends; seller accounts cannot bid on their own listings. Public auction pages show the top three bidders using their marketplace display name, public profile image when available, and highest bid.
+
+- Banner Advertising uses moderated desktop + mobile creatives. Pricing is RM6.90 for 3 days, RM12.90 for 7 days, or RM21.90 for 14 days per rotation slot. Active slots stack across purchases, so buying the same approved ad multiple times increases its weighted share of the Home and Collection banner rotation.
