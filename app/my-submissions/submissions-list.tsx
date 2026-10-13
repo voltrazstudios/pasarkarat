@@ -81,10 +81,13 @@ export function SubmissionsList({initialRows}:{initialRows:SubmissionListRow[]})
         <div className="submission-thumb">{row.image?<img src={row.image} alt={row.name}/>:<span>Image unavailable</span>}</div>
         <div className="submission-copy">
           <div className="submission-status-line">
-            <span className="status-pill" data-status={row.status}>{row.status}</span>
+            <div className="submission-status-badges">
+              <span className="status-pill" data-status={row.status}>{row.status}</span>
+              {row.listing_type==='rare_limited'?<span className="rare-limited-status">Rare &amp; Limited</span>:null}
+            </div>
             <span>{new Date(row.submitted_at).toLocaleDateString('en-MY')}</span>
           </div>
-          <div className="submission-title-row">{row.listing_type==='rare_limited'?<span className="rare-limited-badge">Rare &amp; Limited</span>:null}<h2>{row.name}</h2></div>
+          <div className="submission-title-row"><h2>{row.name}</h2></div>
           <p>{row.category} · {formatPriceRange(Number(row.min_price??row.price),Number(row.max_price??row.min_price??row.price))}</p>
 
           {row.status==='rejected'&&row.rejection_reason?<p className="rejection-reason"><strong>Reason:</strong> {row.rejection_reason}</p>:null}
