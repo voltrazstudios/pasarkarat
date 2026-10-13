@@ -32,6 +32,6 @@ export async function activeAds():Promise<ActiveAd[]>{
       destinationUrl:row.destination_url,
       desktopImage:client.storage.from('marketplace-ad-images').getPublicUrl(row.public_desktop_path).data.publicUrl,
       mobileImage:client.storage.from('marketplace-ad-images').getPublicUrl(row.public_mobile_path).data.publicUrl,
-      weight:Math.max(1,Math.min(25,Number(row.weight)||1)),
+      weight:Math.max(1,Number(row.weight)||1),
     }));
 }
