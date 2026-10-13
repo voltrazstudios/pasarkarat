@@ -14,6 +14,7 @@ export type SubmissionListRow={
   min_price:number|string;
   max_price:number|string;
   category:string;
+  listing_type:'normal'|'rare_limited';
   status:string;
   rejection_reason:string|null;
   submitted_at:string;
@@ -83,7 +84,7 @@ export function SubmissionsList({initialRows}:{initialRows:SubmissionListRow[]})
             <span className="status-pill" data-status={row.status}>{row.status}</span>
             <span>{new Date(row.submitted_at).toLocaleDateString('en-MY')}</span>
           </div>
-          <h2>{row.name}</h2>
+          <div className="submission-title-row">{row.listing_type==='rare_limited'?<span className="rare-limited-badge">Rare &amp; Limited</span>:null}<h2>{row.name}</h2></div>
           <p>{row.category} · {formatPriceRange(Number(row.min_price??row.price),Number(row.max_price??row.min_price??row.price))}</p>
 
           {row.status==='rejected'&&row.rejection_reason?<p className="rejection-reason"><strong>Reason:</strong> {row.rejection_reason}</p>:null}
