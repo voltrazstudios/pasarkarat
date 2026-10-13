@@ -56,7 +56,7 @@ export function SubmissionsList({initialRows}:{initialRows:SubmissionListRow[]})
   const filtered=useMemo(()=>{
     const needle=query.trim().toLowerCase();
     if(!needle)return rows;
-    return rows.filter(row=>`${row.name} ${row.category} ${row.status}`.toLowerCase().includes(needle));
+    return rows.filter(row=>`${row.name} ${row.category} ${row.status} ${row.listing_type==='rare_limited'?'rare limited':''}`.toLowerCase().includes(needle));
   },[query,rows]);
 
   return <>
