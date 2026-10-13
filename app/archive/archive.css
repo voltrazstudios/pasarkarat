@@ -143,3 +143,18 @@ body .archive-like.liked svg{fill:currentColor}.archive-like:disabled{cursor:def
 }
 .archive-detail-price span{color:#7b692f;font-size:12px;font-weight:700}
 .archive-detail-price strong{color:#5f4b16;font-size:17px}
+
+
+/* Empty targeted Archive Ad uses the same compact sponsored-strip treatment as banner ads. */
+.archive-sponsored-empty{
+  width:100%;
+  margin-top:42px
+}
+.archive-sponsored-empty .archive-ad-placeholder{
+  width:100%
+}
+@media(max-width:700px){
+  .archive-sponsored-empty{
+    margin-top:32px
+  }
+}
