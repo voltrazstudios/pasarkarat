@@ -283,3 +283,108 @@ export async function approveProductEdit(f:FormData){
 export async function rejectProductEdit(f:FormData){
   return moderateProductEdit('reject',f);
 }
+
+
+async function moderateAd(decision:'approve'|'reject',f:FormData){
+  const client=await requireAdmin();
+  const id=String(f.get('ad_id')||'');
+  const reason=String(f.get('reason')||'').trim().slice(0,500);
+
+  if(!/^[a-f0-9-]{36}$/i.test(id))redirect(destination('error','Invalid ad.'));
+  if(decision==='reject'&&!reason)redirect(destination('error','Add a rejection reason before rejecting this ad.'));
+
+  const {data:{user}}=await client.auth.getUser();
+  if(!user)redirect(destination('error','Admin session expired.'));
+
+  const lookup=await client.from('marketplace_ads')
+    .select('id,submitted_by,status,pending_desktop_path,pending_mobile_path')
+    .eq('id',id)
+    .maybeSingle();
+
+  if(lookup.error||!lookup.data||lookup.data.status!=='pending'){
+    redirect(destination('error','This ad is no longer pending.'));
+  }
+
+  if(decision==='reject'){
+    const rejected=await client.rpc('marketplace_admin_decide_ad',{
+      p_id:id,
+      p_decision:'rejected',
+      p_reason:reason,
+      p_public_desktop_path:null,
+      p_public_mobile_path:null,
+    });
+    if(rejected.error)redirect(destination('error','Unable to reject this ad.'));
+    revalidatePath('/admin');
+    revalidatePath('/advertise');
+    redirect(destination('updated','ad rejected'));
+  }
+
+  if(lookup.data.submitted_by===user.id){
+    redirect(destination('error','Administrators cannot approve their own ads.'));
+  }
+
+  const published:string[]=[];
+  async function publish(privatePath:string,kind:'desktop'|'mobile'){
+    const downloaded=await client.storage.from('marketplace-ad-submissions').download(privatePath);
+    if(downloaded.error||!downloaded.data)throw new Error('Unable to read the pending ad image.');
+
+    const input=Buffer.from(await downloaded.data.arrayBuffer());
+    const target=kind==='desktop'?{width:1800,height:600}:{width:1200,height:900};
+    const safe=await sharp(input,{failOn:'error',limitInputPixels:40000000})
+      .rotate()
+      .resize({...target,fit:'cover',position:'centre'})
+      .webp({quality:90})
+      .toBuffer();
+
+    const publicPath=`approved/${crypto.randomUUID()}.webp`;
+    const upload=await client.storage.from('marketplace-ad-images')
+      .upload(publicPath,safe,{contentType:'image/webp',upsert:false,cacheControl:'31536000'});
+    if(upload.error)throw new Error('Unable to publish the approved ad image.');
+    published.push(publicPath);
+    return publicPath;
+  }
+
+  let desktopPath='';
+  let mobilePath='';
+  try{
+    desktopPath=await publish(lookup.data.pending_desktop_path,'desktop');
+    mobilePath=await publish(lookup.data.pending_mobile_path,'mobile');
+  }catch(error){
+    if(published.length)await client.storage.from('marketplace-ad-images').remove(published);
+    redirect(destination('error',error instanceof Error?error.message:'The ad images failed the final safety check.'));
+  }
+
+  const approved=await client.rpc('marketplace_admin_decide_ad',{
+    p_id:id,
+    p_decision:'approved',
+    p_reason:null,
+    p_public_desktop_path:desktopPath,
+    p_public_mobile_path:mobilePath,
+  });
+
+  if(approved.error){
+    if(published.length)await client.storage.from('marketplace-ad-images').remove(published);
+    redirect(destination('error',approved.error.message.includes('own ad')
+      ?'Administrators cannot approve their own ads.'
+      :'Unable to approve this ad.'));
+  }
+
+  await client.storage.from('marketplace-ad-submissions').remove([
+    lookup.data.pending_desktop_path,
+    lookup.data.pending_mobile_path,
+  ]);
+
+  revalidatePath('/admin');
+  revalidatePath('/advertise');
+  revalidatePath('/');
+  revalidatePath('/items');
+  redirect(destination('updated','ad approved'));
+}
+
+export async function approveAd(f:FormData){
+  return moderateAd('approve',f);
+}
+
+export async function rejectAd(f:FormData){
+  return moderateAd('reject',f);
+}
