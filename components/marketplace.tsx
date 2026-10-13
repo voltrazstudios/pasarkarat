@@ -12,6 +12,8 @@ import { categories, categoryImages, platformDisplayName, platforms, products, t
 import { contrastText, darkenHexColor, storeFontFamily, type StoreFont } from '@/lib/store-theme';
 import { productPriceLabel } from '@/lib/product-price';
 import { featuredProductsForTime } from '@/lib/featured-products';
+import type { ActiveAd } from '@/lib/ads';
+import { AdBannerRotator } from './ad-banner';
 
 export { Header } from './header';
 
@@ -139,10 +141,12 @@ type HomeFeaturedStore={
 export function Home({
   items=products,
   featuredStores=[],
+  ads=[],
   initialFeaturedTime=0,
 }:{
   items?:Product[];
   featuredStores?:HomeFeaturedStore[];
+  ads?:ActiveAd[];
   initialFeaturedTime?:number;
 }){
   const {language}=useLanguage();
@@ -164,6 +168,8 @@ export function Home({
         <div className="hero-tag"><span className="tag-icon"><Layers size={24}/></span><span>A new chapter for old treasures<small>Find something with a story.</small></span></div>
       </div>
     </section>
+
+    <AdBannerRotator ads={ads}/>
 
     <CategoryLinks/>
 
@@ -233,6 +239,7 @@ export function Catalogue({
   initialRare=false,
   initialFeaturedTime=0,
   items=products,
+  ads=[],
 }:{
   initialQuery?:string;
   initialCategory?:string;
@@ -240,6 +247,7 @@ export function Catalogue({
   initialRare?:boolean;
   initialFeaturedTime?:number;
   items?:Product[];
+  ads?:ActiveAd[];
 }){
   const {language}=useLanguage();
   const [query,setQuery]=useState(initialQuery);
@@ -273,6 +281,7 @@ export function Catalogue({
         <Link href="/submit-product" prefetch className="button submission-cta">Submit Product <ArrowUpRight size={17}/></Link>
       </div>
     </div>
+    <AdBannerRotator ads={ads}/>
     <div className="catalogue-controls">
       <label className="filter-search">
         <Search size={19}/>
@@ -317,7 +326,7 @@ export function Footer(){
         <Link href="/" className="brand"><Image className="brand-logo" src="/pasar-karat-logo.png" width={1200} height={300} sizes="240px" alt="Pasar Karat"/></Link>
         <p>Some external links may be affiliate links. Pasar Karat Digital Marketplace may receive a commission from qualifying purchases.</p>
       </div>
-      <div className="footer-links"><h2>Product</h2><nav aria-label="Footer product navigation"><Link href="/about">About the Marketplace</Link><Link href="/items">Explore Collection</Link><Link href="/experience">Virtual Experience</Link></nav></div>
+      <div className="footer-links"><h2>Product</h2><nav aria-label="Footer product navigation"><Link href="/about">About the Marketplace</Link><Link href="/items">Explore Collection</Link><Link href="/experience">Virtual Experience</Link><Link href="/advertise">Advertise</Link></nav></div>
       <div className="footer-links"><h2>Legal</h2><nav aria-label="Footer legal navigation"><Link href="/privacy">Privacy Policy</Link><Link href="/terms">Terms of Service</Link></nav></div>
     </div>
     <div className="container footer-bottom"><p>© 2026 Voltraz Studios. All rights reserved.</p></div>
