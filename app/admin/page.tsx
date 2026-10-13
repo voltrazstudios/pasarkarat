@@ -5,7 +5,24 @@ import { DeleteProductButton } from './delete-product-button';
 import { formatPriceRange } from '@/lib/product-price';
 
 type AdminRow={
-  id:string;name:string;description:string;price:number|string;min_price:number|string;max_price:number|string;category:string;pending_image_path:string;submitted_at:string;
+  id:string;
+  name:string;
+  description:string;
+  price:number|string;
+  min_price:number|string;
+  max_price:number|string;
+  category:string;
+  listing_type:'normal'|'rare_limited';
+  story_title:string|null;
+  story_text:string|null;
+  story_video_url:string|null;
+  certificate_title:string|null;
+  certificate_details:string|null;
+  pending_story_image_paths:string[];
+  pending_certificate_image_path:string|null;
+  pending_image_path:string;
+  submitted_at:string;
+  auction:null|{starting_bid:number|string;min_increment:number|string;duration_minutes:number};
   submitter:{id:string;email:string|null;display_name:string|null;avatar_path:string|null;approved_products:number};
   links:{platform:string;seller_url:string;affiliate_url:string|null}[];
 };
@@ -49,10 +66,17 @@ export default async function AdminPage({searchParams}:{searchParams:Promise<{up
   const rows=(pendingResult.data||[]) as AdminRow[];
   const reviews=await Promise.all(rows.map(async row=>{
     const signed=await client.storage.from('product-submission-images').createSignedUrl(row.pending_image_path,60*30);
+    const storyImages=(await Promise.all((row.pending_story_image_paths||[]).map(async path=>{
+      const result=await client.storage.from('product-submission-images').createSignedUrl(path,60*30);
+      return result.data?.signedUrl||null;
+    }))).filter((value):value is string=>Boolean(value));
+    const certificateImage=row.pending_certificate_image_path
+      ? (await client.storage.from('product-submission-images').createSignedUrl(row.pending_certificate_image_path,60*30)).data?.signedUrl||null
+      : null;
     const avatar=row.submitter.avatar_path
       ? client.storage.from('marketplace-profile-images').getPublicUrl(row.submitter.avatar_path).data.publicUrl
       : null;
-    return {...row,image:signed.data?.signedUrl||null,submitter:{...row.submitter,avatar}};
+    return {...row,image:signed.data?.signedUrl||null,storyImages,certificateImage,submitter:{...row.submitter,avatar}};
   }));
 
   const editRows=(pendingEditsResult.data||[]) as AdminEditRow[];
@@ -101,6 +125,24 @@ export default async function AdminPage({searchParams}:{searchParams:Promise<{up
           <h2>{row.name}</h2>
           <strong className="moderation-price">{formatPriceRange(Number(row.min_price??row.price),Number(row.max_price??row.min_price??row.price))}</strong>
           <p className="moderation-description">{row.description}</p>
+          {row.listing_type==='rare_limited'?<div className="admin-rare-review">
+            <span className="rare-limited-badge">Rare &amp; Limited</span>
+            <h3>{row.story_title}</h3>
+            <p className="admin-rare-story">{row.story_text}</p>
+            {row.storyImages.length?<div className="admin-story-images">{row.storyImages.map((src,index)=><img src={src} alt={`Story image ${index+1}`} key={src}/>)}</div>:null}
+            {row.story_video_url?<a className="text-link" href={row.story_video_url} target="_blank" rel="noopener noreferrer nofollow">Review story video</a>:null}
+            {(row.certificate_title||row.certificate_details||row.certificateImage)?<div className="admin-certificate-review">
+              <strong>{row.certificate_title||'Certificate / provenance'}</strong>
+              {row.certificate_details?<p>{row.certificate_details}</p>:null}
+              {row.certificateImage?<img src={row.certificateImage} alt="Certificate or provenance"/>:null}
+            </div>:null}
+            {row.auction?<div className="admin-auction-review">
+              <strong>Auction enabled</strong>
+              <span>Starting bid: RM {Number(row.auction.starting_bid).toFixed(2)}</span>
+              <span>Minimum increase: RM {Number(row.auction.min_increment).toFixed(2)}</span>
+              <span>Duration: {Math.round(row.auction.duration_minutes/60)} hour(s) after approval</span>
+            </div>:null}
+          </div>:null}
           <div className="submitter-box admin-submitter-box">
             <div className="admin-submitter-avatar">
               {row.submitter.avatar?<img src={row.submitter.avatar} alt=""/>:<span>{(row.submitter.display_name||'M').slice(0,1).toUpperCase()}</span>}
