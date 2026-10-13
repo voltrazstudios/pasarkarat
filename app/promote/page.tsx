@@ -76,7 +76,7 @@ export default async function PromotePage({searchParams}:{searchParams:Promise<{
     <section className="promotion-plans" aria-label="Seller promotion options">
       <article className="promotion-card">
         <span className="promotion-card-icon"><Package size={22}/></span>
-        <p className="pro-plan-kicker">02 — PRODUCT BOOSTING</p>
+        <p className="pro-plan-kicker">01 — PRODUCT BOOSTING</p>
         <h2>From RM2.90</h2>
         <p>Boost one approved product into Featured Items. Choose a shorter 3-day push or better-value 7-day visibility.</p>
         <form action={startPromotionCheckout} className="promotion-form">
@@ -99,7 +99,7 @@ export default async function PromotePage({searchParams}:{searchParams:Promise<{
             </label>
             <label>
               <input type="radio" name="duration_days" value="7"/>
-              <span><strong>7 days</strong><b>RM5.90</b><small>Better value</small></span>
+              <span><strong>7 days <small>Better value</small></strong><b>RM5.90</b></span>
             </label>
           </fieldset>
           <button className="button" disabled={!paymentReady||!products.length}>Continue to Billplz</button>
@@ -108,7 +108,7 @@ export default async function PromotePage({searchParams}:{searchParams:Promise<{
 
       <article className="promotion-card promotion-card-featured">
         <span className="promotion-card-icon"><Store size={22}/></span>
-        <p className="pro-plan-kicker">03 — FEATURED STORE PLACEMENT</p>
+        <p className="pro-plan-kicker">02 — FEATURED STORE PLACEMENT</p>
         <h2>RM7.90</h2>
         <p>Feature your storefront on the Pasar Karat homepage for 7 days.</p>
         {featuredActive?<div className="promotion-active">Currently featured until {dateLabel(featuredUntil)}</div>:null}
@@ -120,10 +120,18 @@ export default async function PromotePage({searchParams}:{searchParams:Promise<{
 
       <article className="promotion-card promotion-card-advertising">
         <span className="promotion-card-icon"><Megaphone size={22}/></span>
-        <p className="pro-plan-kicker">04 — BANNER ADVERTISING</p>
+        <p className="pro-plan-kicker">03 — BANNER ADVERTISING</p>
         <h2>From RM6.90</h2>
         <p>Run a responsive banner on the homepage and Collection. Buy extra rotation slots when you want the same ad to appear more often.</p>
         <Link href="/advertise" className="button">Submit or manage ads</Link>
+      </article>
+
+      <article className="promotion-card promotion-card-archive-ad">
+        <span className="promotion-card-icon"><Package size={22}/></span>
+        <p className="pro-plan-kicker">04 — ARCHIVE ADS</p>
+        <h2>From RM3.90</h2>
+        <p>Promote an approved product only on a matching Archive detail page, such as a Labu Sayong listing on the Labu Sayong Archive entry.</p>
+        <Link href="/archive-ads" className="button">Submit or manage Archive Ads</Link>
       </article>
     </section>
 
