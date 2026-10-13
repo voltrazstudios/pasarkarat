@@ -25,6 +25,7 @@ export default async function Page({params}:{params:Promise<{slug:string}>}){
         <p className="eyebrow">PASAR KARAT LIVING ARCHIVE</p>
         <span className="archive-category">{entry.category}</span>
         <h1>{entry.name}</h1>
+        {typeof entry.averagePriceRM==='number'?<div className="archive-detail-price"><span>Average price</span><strong>{new Intl.NumberFormat('en-MY',{style:'currency',currency:'MYR'}).format(entry.averagePriceRM)}</strong></div>:null}
         <p>{entry.shortDescription}</p>
         <ArchiveLike id={entry.id} name={entry.name} detail/>
       </div>
