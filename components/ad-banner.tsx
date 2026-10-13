@@ -42,7 +42,20 @@ export function AdBannerRotator({ads}:{ads:ActiveAd[]}){
     return()=>window.clearInterval(timer);
   },[schedule.length]);
 
-  if(!schedule.length)return null;
+  if(!schedule.length){
+    return <section className="container marketplace-ad-section marketplace-ad-empty" aria-label="Advertising opportunity">
+      <div className="marketplace-ad-label-row">
+        <span>Sponsored space</span>
+        <Link href="/advertise">Advertise here</Link>
+      </div>
+      <Link href="/advertise" className="marketplace-ad-placeholder">
+        <span className="marketplace-ad-placeholder-kicker">YOUR AD COULD BE HERE</span>
+        <strong>Reach Pasar Karat visitors with a responsive banner.</strong>
+        <small>Desktop + mobile creative · from RM6.90</small>
+        <span className="marketplace-ad-placeholder-button">Advertise here</span>
+      </Link>
+    </section>;
+  }
   const ad=schedule[turn%schedule.length]||schedule[0];
 
   return <section className="container marketplace-ad-section" aria-label="Sponsored advertisement">
