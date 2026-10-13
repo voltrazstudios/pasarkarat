@@ -14,6 +14,7 @@ type Row={
   min_price:number|string;
   max_price:number|string;
   category:string;
+  listing_type:'normal'|'rare_limited';
   status:string;
   pending_image_path:string;
   public_image_path:string|null;
@@ -38,7 +39,7 @@ export default async function MySubmissionsPage({searchParams}:{searchParams:Pro
 
   const p=await searchParams;
   const {data}=await client.from('marketplace_products')
-    .select('id,slug,name,price,min_price,max_price,category,status,pending_image_path,public_image_path,rejection_reason,submitted_at')
+    .select('id,slug,name,price,min_price,max_price,category,listing_type,status,pending_image_path,public_image_path,rejection_reason,submitted_at')
     .eq('submitted_by',user.id)
     .order('submitted_at',{ascending:false});
 
