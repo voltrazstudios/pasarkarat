@@ -49,6 +49,7 @@ export async function submitProduct(_:SubmissionResult,f:FormData):Promise<Submi
   const client=await db();
   const {data:{user}}=await client.auth.getUser();
   if(!user)redirect('/auth?next=/submit-product');
+  const userId=user.id;
 
   const name=cleanPlainText(text(f,'name'));
   const description=cleanPlainText(text(f,'description'));
@@ -159,7 +160,7 @@ export async function submitProduct(_:SubmissionResult,f:FormData):Promise<Submi
 
   async function uploadPrivateImage(file:File){
     const cleaned=await cleanProductImage(file);
-    const path=`${user.id}/${crypto.randomUUID()}.webp`;
+    const path=`${userId}/${crypto.randomUUID()}.webp`;
     const upload=await client.storage.from('product-submission-images')
       .upload(path,cleaned,{contentType:'image/webp',upsert:false,cacheControl:'3600'});
     if(upload.error)throw new Error('Unable to upload one of the images.');
