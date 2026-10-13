@@ -36,6 +36,7 @@ Run these files in the Supabase SQL editor:
 24. `supabase/migrations/202610130024_auction_access_and_leaderboard.sql`
 25. `supabase/migrations/202610130025_promotion_plan_pricing.sql`
 26. `supabase/migrations/202610130026_banner_advertising.sql`
+27. `supabase/migrations/202610130027_archive_ads.sql`
 
 ## 3. Configure local environment
 
@@ -85,7 +86,9 @@ Useful routes:
 - `/my-submissions` — submission status
 - `/admin` — admin-only moderation
 - `/auth` — sign in
-- `/promote` — seller Product Boosting and Featured Store Placement
+- `/promote` — seller Product Boosting, Featured Store, Banner Advertising and Archive Ads
+- `/advertise` — submit and manage responsive banner ads
+- `/archive-ads` — submit and manage targeted Archive Ads
 
 ## Security behavior
 
@@ -114,3 +117,5 @@ For Pro checkout, configure the server-only values shown in `.env.example`.
 - Rare & Limited auctions use a RM1.00 one-time Billplz access payment per auction. A paid bidder can place multiple bids on that auction until it ends; seller accounts cannot bid on their own listings. Public auction pages show the top three bidders using their marketplace display name, public profile image when available, and highest bid.
 
 - Banner Advertising uses moderated desktop + mobile creatives. Pricing is RM6.90 for 3 days, RM12.90 for 7 days, or RM21.90 for 14 days per rotation slot. Active slots stack across purchases, so buying the same approved ad multiple times increases its weighted share of the Home and Collection banner rotation.
+
+- Archive Ads are targeted sponsored product placements that appear only on one approved Archive detail page. Pricing is RM3.90 for 3 days, RM6.90 for 7 days, or RM11.90 for 14 days per rotation slot. Admin approval verifies the product-to-Archive match before payment, and repeated active purchases increase that sponsored product's rotation weight on the matching Archive page.
