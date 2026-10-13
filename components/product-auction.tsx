@@ -1,6 +1,7 @@
 'use client';
 
-import { useActionState, useEffect, useMemo, useState } from 'react';
+import { useActionState, useEffect, useMemo, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Gavel, Trophy, UsersRound } from 'lucide-react';
 import { placeProductBid } from '@/app/items/[slug]/auction-actions';
 
@@ -47,6 +48,8 @@ export function ProductAuction({
 }){
   const [state,action,pending]=useActionState(placeProductBid,{});
   const [now,setNow]=useState(Date.now());
+  const router=useRouter();
+  const endRefreshSent=useRef(false);
 
   useEffect(()=>{
     const timer=window.setInterval(()=>setNow(Date.now()),1000);
@@ -55,6 +58,17 @@ export function ProductAuction({
 
   const ended=auction.status==='ended'||Boolean(auction.ends_at&&new Date(auction.ends_at).getTime()<=now);
   const live=auction.status==='live'&&!ended;
+
+  useEffect(()=>{
+    if(auction.status==='live'&&ended&&!endRefreshSent.current){
+      endRefreshSent.current=true;
+      router.refresh();
+    }
+  },[auction.status,ended,router]);
+
+  useEffect(()=>{
+    if(state.success)router.refresh();
+  },[router,state.success]);
   const countdown=useMemo(()=>timeLeft(auction.ends_at,now),[auction.ends_at,now]);
   const hasBids=Number(auction.bid_count)>0;
 
