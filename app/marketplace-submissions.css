@@ -2822,7 +2822,7 @@ body .filter-pills .rare-filter-button.selected{background:#6f3aa5;border-color:
   margin-bottom:26px
 }
 .marketplace-ad-section.container{
-  max-width:1180px
+  max-width:1320px
 }
 .marketplace-ad-label-row{
   display:flex;
@@ -2845,7 +2845,8 @@ body .filter-pills .rare-filter-button.selected{background:#6f3aa5;border-color:
   position:relative;
   display:block;
   width:100%;
-  aspect-ratio:3 / 1;
+  height:160px;
+  aspect-ratio:auto;
   overflow:hidden;
   border:1px solid var(--line);
   border-radius:12px;
@@ -3132,7 +3133,8 @@ body .filter-pills .rare-filter-button.selected{background:#6f3aa5;border-color:
     margin-bottom:20px
   }
   .marketplace-ad-banner{
-    aspect-ratio:4 / 3;
+    height:112px;
+    aspect-ratio:auto;
     border-radius:10px
   }
   .marketplace-ad-label-row{
@@ -3206,14 +3208,14 @@ body .filter-pills .rare-filter-button.selected{background:#6f3aa5;border-color:
 /* Empty banner inventory still reserves the real ad footprint. */
 .marketplace-ad-placeholder{
   width:100%;
-  aspect-ratio:3 / 1;
-  min-height:180px;
+  height:160px;
+  min-height:0;
   display:flex;
-  flex-direction:column;
+  flex-direction:row;
   align-items:center;
   justify-content:center;
-  gap:7px;
-  padding:28px;
+  gap:16px;
+  padding:22px 28px;
   border:1px dashed #cbbd9e;
   border-radius:12px;
   background:
@@ -3236,16 +3238,17 @@ body .filter-pills .rare-filter-button.selected{background:#6f3aa5;border-color:
   letter-spacing:.11em
 }
 .marketplace-ad-placeholder strong{
-  max-width:680px;
-  font-size:clamp(21px,2.7vw,34px);
-  line-height:1.15
+  max-width:520px;
+  font-size:clamp(18px,2vw,25px);
+  line-height:1.2
 }
 .marketplace-ad-placeholder small{
   color:var(--muted);
   font-size:12px
 }
 .marketplace-ad-placeholder-button{
-  margin-top:5px;
+  margin-top:0;
+  flex:0 0 auto;
   padding:8px 13px;
   border-radius:7px;
   background:var(--orange);
@@ -3445,12 +3448,27 @@ body .filter-pills .rare-filter-button.selected{background:#6f3aa5;border-color:
 }
 @media(max-width:700px){
   .marketplace-ad-placeholder{
-    aspect-ratio:4 / 3;
+    height:124px;
     min-height:0;
-    padding:22px 18px
+    flex-direction:column;
+    gap:3px;
+    padding:12px 14px
+  }
+  .marketplace-ad-placeholder-kicker{
+    font-size:8px
   }
   .marketplace-ad-placeholder strong{
-    font-size:25px
+    max-width:100%;
+    font-size:17px;
+    line-height:1.15
+  }
+  .marketplace-ad-placeholder small{
+    font-size:10px
+  }
+  .marketplace-ad-placeholder-button{
+    margin-top:3px;
+    padding:5px 9px;
+    font-size:10px
   }
   .archive-ads-page{
     padding-top:14px
