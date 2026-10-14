@@ -4,7 +4,6 @@ import { useActionState, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Gavel, Trophy, UsersRound } from 'lucide-react';
 import { placeProductBid } from '@/app/items/[slug]/auction-actions';
-import { startAuctionAccessCheckout } from '@/app/items/[slug]/auction-checkout-actions';
 
 export type AuctionBidder={
   display_name:string;
@@ -24,8 +23,6 @@ export type PublicAuction={
   next_minimum_bid:number|string;
   winner_name:string|null;
   bidders:AuctionBidder[];
-  has_bid_access:boolean;
-  access_fee_sen:number;
 };
 
 function money(value:number|string|null){
@@ -51,13 +48,11 @@ export function ProductAuction({
   slug,
   auction,
   isSeller=false,
-  paymentProcessing=false,
 }:{
   productId:string;
   slug:string;
   auction:PublicAuction;
   isSeller?:boolean;
-  paymentProcessing?:boolean;
 }){
   const [state,action,pending]=useActionState(placeProductBid,{});
   const [now,setNow]=useState(Date.now());
@@ -83,15 +78,8 @@ export function ProductAuction({
     if(state.success)router.refresh();
   },[router,state.success]);
 
-  useEffect(()=>{
-    if(!paymentProcessing||auction.has_bid_access)return;
-    const timer=window.setInterval(()=>router.refresh(),3000);
-    return()=>window.clearInterval(timer);
-  },[auction.has_bid_access,paymentProcessing,router]);
-
   const countdown=useMemo(()=>timeLeft(auction.ends_at,now),[auction.ends_at,now]);
   const hasBids=Number(auction.bid_count)>0;
-  const accessFee=Number(auction.access_fee_sen||100)/100;
 
   return <section className="product-auction product-auction-wide" aria-label="Product auction">
     <div className="auction-live-heading">
@@ -139,17 +127,7 @@ export function ProductAuction({
       </div>
     </div>:null}
 
-    {live&&!isSeller&&!auction.has_bid_access?<div className="auction-access-box">
-      <div><strong>Unlock bidding</strong><span>Pay once for this auction, then place unlimited bids until it ends.</span></div>
-      <form action={startAuctionAccessCheckout}>
-        <input type="hidden" name="product_id" value={productId}/>
-        <input type="hidden" name="slug" value={slug}/>
-        <button className="button" type="submit">Unlock bidding — RM {accessFee.toFixed(2)}</button>
-      </form>
-      {paymentProcessing?<small>Billplz payment is being confirmed. If you just paid, refresh in a moment.</small>:null}
-    </div>:null}
-
-    {live&&!isSeller&&auction.has_bid_access?<form action={action} className="auction-bid-form">
+    {live&&!isSeller?<form action={action} className="auction-bid-form">
       <input type="hidden" name="product_id" value={productId}/>
       <input type="hidden" name="slug" value={slug}/>
       <label>Your bid
