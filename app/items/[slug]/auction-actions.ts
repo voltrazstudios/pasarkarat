@@ -34,7 +34,6 @@ export async function placeProductBid(_:BidActionState,form:FormData):Promise<Bi
   if(result.error){
     const message=result.error.message;
     if(message.includes('own product'))return {error:'You cannot bid on your own product.'};
-    if(message.includes('access payment required'))return {error:'Unlock bidding for this auction before placing a bid.'};
     if(message.includes('has ended'))return {error:'This auction has already ended.'};
     if(message.includes('has not started'))return {error:'This auction has not started yet.'};
     if(message.includes('Bid must be at least')){
