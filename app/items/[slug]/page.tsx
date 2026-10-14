@@ -19,8 +19,8 @@ export const dynamic='force-dynamic';
 export async function generateMetadata({params}:{params:Promise<{slug:string}>}){
   const {slug}=await params;const p=await getProductBySlug(slug);return {title:p?.name??'Item not found',description:p?.description};
 }
-export default async function Page({params,searchParams}:{params:Promise<{slug:string}>;searchParams:Promise<{auction_payment?:string}>}){
-  const [{slug},query]=await Promise.all([params,searchParams]);
+export default async function Page({params}:{params:Promise<{slug:string}>}){
+  const {slug}=await params;
   const p=await getProductBySlug(slug);
   if(!p)notFound();
   const [allProducts,seller,ads]=await Promise.all([collectionProducts(),p.sellerId?sellerSummary(p.sellerId):Promise.resolve(null),activeAds()]);
@@ -56,7 +56,7 @@ export default async function Page({params,searchParams}:{params:Promise<{slug:s
       <div className="seller-box"><Store size={24}/><div><AvailablePlatformsLabel/><PlatformSummary links={p.links}/></div></div>
       <SellerButtons links={p.links} productId={p.submitted?p.id:undefined}/><SaveButton id={p.id} name={p.name}/><p className="purchase-note"><PurchaseNote/></p>
     </div></div>
-    {auction?<ProductAuction productId={p.id} slug={p.slug} auction={auction} isSeller={Boolean(seller?.isOwner)} paymentProcessing={query.auction_payment==='processing'}/>:null}
+    {auction?<ProductAuction productId={p.id} slug={p.slug} auction={auction} isSeller={Boolean(seller?.isOwner)}/>:null}
     <RareProductStory product={p}/>
     {seller?<SellerProfileCard seller={seller}/>:null}
     <section className="collection"><div className="section-heading"><div><p className="eyebrow">CONTINUE YOUR DISCOVERY</p><h2>You might also like</h2></div></div><div className="product-grid">{related.map(product=><ProductCard key={product.id} product={product}/>)}</div></section>
